@@ -1,0 +1,114 @@
+<question>
+<h2>C言語演習問題 課題２</h2>
+消費税が10%になり，食品に限って消費税が8%に据え置かれる場合を考えよう．また，キャッシュレス化を促進するために，クレジットカードで購入した場合は，消費税抜きの合計金額の2%がポイントとして還元されるとしよう．
+この計算を実施する簡単なPOS システムを作成する．あるスーパーでは以下の５種類の商品を扱っているものとする．<br>
+・	牛肉1024 円(食品)<br>
+・	白菜197 円(食品)<br>
+・	りんご125 円(食品)<br>
+・	歯ブラシ187 円(非食品)<br>
+・	鍋3050 円(非食品)<br>
+
+<p>
+各商品は食品のとき1, 非食品のとき0 で区別するものとする．<br>
+各商品の価格と，この区別を引数とし，その商品の消費税込みの価格を浮動小数点で返す関数amount_of_due() を作成せよ．
+</p>
+
+<p>
+支払いがクレジットカードのとき1, 現金のとき0 で区別するものとする．整数型で表された税抜き合計価格と，この区別を引数とし，得られるポイントを整数で返す関数amount_of_point() を作成せよ．
+</p>
+
+<p>
+これらの関数をつかって，各商品をPOS が読み込んだときに消費税込みの価格を印字し，さらに，支払金額を表示する際には，税抜きの合計金額，税込の合計金額，還元されるポイントを印字するPOS のプログラムを作成せよ．<br>
+ただし，このプログラムでは，<br>
+-	各商品をPOS が読み込んだときには，確認のために，その税込価格を小数点以下第２位まで印字する．<br>
+-	各商品の税込価格の小数点以下の数を切り捨てずに，税込合計金額を計算する．<br>
+-	税込の合計金額と還元されるポイントを印字するときには，消費者支払う金額と得るポイントがわかりやすいように，生じた小数点以下の数は切り捨てるものとする．
+</p>
+
+
+<h4>Sample Input & Output(下線部が入力)</h4>
+<img src="kadai1-2_input.png" width="70%"></img>
+
+</question>
+
+
+<block>
+block$int iscredit;$!!
+block$int total_price_notax = 0;$!!
+branch$if(\空欄 == 1)$foodは食品か食品でないかを分ける変数である．!!
+submodule$int amount_of_point(int total_price, int credit)$税抜き金額とクレジットカード使用か否かを用いて付与されるポイントを算出せよ!!
+block$i番目の商品の番号, 名前, 税抜き価格を表示$!!
+block$printf("購入品は?(終了は0):");$!!
+block$printf("りんご125\n");$!!
+loop$inputが負の値の間$!!
+block$return 0;$!!
+block$商品値段の配列を定義;$!!
+branch$inputが0でないならば$!!
+block$
+構造体Listの定義を行う．
+$
+  typedef struct list {<br>
+    int id;<br>
+    char name[BUFFER_MAX];<br>
+    int price_without_tax;<br>
+    int is_food;<br>
+  } List;
+!!
+branch$if(input==2)$!!
+block$scanf("%d", &input);$!!
+block$total_price += price;$!!
+block$price = amount_of_due(税抜き価格, \空欄.is_food);$!!
+branch$if(input==4)$!!
+block$printf("お支払いは[現金:0, クレジット:1]:");!!
+block$int tooth_brush = 187;$!!
+branch$if(\空欄 == 1)$空欄はクレジットカードで支払われたか否かを分ける変数である．!!
+branch$if(\空欄 == 0)$is_foodは食品か食品でないかを分ける変数である．!!
+block$printf("鍋3050\n");$!!
+block$\空欄 price;$!!
+branch$if(input==1)$!!
+branch$if(input==0)$!!
+block$printf("税込の単価 \空欄 \n", price);$!!
+block$printf("白菜197\n");$!!
+block$int pan = 3050;$!!
+loop$for(i=0; i<5; i++)$!!
+block$return price * 1.08;$軽減税率8％!!
+block$printf("税込の合計 \空欄円 \n", total_price);$!!
+block$int meat = 1024;$!!
+block$int hakusai = 197;$!!
+submodule$\空欄 amount_of_due(int price, int food)$その商品の消費税込みの価格を浮動小数点で返す関数!!
+block$int apple = 125;$!!
+block$break;$!!
+block$printf("ポイント%d点\n", amount_of_point(\空欄, \空欄));$amount_of_pointはポイント数を計算する関数である。どの変数が引数として必要か考えよ!!
+submodule$int main()$main関数から実行される．!!
+block$printf("税抜きの合計 \空欄円 \n", total_price_notax);$!!
+branch$if(input==5)$!!
+block$return price * 1.10;$普通税率10％!!
+block$printf("歯ブラシ187\n");$!!
+block$scanf("%d", &iscredit);$クレジットかどうかを0か1で入力するように求められている!!
+branch$if(\空欄 == 0)$空欄はクレジットカードで支払われたか否かを分ける変数である．!!
+block$return 0;$return文により関数は終了する．どんな時に0を返すか考えよ!!
+loop$inputが0でない間$!!
+branch$inputが0ならば$!!
+block$
+構造体Listの配列を定義;
+$
+  List menu[5] = {<br>
+    {1, "牛肉", 1024, 1},<br>
+    {2, "白菜", 197, 1},<br>
+    {3, "りんご", 125, 1},<br>
+    {4, "歯ブラシ", 187, 0},<br>
+    {5, "鍋", 3050, 0},<br>
+  };<br>
+!!
+block$int input;$何を買うか!!
+block$return (\空欄)(total_price * 0.02);$total_priceと定数（2％）を用いポイント数を算出せよ!!
+block$total_price_notax += 選択した商品の税抜き値段;$!!
+branch$if(input==3)$!!
+block$\空欄 total_price = 0;$!!
+block$printf("牛肉1024\n");$!!
+</block>
+
+
+<answer>
+
+</answer>

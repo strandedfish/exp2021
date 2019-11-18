@@ -1,0 +1,471 @@
+.title {
+  color: #02ccba;
+}
+
+.header-wrapper {
+  background-color: #EEEEEE;
+  border-bottom: solid 1px gray;
+  display: block;
+}
+
+.header-container {
+  width: 100%;
+  height: 40px;
+}
+
+#logo {
+  float:left;
+}
+#logo img {
+  display: flex;
+  margin: 0px 10px 0px 10px;
+  height: 40px;
+}
+#head-right {
+  float: right;
+  height:100%;
+}
+#head-right a {
+	margin: 0px 10px 0px 10px;
+	font-size: 9px;
+	color: #323232;
+	line-height: 40px;
+}
+
+main {
+  background-color: #FAFAFA;
+}
+
+
+/****pad****/
+
+.pad-editor {
+  border: solid 1px black;
+  border-radius: 10px;
+	display:flex;
+	min-width: 1020px;
+  margin: 10px;
+}
+.pad {
+	display: inline-flex;
+	min-height:500px;
+}
+
+.pad-blockzone {
+	width: 25%;
+  display:block;
+  border-right: solid 1px black;
+}
+.pad-blockzone-in {
+  overflow-y: scroll;
+  height: 80vh;
+}
+
+.tab_wrap {
+	width: 75%;
+  /* .padに依存 */
+  min-height: 500px;
+  display:block;
+/*  border-right: solid 1px black; */
+}
+
+.tab_area {
+  border-bottom: solid 5px #8695CC;
+  margin: 0 0 0 0;
+}
+
+.question-sentence {
+  padding: 10px;
+}
+
+.pad-workzone {
+/*	width: 100%; */
+  min-height: 500px;
+  display:block;
+  overflow-x: scroll;
+  padding-right: -100px;
+}
+.pad-textzone {
+	width: 90%;
+  height: 100px;
+}
+
+/* 処理開始と処理終了 */
+.pad-blockzone ul, .pad-line ul {
+  padding: 0;
+}
+
+.pad-question {
+  margin-left: 10px;
+  overflow-y: scroll;
+}
+
+.pad-line {
+  display:block;
+  background-color: #F0F0F0;
+  margin-left: 10px;
+  padding: 10px 0px 10px 0px;
+/*  border-left: solid 2px; 必要なくなった*/
+/*  min-height: 30vw;
+  min-width:1000px; */
+  white-space: wrap;
+}
+
+#start-block, #end-block {
+  width: 100px;
+  border: solid 1px black;
+}
+
+#no_content {
+/*  opacity: 0; */
+  opacity: 0.5;
+}
+
+/*
+===============================
+ブロック系
+*/
+.block {
+  background-color: #6495ed;
+  text-align: center;
+  width: 180px;
+  z-index: 999;
+}
+.block-module {
+  border: solid 1px black;
+}
+.block-submodule {
+  border-top: solid 1px black;
+  border-left: double 4px black;
+  border-bottom: solid 1px black;
+  border-right: double 4px black;
+}
+.block-loop {
+  border: solid 1px black;
+  border-left: double 4px black;
+}
+.block-branch {
+  min-height: 50px;
+  border-style: solid none solid solid;
+  border-width: 1px 1px 1px 1px;
+  z-index: 10;
+  position: relative;
+}
+.block-branch p {
+  display: block;
+  margin:auto;
+  text-align: center;
+  padding-right: 20px;
+}
+canvas {
+  top: 0px;
+  left: -1px;
+  position: absolute;
+  z-index: 0;
+  right: 0;
+}
+.nameWithCanvas {
+  position: relative;
+}
+
+ol:not(.sortable) {
+/*  border-left : solid 1px black; */
+}
+
+ol {
+}
+
+.border-left {
+  position: relative;
+}
+
+.border-left:before {
+  content: "";
+  position: absolute;
+  : 21px;
+  left: -120px;
+  border: 1px solid black;
+  border-right: 120px solid black;
+}
+
+.border-bottom {
+  position: relative;
+}
+
+.border-bottom:before {
+  content: "";
+  position: absolute;
+  top: -53px;
+  left: -1px;
+  border: 1px solid black;
+  border-top: 78px solid black;
+}
+
+.block p {
+  margin: 10px;
+}
+
+.pad-blockzone li {
+  margin: 20px 10px 20px 10px !important;
+}
+
+.pad-blockzone li, .pad-line li  {
+/*  border: dashed 1px rgba(0, 0, 255, 0.4);
+*/
+  list-style: none;
+/*  padding: 0px 0px 30px 0px;
+  margin: 0px 0px 20px 0px;
+  */
+}
+
+.sortable div {
+
+}
+
+body.dragging, body.dragging * {
+  cursor: move !important;
+}
+
+.dragged {
+  position: absolute;
+  opacity: 0.2;
+  z-index: 2000;
+}
+
+ol.sortable li.placeholder {
+  position: relative;
+  /** More li styles **/
+  content: '';
+  height: 20px;
+  width: 40px;
+  border: dashed 1px #FFAAAA;
+
+  /* debug */
+  /*background-color: #FFBBBB;*/
+  opacity: 0.5;
+}
+ol.sortable li.placeholder:before {
+  position: absolute;
+  /** Define arrowhead **/
+}
+ol {
+padding: 0px;
+/* debug */
+/*background-color: rgba(0, 200, 0, 0.1);*/
+}
+.sortable {
+  min-height: 100px;
+}
+
+.pad-line .block-module, .pad-line .block-submodule, .pad-line .block-loop, .pad-line .block-branch {
+  width: 180px;
+}
+
+
+ol:not(.sortable) {
+  margin-left: 300px;
+}
+
+.pad input {
+  min-width: 30px;
+  width: 15%;
+}
+
+
+
+/*
+=========================================================
+console 系
+*/
+.pad-textzone {
+  display: block;
+}
+#serialize_output {
+  display: block;
+  height: calc(100% - 100px);
+  width: calc(100% - 6px);
+}
+
+#console-bottom {
+  margin: 10px;
+  width: 90%;
+/*  border: 1px gray solid;*/
+}
+
+#pad-console {
+  padding: 10px 10px 10px 10px;
+  border: 2px #999999 solid;
+  width: calc(100% - 14px);
+  width: -webkit-calc(100% - 24px);
+  height: 200px;
+  overflow: auto;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+}
+
+#pad-console-right, #pad-console-left {
+  padding: 10px 10px 10px 10px;
+  border: 2px #999999 solid;
+  width: calc(50% - 4px);
+  width: -webkit-calc(50% - 24px);
+  height: 200px;
+  overflow: auto;
+  display: inline-block;
+  margin: 0px;
+}
+.debug-console {
+  background-color: #EEEEEE;
+  margin: 100px 0 0 0;
+}
+.console {
+  vertical-align: top;
+}
+.btn-wrapper {
+}
+.console::-webkit-scrollbar{
+  width: 12px;
+}
+.console::-webkit-scrollbar-track{
+  background: #fff;
+  border: none;
+  border-radius: 10px;
+  box-shadow: inset 0 0 2px #777;
+}
+.console::-webkit-scrollbar-thumb{
+  background: #aaa;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background: #668ad8;/*ボタン色*/
+  color: #FFF;
+  border-bottom: solid 4px #627295;
+  border-radius: 3px;
+  margin: 10px
+}
+.button:active {
+  /*ボタンを押したとき*/
+  -webkit-transform: translateY(4px);
+  transform: translateY(4px);/*下に動く*/
+  border-bottom: none;/*線を消す*/
+}
+
+/* タブ */
+
+.tab_label{
+  width:80px;
+  margin:0 5px;
+  display:inline-block;
+  padding:5px 0;
+  color:#999;
+  background:#ddd;
+  text-align:center;
+  font-size:13px;
+  cursor:pointer;
+  transition:ease 0.2s opacity;
+  border-top-left-radius:10px; border-top-right-radius:10px;
+  margin:10px 5px 0;
+}
+
+.tab_panel {
+  display: none;
+}
+
+.tab_label.active {
+  background:#8695CC;
+  color:#000;
+}
+.tab_panel.active {
+  display: block;
+/*  overflow-y: scroll;*/
+  height: auto;
+}
+
+.login-wrapper {
+  position: fixed;
+  background-color: rgba(55, 50, 50, 0.8);
+  top: -50px;
+  height: 100vw;
+  width: 100vw;
+  z-index: 500;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.login {
+  vertical-align: middle;
+  text-align: center;
+  display: block;
+  margin: 10% auto;
+  opacity: 1;
+  background-color: #e6e6fa;
+  border-radius: 10px;
+  width: 50%;
+  padding: 20px;
+}
+
+#stage-info {
+  display:none;
+  border: solid 1px black;
+  border-radius: 10px;
+  margin: 10px;
+  padding : 5px;
+}
+
+.submit-btn-wrapper {
+  float: right;
+  padding: 0px 20px 20px 20px;
+}
+#submit-btn {
+  font-size: 24px;
+}
+
+/* index menu */
+.lesson-menu {
+  padding-left: 10px;
+}
+
+.lesson-menu a{
+  padding: 0 10px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0) 50%, rgb(49, 170, 226) 50%);
+  background-position: 0 0;
+  background-size: 200% auto;
+  transition: .3s;
+}
+
+.lesson-menu a:hover{
+  background-position: -100% 0;
+  color: #fff;
+}
+
+.lesson-menu li {
+  margin: 10px;
+}
+
+.hilite {
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  z-index: 100;
+}
+
+.pad td {
+  width : 160px;
+  height : 60px;
+}
+
+table, tr, td {
+  border: none;
+  border-collapse: collapse;
+}
+
+#start-block, #end-block {
+  /* tableの1px合わせ */
+  margin-left: 1px;
+}
+td {
+  padding-right: 20px;
+}
