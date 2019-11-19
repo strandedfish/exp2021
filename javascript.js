@@ -705,9 +705,44 @@ $(function() {
   });
   // テキストアリアにフォーカスしているのか！？
   var inputAreaFocusing = 0
-  $(".input-text")
+  var inputting = 0
+  var input_start = 0
+  var new_this = 0
+  var input_element = 0
+  $(document).on('focus click', '.input-text', function(e){
+    $(this).css("background-color", "#ffc")
+    $(this).closest(".block").hideBalloon();
+    inputAreaFocusing = 1;
+    // 一定時間入力がなければフォーカスを切る
+    input_start = $.now();
+    input_element = this
+    $(this).on('input', function(e){
+      inputting = 1
+      $(this).css("background-color", "#ff7")
+    })
+  }).on('blur', '.input-text', function(e){
+    new_this = this;
+    inputting = 0
+    setTimeout(function(){
+      $(new_this).css("background-color", "white")
+      inputAreaFocusing = 0;
+    }
+    , 800)
+  })
+  setInterval(function(){
+    var time = $.now() - input_start;
+    if(time >= 10000 && inputting == 1){
+      inputting = 0
+      $(input_element).css("background-color", "white")
+      inputAreaFocusing = 0;
+      $(input_element).blur();
+    } else if(0 < time && time < 10000) {
+      $(input_element).closest(".block").hideBalloon();
+    }
+  }, 500);
+  /*
   .focusin(function(element){
-    $(this).css("color", "red")
+    $(this).css("background-color", "red")
     inputAreaFocusing = 1;
   })
   .focusout(function(element){
@@ -716,6 +751,7 @@ $(function() {
     }
     , 800)
   });
+  */
   // 要素にマウスオーバーしている時間を取得
   var hover_time;
   var now_dragging = 0;
