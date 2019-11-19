@@ -703,6 +703,19 @@ $(function() {
       element.position();
     });
   });
+  // テキストアリアにフォーカスしているのか！？
+  var inputAreaFocusing = 0
+  $(".input-text")
+  .focusin(function(element){
+    $(this).css("color", "red")
+    inputAreaFocusing = 1;
+  })
+  .focusout(function(element){
+    setTimeout(function(){
+      inputAreaFocusing = 0;
+    }
+    , 800)
+  });
   // 要素にマウスオーバーしている時間を取得
   var hover_time;
   var now_dragging = 0;
@@ -720,9 +733,10 @@ $(function() {
         hover_time = $.now() - hover_time;
         //$('#pad-console-left').append('<p>' + $.now() + $(this).find("p").text() +  ': Mouse Left</p>');
         //$('#pad-console-left').animate({scrollTop: $('#pad-console-left')[0].scrollHeight}, 0);
-        if ( hover_time >= 1000 ) {
+        if ( hover_time >= 1000 && inputAreaFocusing == 0 ) {
           block_hover_time[$(this).closest("li").attr("id")] += hover_time;
           $('#pad-console-left').append('<p>' + $(this).find("p").text() + 'の説明を見た秒数' + block_hover_time[$(this).closest("li").attr("id")] + 'ms</p>');
+          console.log(hover_time)
           $('#pad-console-left').animate({scrollTop: $('#pad-console-left')[0].scrollHeight}, 0);
         }
         hoverFlag=0;

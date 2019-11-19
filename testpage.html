@@ -1,34 +1,14 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="stylesheet.css">
-    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.0/jquery-ui.js"></script>
-    <script src="jquery.mjs.nestedSortable.js"></script>
-    <script type="text/javascript" src="jcanvas.js"></script>
-    <script src="jquery.balloon.js"></script>
-    <script src="jquery-sortable.js"></script>
-    <script type="text/javascript" src="javascript.js"></script>
-    <script src="./vue.js"></script>
-    <title>おさかな工房</title>
-  </head>
-  <body>
-	  <header>
-	  	<div class="header-wrapper">
-			<div class="header-container">
-				<div id="logo"><img src="osyare_logo.png" alt="ロゴ画像"></div>
-				<div id="head-right"><a href="http://www.de.is.ritsumei.ac.jp/">データ工学研究室</a></div>
-			</div>
-		</div>
-	  </header>
-
-	  <main>
-      <h1 style="font-size: 256px">まじでしんどすぎる</h1>
-      <a href="index.html">くそだ</a>
-	  </main>
-
-	  <footer>
-	  </footer>
-  </body>
+<head>
+<meta charset='utf-8'>
+<title>HTML内でのPHP処理</title>
+</head>
+<body>
+<h1><?php echo 'タイトルです'; ?></h1>
+<?php
+$text = "HTML内でのPHPスクリプト実行処理";
+echo "<p> $text </p>";
+?>
+</body>
 </html>
