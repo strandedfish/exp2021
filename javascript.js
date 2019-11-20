@@ -4,6 +4,7 @@ var table_name = "default";
 var user = "default";
 var time_stamp = 0;
 var jsonString = "";
+var prev_jsonString = "";
 var s_answer = "";
 var tab1_time = 0;
 var tab2_time = 0;
@@ -64,7 +65,7 @@ var right_id;
 var bottom_id;
 var now_dropped_object;
 
-// ドロップした場所によって横と縦を伸ばす関数
+// ドロップした場所によって関数
 function addTable(now_drag_object, ui) {
   id_num = $(now_drag_object).parent().attr("id");
   id_num = id_num.split("-");
@@ -562,6 +563,8 @@ function tab2_countStop(){
 }
 
 function getJsonString() {
+  prev_jsonString = jsonString
+
   temp_jsonString = "{\n"; //最上層
   temp_jsonString_innerText = "{\n"
 
@@ -575,10 +578,10 @@ function getJsonString() {
   jsonString = temp_jsonString_innerText;
 
   // 10/30シングルクオーテーションをエスケープするように
-  
   jsonString = jsonString.replace(/'/g, "''");
 
   $("#serialize_output").val(jsonString);
+  
 
 }
 
@@ -717,25 +720,43 @@ $(function() {
     input_start = $.now();
     input_element = this
     $(this).on('input', function(e){
-      inputting = 1
-      $(this).css("background-color", "#ff7")
+      input_start = $.now();
+      $(this).css("background-color", "#fcc")
     })
+    if(hoverFlag == 1){
+      hover_time = $.now() - hover_time;
+      //$('#pad-console-left').append('<p>' + $.now() + $(this).find("p").text() +  ': Mouse Left</p>');
+      //$('#pad-console-left').animate({scrollTop: $('#pad-console-left')[0].scrollHeight}, 0);
+      if ( hover_time >= 1000 ) {
+        block_hover_time[$(this).closest("li").attr("id")] += hover_time;
+        $('#pad-console-left').append('<p>' + $(this).find("p").text() + 'の説明を見た秒数' + block_hover_time[$(this).closest("li").attr("id")] + 'ms</p>');
+        console.log(hover_time)
+        $('#pad-console-left').animate({scrollTop: $('#pad-console-left')[0].scrollHeight}, 0);
+      }
+      hoverFlag=0;
+      hover_time=0;
+    }
+    hoverFlag = 0;
+    clearTimeout(sethover);
   }).on('blur', '.input-text', function(e){
     new_this = this;
-    inputting = 0
+    inputting = 0;
+    hoverFlag = 0;
     setTimeout(function(){
       $(new_this).css("background-color", "white")
       inputAreaFocusing = 0;
     }
     , 800)
   })
-  setInterval(function(){
+  toolongFocus = setInterval(function(){
     var time = $.now() - input_start;
-    if(time >= 10000 && inputting == 1){
+    $("#stage_info").append(time)
+    if(time >= 10000 && inputAreaFocusing == 1){
       inputting = 0
       $(input_element).css("background-color", "white")
       inputAreaFocusing = 0;
       $(input_element).blur();
+      hoverFlag = 0;
     } else if(0 < time && time < 10000) {
       $(input_element).closest(".block").hideBalloon();
     }
