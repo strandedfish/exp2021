@@ -85,7 +85,7 @@ function addTable(now_drag_object, ui) {
   }, 10);
   setTimeout(function(){
     drawBranchline();
-  }, 50);
+  }, 20);
   setTimeout(function(){
     getJsonString();
   }, 50)
@@ -265,9 +265,16 @@ function redrawLine() {
       num1_branch = num_branch[0];
       num2_branch = num_branch[1];
       //console.log( getId(num1_branch, num2_branch) + "はブランチ" );
+      branches = $(element).children("li").children("div").attr("branch").split("|")
+      // console.log(branches)
       if($(getId(num1_branch, +num2_branch+1)).find("li").length > 0){
         //console.log( getId(num1_branch, +num2_branch+1) + "は存在" );
+        branch_count = 0
         for(var i=0; i<$("tr").length - num1_branch -1; i++) {
+          console.log(branches[branch_count])
+          if (branches.length <= branch_count){
+            branches[branch_count] = "undefined"
+          }
           var flg = (isFollowing(+num1_branch+i, +num2_branch+1) == 1 || i==0);
           if(flg == 0) {
             break;
@@ -277,16 +284,21 @@ function redrawLine() {
             line_array.push(new LeaderLine(
               document.getElementById( $(element).children("li").children("div").attr("id") ),
               document.getElementById( $(getId(+num1_branch+i, +num2_branch+1)).find("li").children("div").attr("id") ),
-              {
-                color: 'rgba(12, 10, 9, 1.0)',
-                size: 1,
-                startSocket: 'right',
-                endSocket: 'left',
-                startPlug: 'behind',
-                endPlug: 'behind',
-                path: 'straight'
-              }
+                {
+                  color: 'rgba(12, 10, 9, 1.0)',
+                  size: 1,
+                  startSocket: 'right',
+                  endSocket: 'left',
+                  startPlug: 'behind',
+                  endPlug: 'behind',
+                  path: 'straight',
+                  endLabel: LeaderLine.captionLabel({
+                    text: branches[branch_count],
+                    offset: [5, -40]
+                  }),
+                }
             ));
+            branch_count++;
           }
         }
       }
@@ -430,7 +442,7 @@ function dataUpload() {
         $('.tuushin').append("...");
       }
       tuushin_count += 1;
-      
+
       console.log(data);
     },
     error: function(data) {
@@ -467,8 +479,8 @@ function loadKadai() {
     var s_block;
     var block_html;
     for(var i=0; i<s_blocks.length-1; i++) {
-      s_block = s_blocks[i].split("$");
-      //console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
+      s_block = s_blocks[i].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").split("$");
+      // console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
       switch(s_block[0]) {
         case 'block':
           block_html = "<li class='draggable' id="+i+"><div id='block-"+i+"' class='block-module block'><p class='module-name'>"+s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');+"</p></div></li>";
@@ -480,7 +492,7 @@ function loadKadai() {
           block_html = "<li class='draggable' id="+i+"><div id='block-"+i+"' class='block-loop block'><p class='module-name'>"+s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');+"</p></div></li>";
           break;
         case 'branch':
-          block_html = "<li class='draggable' id="+i+"><div id='block-"+i+"' class='block-branch block'><p class='module-name'>"+s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');+"</p><canvas id='canvas' width='30' height='30'></canvas></div></li>";
+          block_html = "<li class='draggable' id="+i+"><div id='block-"+i+"' class='block-branch block' branch="+s_block[3]+"><p class='module-name'>"+s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');+"</p><canvas id='canvas' width='30' height='30'></canvas></div></li>";
           break;
       }
       // テキストが更新されたら取得
