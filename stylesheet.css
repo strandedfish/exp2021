@@ -144,6 +144,12 @@ main {
   border: solid 1px black;
   border-left: double 4px black;
 }
+
+.block-ptloop {
+    border: solid 1px black;
+    border-right: double 4px black;
+}
+
 .block-branch {
   min-height: 50px;
   border-style: solid none solid solid;
@@ -448,13 +454,13 @@ console 系
 }
 
 .hilite {
-  background-color: rgba(255, 0, 0, 0.1) !important;
+  background-color: rgba(255, 0, 0, 0.5) !important;
   z-index: 100;
 }
 
 .pad td {
-  width : 160px;
-  height : 60px;
+  width : 120px;
+  height : 30px;
 }
 
 table, tr, td {

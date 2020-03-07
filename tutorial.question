@@ -38,6 +38,9 @@
 </question>
 
 <block>
+block$printf("あいうえお");!!
+branch$if(num > 10)$!!
+branch$else$!!
 loop$1$!!
 loop$1-1$!!
 loop$1-\空欄$適切な空欄を入れてください!!
@@ -50,7 +53,8 @@ loop$3-1-1$!!
 submodule$4$!!
 loop$4-\空欄$!!
 loop$4-\空欄-\空欄$!!
-branch$もし～なら$分岐によって処理をわけよ$a=10|a>10|a<10!!
+branch$もしa=10, a>10, 1<10なら$分岐によって処理をわけよ$a=10|a>10|a<10!!
+ptloop$後条件判定ループ$やっほー！!!
 </block>
 
 <answer>
