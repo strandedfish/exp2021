@@ -517,9 +517,15 @@ function paiza_api_create() {
         }
         details = paiza_get_details(data.id);
         if(details.build_stderr.length > 0) {
+            $("#compiler_output").css({
+                "color": "red"
+            });
             $("#compiler_output").val(details.build_stderr);
         } else if(details.stdout.length  > 0) {
             $("#compiler_output").val(details.stdout);
+            $("#compiler_output").css({
+                "color": "black"
+            });
         }
 
     }).fail(function(data) {
@@ -895,6 +901,7 @@ $(function () {
     });
     $("#compile_clang").on("click", function(){
         paiza_api_create();
+        $('#compiler_output').val("");
     });
 
     // 提出ボタン
