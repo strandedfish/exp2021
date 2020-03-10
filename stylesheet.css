@@ -288,10 +288,26 @@ console 系
 }
 #serialize_output {
   display: block;
-  height: calc(100% - 100px);
+  height: calc(50% - 100px);
   width: calc(100% - 6px);
 }
 
+#compiler_output {
+  display: block;
+  height: calc(50% - 100px);
+  width: calc(100% - 6px);
+}
+
+#copy2clipboard {
+  float: left;
+}
+.copy_alert {
+  padding: 0;
+  margin: 0 0 0 10px;
+  float: left;
+  display: none;
+  color: #ff70ae;
+}
 #console-bottom {
   margin: 10px;
   width: 90%;

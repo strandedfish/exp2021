@@ -10,7 +10,8 @@ var tab1_time = 0;
 var tab2_time = 0;
 var block_touch_num = [];
 var block_hover_time = [];
-
+var temp_jsonString = "";
+var temp_jsonString_innerText = "";
 var dataUpload_interval;
 var showInfo_interval;
 
@@ -88,6 +89,8 @@ function addTable(now_drag_object, ui) {
     }, 100);
     setTimeout(function () {
         getJsonString();
+        // コピーボタンを開放
+        document.getElementById("copy2clipboard").disabled = "";
     }, 50)
 }
 
@@ -487,6 +490,91 @@ function dataUpload() {
         }
     });
 };
+
+function paiza_api_create() {
+    source = jsonString;
+    input_value = ""; //未実装！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+    $.ajax({
+        type: "POST",
+        url: "http://api.paiza.io/runners/create",
+        datatype: "json",
+        data: {
+            "source_code": source,
+            "language": "c",
+            "input": input_value,
+            "api_key": "guest"
+        }
+    }).done(function(data) {
+        // console.log(data.id);
+        sleep(100);
+        while(true) {
+            sleep(100);
+            stat = paiza_get_status(data.id);
+            console.log(stat);
+            if(stat.status == "completed"){
+                break;
+            }
+        }
+        details = paiza_get_details(data.id);
+        if(details.build_stderr.length > 0) {
+            $("#compiler_output").val(details.build_stderr);
+        } else if(details.stdout.length  > 0) {
+            $("#compiler_output").val(details.stdout);
+        }
+
+    }).fail(function(data) {
+        console.log("Ajax fail (communication error)")
+    });
+}
+
+function paiza_get_status(id) {
+    $.ajax({
+        type: "GET",
+        async: false,
+        url: "http://api.paiza.io/runners/get_status",
+        datatype: "json",
+        data: {
+            "id": id,
+            "api_key": "guest"
+        }
+    }).done(function(data) {
+        // console.log(data)
+        ret = data;
+    }).fail(function(data) {
+        console.log("Ajax fail (get_status error)")
+        ret = null;
+    })
+
+    return ret;
+}
+
+function paiza_get_details(id) {
+    $.ajax({
+        type: "GET",
+        async: false,
+        url: "http://api.paiza.io/runners/get_details",
+        datatype: "json",
+        data: {
+            "id": id,
+            "api_key": "guest"
+        }
+    }).done(function(data) {
+        // console.log(data)
+        details = data;
+    }).fail(function(data) {
+        console.log("Ajax fail (get_status error)")
+        details = null;
+    })
+    return details;
+}
+
+function sleep(waitMsec) {
+  var startMsec = new Date();
+
+  // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+  while (new Date() - startMsec < waitMsec);
+}
+
 // .questionファイルから問題データを読み込み
 function loadKadai() {
     // ページ名と同じ名前の.questionファイルを読み込む
@@ -766,14 +854,47 @@ $(function () {
         $(this).addClass("active");
         $(".tab_panel").eq($th).addClass("active");
         if ($(this).index() == 0) {
+            tab1_countStop();
             tab2_countStop();
             tab1_countStart();
             hideLine();
         } else if ($(this).index() == 1) {
             tab1_countStop();
+            tab2_countStop();
             tab2_conutStart();
             showLine();
         }
+    });
+
+    // コードエリアのコピーアンドペーストの禁止
+    prevent = 1;
+    $('#serialize_output').on('copy cut paste', function(e){
+        if(prevent){
+            return false;
+        } else {
+            return true;
+        }
+    });
+    $("#serialize_output").attr("readonly", "readonly");
+    $('#serialize_output').on('selectstart contextmenu', function(e){
+        return false;
+    });
+    // クリップボードへコピー
+    $('#copy2clipboard').on('click', function(){
+        prevent = 0;
+        $('#serialize_output').select();
+        document.execCommand('copy');
+        $('#copyalert').show().delay(600).fadeOut(200);
+        prevent = 1;
+        document.getElementById("copy2clipboard").disabled = "disabled";
+        $(function(){
+	        setTimeout(function(){
+		    document.getElementById("copy2clipboard").disabled = "";
+	    },6000);
+        });
+    });
+    $("#compile_clang").on("click", function(){
+        paiza_api_create();
     });
 
     // 提出ボタン
