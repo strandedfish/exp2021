@@ -8,6 +8,8 @@ var prev_jsonString = "";
 var s_answer = "";
 var tab1_time = 0;
 var tab2_time = 0;
+var tab3_time = 0;
+var tab4_time = 0; // as ウィンドウ非アクティブ
 var block_touch_num = [];
 var block_hover_time = [];
 var temp_jsonString = "";
@@ -684,25 +686,39 @@ function drawBranchline() {
 function showInfo() {
     $("#stage-info").html("<h2>" + user + "さん</h2>");
     $("#stage-info").append("<p>経過時間：" + ($.now() - start_time) / 1000 + "秒</p>");
-    $("#stage-info").append("<p>問題文：" + tab1_time / 100 + "秒<br>PAD：" + tab2_time / 100 + "秒<p>");
+    $("#stage-info").append("<p>問題文：" + tab1_time / 100 + "秒<br>" +
+        "PAD：" + tab2_time / 100 + "秒<br>" +
+        "実行：" + tab3_time / 100 + "秒<br>" +
+        "非アクティブ：" + tab4_time / 100 + "秒</p>");
 }
 var passageTab1;
 var passageTab2;
+var passageTab3;
+var passageTab4;
 function tab1_countStart() {
     passageTab1 = setInterval(function () {
         tab1_time += 1;
     }, 10);
 }
-function tab2_conutStart() {
+function tab2_countStart() {
     passageTab2 = setInterval(function () {
         tab2_time += 1;
     }, 10);
 }
+function tab3_countStart() {
+    passageTab3 = setInterval(function () {
+        tab3_time += 1;
+    }, 10);
+}
+
 function tab1_countStop() {
     clearInterval(passageTab1);
 }
 function tab2_countStop() {
     clearInterval(passageTab2);
+}
+function tab3_countStop() {
+    clearInterval(passageTab3);
 }
 
 function getJsonString() {
@@ -862,15 +878,49 @@ $(function () {
         if ($(this).index() == 0) {
             tab1_countStop();
             tab2_countStop();
+            tab3_countStop();
             tab1_countStart();
             hideLine();
         } else if ($(this).index() == 1) {
             tab1_countStop();
             tab2_countStop();
-            tab2_conutStart();
+            tab3_countStop();
+            tab2_countStart();
             showLine();
+        } else if ($(this).index() == 2) {
+            tab1_countStop();
+            tab2_countStop();
+            tab3_countStop();
+            tab3_countStart();
+            hideLine();
         }
     });
+
+    // 画面を閉じている時間を計測
+    document.addEventListener('webkitvisibilitychange', function(){
+        if ( document.webkitHidden ) {
+            tab1_countStop();
+            tab2_countStop();
+            tab3_countStop();
+            hidden_time = $.now();
+        } else {
+            tab1_countStop();
+            tab2_countStop();
+            tab3_countStop();
+            tab4_time += ($.now() - hidden_time)/10;
+            switch($(".tab_label").index($(".active"))) {
+                case 0:
+                    tab1_countStart();
+                    break;
+                case 1:
+                    tab2_countStart();
+                    break;
+                case 2:
+                    tab3_countStart();
+                    break;
+            }
+        }
+    }, false);
 
     // コードエリアのコピーアンドペーストの禁止
     prevent = 1;
@@ -1066,6 +1116,7 @@ $(function () {
         });
         // そーたぶる
         $(".tab_panel").eq(1).addClass("active");
+        $(".tab_panel").eq(2).addClass("active");
         $(".tab_label").removeClass("active");
         $(".tab_panel").removeClass("active");
         $(".tab_label").eq(0).addClass("active");

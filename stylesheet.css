@@ -412,7 +412,7 @@ console 系
   position: fixed;
   background-color: rgba(55, 50, 50, 0.8);
   top: -50px;
-  height: 100vw;
+  height: 200vw;
   width: 100vw;
   z-index: 500;
   text-align: center;
