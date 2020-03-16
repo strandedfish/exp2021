@@ -685,40 +685,57 @@ function drawBranchline() {
 };
 function showInfo() {
     $("#stage-info").html("<h2>" + user + "さん</h2>");
-    $("#stage-info").append("<p>経過時間：" + ($.now() - start_time) / 1000 + "秒</p>");
     $("#stage-info").append("<p>問題文：" + tab1_time / 100 + "秒<br>" +
         "PAD：" + tab2_time / 100 + "秒<br>" +
         "実行：" + tab3_time / 100 + "秒<br>" +
         "非アクティブ：" + tab4_time / 100 + "秒</p>");
+    $("#stage-info").append("<p>経過時間：" + Math.round(($.now() - start_time) / 1000 * 100)/100 + "秒</p>");
+    $("#stage-info").append("<p>経過時間２：" + Math.round((tab1_time + tab2_time + tab3_time + tab4_time)/100 * 100)/100 + "秒</p>");
 }
+
 var passageTab1;
 var passageTab2;
 var passageTab3;
 var passageTab4;
 function tab1_countStart() {
-    passageTab1 = setInterval(function () {
-        tab1_time += 1;
-    }, 10);
+    if (passageTab1 == null) {
+        passageTab1 = setInterval(function () {
+            tab1_time += 1;
+        }, 10);
+    } else {
+        return false;
+    }
 }
 function tab2_countStart() {
-    passageTab2 = setInterval(function () {
-        tab2_time += 1;
-    }, 10);
+    if (passageTab2 == null) {
+        passageTab2 = setInterval(function () {
+            tab2_time += 1;
+        }, 10);
+    } else {
+        return false;
+    }
 }
 function tab3_countStart() {
-    passageTab3 = setInterval(function () {
-        tab3_time += 1;
-    }, 10);
+    if (passageTab3 == null) {
+        passageTab3 = setInterval(function () {
+            tab3_time += 1;
+        }, 10);
+    } else {
+        return false;
+    }
 }
 
 function tab1_countStop() {
     clearInterval(passageTab1);
+    passageTab1 = null;
 }
 function tab2_countStop() {
     clearInterval(passageTab2);
+    passageTab2 = null;
 }
 function tab3_countStop() {
     clearInterval(passageTab3);
+    passageTab3 = null;
 }
 
 function getJsonString() {
@@ -897,30 +914,68 @@ $(function () {
     });
 
     // 画面を閉じている時間を計測
-    document.addEventListener('webkitvisibilitychange', function(){
-        if ( document.webkitHidden ) {
-            tab1_countStop();
-            tab2_countStop();
-            tab3_countStop();
-            hidden_time = $.now();
-        } else {
-            tab1_countStop();
-            tab2_countStop();
-            tab3_countStop();
-            tab4_time += ($.now() - hidden_time)/10;
-            switch($(".tab_label").index($(".active"))) {
-                case 0:
-                    tab1_countStart();
-                    break;
-                case 1:
-                    tab2_countStart();
-                    break;
-                case 2:
-                    tab3_countStart();
-                    break;
-            }
+    // document.addEventListener('webkitvisibilitychange', function(){
+    //     if ( document.webkitHidden ) {
+    //         tab1_countStop();
+    //         tab2_countStop();
+    //         tab3_countStop();
+    //         hidden_time = $.now();
+    //     } else {
+    //         tab1_countStop();
+    //         tab2_countStop();
+    //         tab3_countStop();
+    //         tab4_time += ($.now() - hidden_time)/10;
+    //         switch($(".tab_label").index($(".active"))) {
+    //             case 0:
+    //                 tab1_countStart();
+    //                 break;
+    //             case 1:
+    //                 tab2_countStart();
+    //                 break;
+    //             case 2:
+    //                 tab3_countStart();
+    //                 break;
+    //         }
+    //     }
+    // }, false);
+
+    // 非アクティブ時に画面を非表示にする
+    // ウィンドウをフォーカスしたら指定した関数を実行
+    window.addEventListener('focus', function(){
+        tab1_countStop();
+        tab2_countStop();
+        tab3_countStop();
+        if (!(inactive_time == null)) {
+            tab4_time += ($.now() - inactive_time) / 10;
         }
-    }, false);
+        switch($(".tab_label").index($(".active"))) {
+            case 0:
+                tab1_countStart();
+                break;
+            case 1:
+                tab2_countStart();
+                break;
+            case 2:
+                tab3_countStart();
+                break;
+        }
+        $(".popup-content").css({"display": "none"})
+    });
+
+    // ウィンドウからフォーカスが外れたら指定した関数を実行
+    window.addEventListener('blur', function(){
+        tab1_countStop();
+        tab2_countStop();
+        tab3_countStop();
+        $(".popup-content").css({"display": "table"});
+        if ($(".login-wrapper").hasClass("inactive")) {
+            inactive_time = $.now();
+            console.log("now");
+        } else {
+            inactive_time = null;
+            console.log("nullnull");
+        }
+    });
 
     // コードエリアのコピーアンドペーストの禁止
     prevent = 1;
@@ -960,6 +1015,8 @@ $(function () {
         clearInterval(dataUpload_interval);
         clearInterval(passageTab1);
         clearInterval(passageTab2);
+        clearInterval(passageTab3);
+        clearInterval(passageTab4);
     });
     $("#panel2").scroll(function () {
         $.each(line_array, function (index, element) {
@@ -1085,10 +1142,7 @@ $(function () {
                     'color': 'red',
                 });
             } else {
-                start_time = $.now();
-                $(".login-wrapper").css({
-                    'display': 'none',
-                });
+                $(".login-wrapper").addClass("inactive")
                 $("#stage-info").css({
                     'display': 'block',
                     //'display': 'hidden'
@@ -1102,6 +1156,7 @@ $(function () {
                 setTimeout(function () {
                     drawBranchline();
                     tab1_countStart();
+                    start_time = $.now();
                     //          var data = group.sortable("serialize").get();
                     //          jsonString = JSON.stringify(data, null, ' ');
                     createArray();
@@ -1114,7 +1169,6 @@ $(function () {
                 showInfo_interval = setInterval('showInfo()', 10);
             }
         });
-        // そーたぶる
         $(".tab_panel").eq(1).addClass("active");
         $(".tab_panel").eq(2).addClass("active");
         $(".tab_label").removeClass("active");
