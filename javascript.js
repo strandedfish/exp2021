@@ -689,8 +689,8 @@ function showInfo() {
         "PAD：" + tab2_time / 100 + "秒<br>" +
         "実行：" + tab3_time / 100 + "秒<br>" +
         "非アクティブ：" + tab4_time / 100 + "秒</p>");
-    $("#stage-info").append("<p>経過時間：" + Math.round(($.now() - start_time) / 1000 * 100)/100 + "秒</p>");
-    $("#stage-info").append("<p>経過時間２：" + Math.round((tab1_time + tab2_time + tab3_time + tab4_time)/100 * 100)/100 + "秒</p>");
+    $("#stage-info").append("<p>処理時間：" + Math.round(($.now() - start_time) / 1000 * 100)/100 + "秒</p>");
+    $("#stage-info").append("<p>経過時間：" + Math.round((tab1_time + tab2_time + tab3_time + tab4_time)/100 * 100)/100 + "秒</p>");
 }
 
 var passageTab1;
@@ -945,19 +945,21 @@ $(function () {
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
-        if (!(inactive_time == null)) {
+        console.log("The time is " + inactive_time)
+        if (inactive_time != null) {
             tab4_time += ($.now() - inactive_time) / 10;
-        }
-        switch($(".tab_label").index($(".active"))) {
-            case 0:
-                tab1_countStart();
-                break;
-            case 1:
-                tab2_countStart();
-                break;
-            case 2:
-                tab3_countStart();
-                break;
+
+            switch ($(".tab_label").index($(".active"))) {
+                case 0:
+                    tab1_countStart();
+                    break;
+                case 1:
+                    tab2_countStart();
+                    break;
+                case 2:
+                    tab3_countStart();
+                    break;
+            }
         }
         $(".popup-content").css({"display": "none"})
     });
@@ -970,10 +972,8 @@ $(function () {
         $(".popup-content").css({"display": "table"});
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
-            console.log("now");
         } else {
             inactive_time = null;
-            console.log("nullnull");
         }
     });
 
