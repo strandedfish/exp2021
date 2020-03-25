@@ -1,0 +1,68 @@
+﻿<question>
+コンピュータは2 進数で計算を行うため，2n の和で表現できる数値の表
+現は得意である．例えば，0.75 は2􀀀1 + 2􀀀2 なので，コンピュータは誤差無
+く数値を扱える．一方で，0.1 のような数値は， 2n の和で表現できないため，
+どうしても誤差が発生する．
+実際にどれくらいの誤差が出るか以下に示すプログラムを作成し試せ．
+double 型の変数num1 とnum2 に値をscanf() で読み込むプログラムを
+作れ．scanf() でdouble 型の値を読むには，書式%lf を用いることを
+忘れないように．　
+ 変数num1 と変数num2 へ値をscanf() で設定せよ．
+ num2 に0.1 を足す文を10 回書け．1 行で書かないこと．
+ num1 とnum2 の差がどれだけあるか表示せよ．ただし，%f そのまま
+ではその差が表示されないので，小数点以下を23 桁程度表示できるよ
+うに指定すること．
+プログラムを起動し，以下の２つの場合での結果を調べよ．
+1. 変数num1 に1.0 を，num2 へ0.0 を設定せよ．
+2. 変数num1 に2.0 を，num2 へ1.0 を設定せよ．
+どのような誤差が表示されるか．２つの違いはなぜ起こるか考えよ．
+</question>
+
+<block>
+block$#include <\空欄>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
+submodule$int main(void)$!!
+block$printf("num1: ");$!!
+block$scanf("%lf", &num1);$!!
+block$printf("num2: ");$!!
+block$scanf("%lf", &num2);$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$num2 = num2 + 0.1;$!!
+block$printf("%.23f\n",num1);$!!
+block$printf("%.23f\n",num2);$!!
+block$printf("%.23f\n",num1 - num2);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int
+main(void)
+{
+  int x, y;
+
+  printf("整数x: ");
+  scanf("%d", &x);
+  
+  printf("整数y: ");
+  scanf("%d", &y);
+
+  printf("\tx=0x%x, y=0x%x\n\n", x, y);
+
+  printf("bitごとの演算結果\n");
+  printf("\t論理積: x & y = 0x%x\n", x & y);
+  printf("\t論理和: x | y = 0x%x\n", x | y);
+  printf("\t排他的論理和: x ^ y = 0x%x\n", x ^ y);
+  printf("\txの1の補数: ~x = 0x%x\n", ~x);
+
+  return 0;
+}
+</answer>
