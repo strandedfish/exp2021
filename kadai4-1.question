@@ -1,10 +1,9 @@
 ﻿<question>
-試験の点数(100 点満点) を入力すると，評価値(A+,A,B,C,F) を表示する
-プログラムをif-else 文で作成せよ．ただし，
- まず，負の点数や100 点を超える点数が入力された場合のエラー処理
-を1 つのif 文で行うこと
- 次に，点数に応じた評価値を表示する処理を行うこと
- 評価値の基準となる点数は以下の通りである
+試験の点数(100 点満点) を入力すると，評価値(A+,A,B,C,F) を表示するプログラムをif-else 文で作成せよ．
+ただし，
+・ まず，負の点数や100 点を超える点数が入力された場合のエラー処理を1 つのif 文で行うこと
+・ 次に，点数に応じた評価値を表示する処理を行うこと
+・ 評価値の基準となる点数は以下の通りである
 Table 4.1: 点数と評価値
 点数評価値
 90～100 A+
@@ -25,17 +24,21 @@ Table 4.1: 点数と評価値
 <block>
 block$#include <\空欄>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
 submodule$int main(void)$!!
-block$int x, y;$!!
-block$printf("整数x: ");$!!
-block$scanf("%d", &x);$!!
-block$printf("整数y: ");$!!
-block$scanf("%d", &y);$!!
-block$printf("\tx=0x%x, y=0x%x\n\n", x, y);$!!
-block$printf("bitごとの演算結果\n");$!!
-block$printf("\t論理積: x & y = 0x%x\n", \空欄);$!!
-block$printf("\t論理和: x | y = 0x%x\n", \空欄);$!!
-block$printf("\t排他的論理和: x ^ y = 0x%x\n", \空欄);$!!
-block$printf("\txの1の補数: ~x = 0x%x\n", \空欄);$!!
+block$int score;$!!
+block$printf("点数(100点満点): ");$"点数(100点満点): "という入力プロンプトを印字!!
+block$scanf("%d", &score);$scanfでint型の値を標準入力から読み込み score に代入!!
+branch$if(score<0 || score>100)$!!
+block$printf("入力エラーです．");$"入力エラーです．" と標準出力へ表示．!!
+branch$else if(score>=90)$!!
+block$printf("あなたの評価値はA+です．");$"あなたの評価値はA+です．" と標準出力へ表示．!!
+branch$else if(score>=80)$!!
+block$printf("あなたの評価値はAです．");$"あなたの評価値はAです．" と標準出力へ表示．!!
+branch$else if(score>=70)$!!
+block$printf("あなたの評価値はBです．");$"あなたの評価値はBです．" と標準出力へ表示．!!
+branch$else if(score>=60)$!!
+block$printf("あなたの評価値はCです．");$"あなたの評価値はCです．" と標準出力へ表示．!!
+branch$else$!!
+block$printf("あなたの評価値はFです．");$"あなたの評価値はFです．" と標準出力へ表示．!!
 block$return 0;$!!
 </block>
 
