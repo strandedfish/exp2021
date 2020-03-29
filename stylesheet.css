@@ -520,3 +520,11 @@ td {
 .inactive {
   display: none !important;
 }
+
+/* グラフィックス系 */
+#graphics_container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: -1;
+}

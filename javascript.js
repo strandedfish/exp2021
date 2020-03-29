@@ -19,7 +19,7 @@ var temp_jsonString = "";
 var temp_jsonString_innerText = "";
 var dataUpload_interval;
 var showInfo_interval;
-
+var stage = acgraph.create('graphics_container');
 
 var now_drag_object;
 var draggable_prop = {
@@ -285,6 +285,13 @@ function redrawLine() {
             if (followblock_distance > 0) {
                 console.log(followblock_distance + "先に分岐ぶろっくがあります．")
             }
+
+            /* TODO */
+            var linePath = acgraph.path();
+            linePath.parent(stage);
+            linePath.moveTo(150, 150);
+            linePath.lineTo(50, 10, 50, 50, 10, 50).fill("cornflowerblue");
+            linePath.close();
         }
 
         // 分岐仕様変更のため削除
