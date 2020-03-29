@@ -10,6 +10,9 @@ var tab1_time = 0;
 var tab2_time = 0;
 var tab3_time = 0;
 var tab4_time = 0; // as ウィンドウ非アクティブ
+var copy_num = 0;
+var compile_num = 0;
+var kadai = null;
 var block_touch_num = [];
 var block_hover_time = [];
 var temp_jsonString = "";
@@ -21,7 +24,7 @@ var showInfo_interval;
 var now_drag_object;
 var draggable_prop = {
     // ドラッグ開始時の処理
-    containment: ".pad-editor",
+    // containment: ".pad-editor",
     /*    snap: ".droppable",　*/
     helper: 'clone',
     opacity: 0.3,
@@ -406,18 +409,18 @@ function mySortable() {
 }
 // タッチ回数ホバー回数保存用のArrayを定義
 function createArray() {
-    $(".block").each(function (index, element) {
+    $(".block-module, .block-submodule, .block-branch, .block-loop, .block-ptloop").each(function (index, element) {
         block_touch_num.push(0);
         block_hover_time.push(0);
-        $(element).parent().attr({
-            'id': index
-        });
+        // $(element).parent().attr({
+        //     'id': index
+        // });
     });
 }
 // ajax_test_createTable
 function createTable() {
     var now = new Date();
-    table_name = (now.getMonth() + 1) + "月" + now.getDate() + "日" + now.getHours() + "時" + now.getMinutes() + "分" + user;
+    table_name = kadai + (now.getMonth() + 1) + "月" + now.getDate() + "日" + now.getHours() + "時" + now.getMinutes() + "分" + user;
     table_name.toString();
     time_stamp = $.now();
     $.ajax({
@@ -426,9 +429,14 @@ function createTable() {
         datatype: "json",
         data: {
             'user': user,
+            'kadai': kadai,
             'time_stamp': time_stamp,
             'tab1_time': tab1_time,
             'tab2_time': tab2_time,
+            'tab3_time': tab3_time,
+            'tab4_time': tab4_time,
+            'copy_num': copy_num,
+            'compile_num': compile_num,
             'block_touch_num': block_touch_num,
             'block_hover_time': block_hover_time,
             'table_name': table_name,
@@ -455,9 +463,14 @@ function dataUpload() {
         datatype: "json",
         data: {
             'user': user,
+            'kadai': kadai,
             'time_stamp': time_stamp,
             'tab1_time': tab1_time,
             'tab2_time': tab2_time,
+            'tab3_time': tab3_time,
+            'tab4_time': tab4_time,
+            'copy_num': copy_num,
+            'compile_num': compile_num,
             'block_touch_num': block_touch_num,
             'block_hover_time': block_hover_time,
             'table_name': table_name,
@@ -495,7 +508,7 @@ function dataUpload() {
 
 function paiza_api_create() {
     source = jsonString;
-    input_value = ""; //未実装！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+    input_value = document.getElementById("std_input").value; //未実装！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
     $.ajax({
         type: "POST",
         url: "http://api.paiza.io/runners/create",
@@ -585,9 +598,9 @@ function sleep(waitMsec) {
 
 // .questionファイルから問題データを読み込み
 function loadKadai() {
-    // ページ名と同じ名前の.questionファイルを読み込む
-    var str = window.location.href.split('/').pop();
-    str = str.replace('.html', '.question');
+    name = decodeURIComponent(location.search.split("=")[1]);
+    kadai = num;
+    str = name + ".question";
     $.get(str, function (text) {
         // 正答読み込み
         var s_start = text.indexOf("<answer>") + 8;
@@ -596,7 +609,7 @@ function loadKadai() {
         // 問題文
         var s_start = text.indexOf("<question>") + 10;
         var s_end = text.indexOf("</question>");
-        var s_question = text.slice(s_start, s_end);
+        var s_question = text.slice(s_start, s_end).replace(/\n/g, "<br>");
         $(".pad-question").html(s_question);
         // ブロック読み込み
         text = text.replace(/\r?\n/g, '');
@@ -606,39 +619,59 @@ function loadKadai() {
         var s_blocks = block_part.split("!!");
         var s_block;
         var block_html;
+        var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
             s_block = s_blocks[i].replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             // console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
+            obj = s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');
+            temp_i = id;
+            var switch_flag = 1;
+            $(".draggable").each(function(index, element){
+                if(obj == element.innerText) {
+                    // console.log(obj + "は重複しています");
+                    // console.log(element);
+                    temp_i = $(element).attr("id");
+                    // console.log(temp_i);
+                    switch_flag = 0;
+                    return false;
+                } else {
+                    switch_flag = 1;
+                }
+            });
+            // console.log(temp_i + ", " + obj);
+
             switch (s_block[0]) {
                 case 'block':
-                    block_html = "<li class='draggable' id=" + i + "><div id='block-" + i + "' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'submodule':
-                    block_html = "<li class='draggable' id=" + i + "><div id='block-" + i + "' class='block-submodule block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-submodule block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'loop':
-                    block_html = "<li class='draggable' id=" + i + "><div id='block-" + i + "' class='block-loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'branch':
-                    block_html = "<li class='draggable' id=" + i + "><div id='block-" + i + "' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p><canvas id='canvas' width='30' height='30'></canvas></div></li>";
+                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'ptloop':
-                    block_html = "<li class='draggable' id=" + i + "><div id='block-" + i + "' class='block-ptloop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-ptloop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
             }
+
             // テキストが更新されたら取得
             $(document).on({
                 'change': function () {
                     getJsonString();
                 }
             }, ".input-text");
+            // console.log(block_html);
             $(".pad-blockzone-in").children(".sortable").append(block_html);
             /*      $("#block-"+i).balloon({
                         contents: s_block[2]
                   });
             */
             // 既存のブロックにポップアップを設定
-            $("#block-" + i).balloon({
+            $("#block-" + temp_i).balloon({
                 position: "right",
                 minLifetime: 0,
                 delay: 1000,
@@ -650,39 +683,51 @@ function loadKadai() {
                 html: true
             });
 
+            if (switch_flag) id++;
         }
     });
+    // ランダムに並び替え
+    var bool = [1, -1];
+    $('#draggable1').html(
+        $(".draggable").sort(function(a, b) {
+            return bool[Math.floor(Math.random() * bool.length)];
+        })
+    )
+}
+function drawBranchline() {
+    return 0;
 }
 // canvasの大きさを動的に変更
-function drawBranchline() {
+// うまく動かないので廃止
+// function drawBranchline() {
 
 
-    $('canvas').each(function (index, element) {
-        var w = $(element).parent().outerWidth(true);
-        var h = $(element).parent().outerHeight(true);
-        $(element).attr('width', w);
-        $(element).attr('height', h);
+//     $('canvas').each(function (index, element) {
+//         var w = $(element).parent().outerWidth(true);
+//         var h = $(element).parent().outerHeight(true);
+//         $(element).attr('width', w);
+//         $(element).attr('height', h);
 
-        $.jCanvas.defaults.fromCenter = false;
-        $(element).clearCanvas();
-        $(element).drawLine({
-            strokeStyle: "black",
-            strokeWidth: "1",
-            x1: $(element).closest('.block-branch').width(),
-            y1: 0,
-            x2: $(element).closest('.block-branch').width() - 20,
-            y2: $(element).closest('.block-branch').height() / 2
-        });
-        $(element).drawLine({
-            strokeStyle: "black",
-            strokeWidth: "1",
-            x1: $(element).closest('.block-branch').width() - 20,
-            y1: $(element).closest('.block-branch').height() / 2,
-            x2: $(element).closest('.block-branch').width(),
-            y2: $(element).closest('.block-branch').height()
-        });
-    });
-};
+//         $.jCanvas.defaults.fromCenter = false;
+//         $(element).clearCanvas();
+//         $(element).drawLine({
+//             strokeStyle: "black",
+//             strokeWidth: "1",
+//             x1: $(element).closest('.block-branch').width(),
+//             y1: 0,
+//             x2: $(element).closest('.block-branch').width() - 20,
+//             y2: $(element).closest('.block-branch').height() / 2
+//         });
+//         $(element).drawLine({
+//             strokeStyle: "black",
+//             strokeWidth: "1",
+//             x1: $(element).closest('.block-branch').width() - 20,
+//             y1: $(element).closest('.block-branch').height() / 2,
+//             x2: $(element).closest('.block-branch').width(),
+//             y2: $(element).closest('.block-branch').height()
+//         });
+//     });
+// };
 function showInfo() {
     $("#stage-info").html("<h2>" + user + "さん</h2>");
     $("#stage-info").append("<p>問題文：" + tab1_time / 100 + "秒<br>" +
@@ -969,7 +1014,7 @@ $(function () {
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
-        $(".popup-content").css({"display": "table"});
+        // $(".popup-content").css({"display": "table"});
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -992,6 +1037,7 @@ $(function () {
     });
     // クリップボードへコピー
     $('#copy2clipboard').on('click', function(){
+        copy_num++;
         prevent = 0;
         $('#serialize_output').select();
         document.execCommand('copy');
@@ -1005,6 +1051,7 @@ $(function () {
         });
     });
     $("#compile_clang").on("click", function(){
+        compile_num++;
         paiza_api_create();
         $('#compiler_output').val("");
     });
@@ -1144,11 +1191,11 @@ $(function () {
             } else {
                 $(".login-wrapper").addClass("inactive")
                 $("#stage-info").css({
-                    'display': 'block',
+                    'display': 'none',
                     //'display': 'hidden'
                 });
                 $(".debug-console").css({
-                    'display': 'block'
+                    'display': 'none'
                     //          'display': 'none'
                 });
                 // 問題文など各種読み込み
@@ -1171,6 +1218,7 @@ $(function () {
         });
         $(".tab_panel").eq(1).addClass("active");
         $(".tab_panel").eq(2).addClass("active");
+        $(".tab_panel").eq(3).addClass("active");
         $(".tab_label").removeClass("active");
         $(".tab_panel").removeClass("active");
         $(".tab_label").eq(0).addClass("active");
@@ -1179,3 +1227,23 @@ $(function () {
     });
 
 });
+
+setInterval(function(){
+    $(".debugzone").empty()
+    $(".debugzone").append("<p>問題文視聴時間</p>");
+    $(".debugzone").append(tab1_time);
+    $(".debugzone").append("<p>作図時間</p>");
+    $(".debugzone").append(tab2_time);
+    $(".debugzone").append("<p>コード・実行画面視聴時間</p>");
+    $(".debugzone").append(tab3_time);
+    $(".debugzone").append("<p>非アクティブ時間</p>");
+    $(".debugzone").append(tab4_time);
+    $(".debugzone").append("<p>コピー回数</p>");
+    $(".debugzone").append(copy_num);
+    $(".debugzone").append("<p>コンパイル回数</p>");
+    $(".debugzone").append(compile_num);
+    $(".debugzone").append("<p>タッチ回数</p>");
+    $(".debugzone").append(block_touch_num);
+    $(".debugzone").append("<p>ホバー回数</p>");
+    $(".debugzone").append(block_hover_time);
+}, 100);

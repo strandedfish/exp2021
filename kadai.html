@@ -37,25 +37,25 @@
 <main>
     <div class="main-wrapper">
         <div class="page-message">
-            <h1>Padエディタ</h1>
             <div id="stage-info"></div>
         </div>
 
-        <div class="pad-editor">
-
-            <div class="pad pad-blockzone">
-                <p>ブロックゾーン</p>
-                <div class="pad-blockzone-in">
-                    <ol id='draggable1' class='sortable'>
-                    </ol>
-                </div>
+        <div class="pad pad-blockzone">
+            <p>ブロックゾーン</p>
+            <div class="pad-blockzone-in">
+                <ol id='draggable1' class='sortable'>
+                </ol>
             </div>
+        </div>
+
+        <div class="pad-editor">
 
             <div class="pad tab_wrap">
                 <div class="tab_area">
                     <label class="tab1_label tab_label" for="tab1">問題文</label>
                     <label class="tab2_label tab_label" for="tab2">PAD</label>
                     <label class="tab3_label tab_label" for="tab3">実行</label>
+                    <label class="tab4_label tab_label" for="tab4">デバッグ</label>
                 </div>
                 <div class="panel_area">
                     <div id="panel1" class="pad pad-question tab_panel">
@@ -83,8 +83,14 @@
                         <button id="copy2clipboard">コードをクリップボードにコピー</button>
                         <p id="copyalert" class="copy_alert">コピーしました</p>
                         <textarea id="serialize_output"></textarea>
+                        <p>標準入力</p>
+                        <textarea id="std_input"></textarea>
                         <button id="compile_clang">コンパイルっ！</button>
                         <textarea id="compiler_output"></textarea>
+                    </div>
+                    <div id="panel4" class="pad pad-debugzone tab_panel">
+                        <p>デバッグゾーン</p>
+                        <div class="debugzone"></div>
                     </div>
                 </div>
             </div>

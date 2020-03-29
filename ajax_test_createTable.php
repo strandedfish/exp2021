@@ -1,10 +1,32 @@
 <?php
 
+/*
+  'user': user,
+  'kadai': kadai,
+  'time_stamp': time_stamp,
+  'tab1_time': tab1_time,
+  'tab2_time': tab2_time,
+  'tab3_time': tab3_time,
+  'tab4_time': tab4_time,
+  'copy_num': copy_num,
+  'compile_num': compile_num,
+  'block_touch_num': block_touch_num,
+  'block_hover_time': block_hover_time,
+  'table_name': table_name,
+  'json': jsonString
+*/
+
 $data = array();
 $user = $_POST['user'];
+$kadai = $_POST['kadai'];
 $time_stamp = $_POST['time_stamp'];
+$time_stamp = time();
 $tab1_time = $_POST['tab1_time'];
 $tab2_time = $_POST['tab2_time'];
+$tab3_time = $_POST['tab3_time'];
+$tab4_time = $_POST['tab4_time'];
+$copy_num = $_POST['copy_num'];
+$compile_num = $_POST['compile_num'];
 $block_touch_num = $_POST['block_touch_num'];
 $block_hover_time = $_POST['block_hover_time'];
 $json = $_POST['json'];
@@ -20,7 +42,7 @@ if(!$conn) {
   die('データベースへの接続しっぱいしたよぉ…');
 }
 
-$column = "user char(255), time_stamp bigint, json text, tab1_time int, tab2_time int";
+$column = "user char(255), time_stamp bigint, json text, tab1_time int, tab2_time int, tab3_time int, tab4_time int, copy_num int, compile_num int";
 for($i = 0; $i<count($block_touch_num); $i++){
   $column .= ", block_touch_num_${i} int";
   $column .= ", block_hover_time_${i} int";

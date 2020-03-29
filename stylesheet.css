@@ -38,35 +38,38 @@ main {
 
 
 /****pad****/
+.pad {
+	/* display: inline-flex; */
+}
 
 .pad-editor {
-  border: solid 1px black;
-  border-radius: 10px;
-	display:flex;
-	min-width: 1020px;
-  margin: 10px;
-}
-.pad {
-	display: inline-flex;
-	min-height:500px;
+  /* border: solid 1px black; */
+  /* border-radius: 10px; */
+  /* width: 80%; */
+  /* float: right; */
+  padding-left: 20%;
 }
 
 .pad-blockzone {
-	width: 25%;
+  position: fixed;
+  float: left;
+  width: calc(20% - 1px);
   display:block;
   border-right: solid 1px black;
 }
 .pad-blockzone-in {
   overflow-y: scroll;
-  height: 80vh;
+  overflow-x: none;
+  height: 90vh;
 }
 
 .tab_wrap {
-	width: 75%;
+	/* width: 75%; */
   /* .padに依存 */
-  min-height: 500px;
+  min-height: 1500px;
   display:block;
 /*  border-right: solid 1px black; */
+  margin: 0 0 0 3px;
 }
 
 .tab_area {
@@ -84,6 +87,7 @@ main {
   display:block;
   overflow-x: scroll;
   padding-right: -100px;
+  margin-bottom: 20%;
 }
 .pad-textzone {
 	width: 90%;
@@ -108,6 +112,7 @@ main {
 /*  border-left: solid 2px; 必要なくなった*/
 /*  min-height: 30vw;
   min-width:1000px; */
+  width: 100%;
   white-space: wrap;
 }
 
@@ -154,8 +159,6 @@ main {
   min-height: 50px;
   border-style: solid none solid solid;
   border-width: 1px 1px 1px 1px;
-  z-index: 10;
-  position: relative;
 }
 .block-branch p {
   display: block;
@@ -163,13 +166,7 @@ main {
   text-align: center;
   padding-right: 20px;
 }
-canvas {
-  top: 0px;
-  left: -1px;
-  position: absolute;
-  z-index: 0;
-  right: 0;
-}
+
 .nameWithCanvas {
   position: relative;
 }
@@ -188,7 +185,7 @@ ol {
 .border-left:before {
   content: "";
   position: absolute;
-  : 21px;
+  right: 21px;
   left: -120px;
   border: 1px solid black;
   border-right: 120px solid black;
@@ -294,6 +291,11 @@ console 系
   margin: 10px;
 }
 
+#std_input {
+  display: block;
+  margin: 0 10px 10px 10px;
+}
+
 #compiler_output {
   display: block;
   min-height: 25vh;
@@ -344,6 +346,7 @@ console 系
   margin: 0px;
 }
 .debug-console {
+  display: none;
   background-color: #EEEEEE;
   margin: 100px 0 0 0;
 }
@@ -454,7 +457,7 @@ console 系
 }
 
 #stage-info {
-  display:none;
+  display: none;
   border: solid 1px black;
   border-radius: 10px;
   margin: 10px;

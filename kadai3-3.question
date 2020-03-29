@@ -17,8 +17,9 @@ scanf() でdouble 型の値を読むには，書式%lf を用いることを忘�
 </question>
 
 <block>
-block$#include <\空欄>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
+block$#include <stdio.h>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
 submodule$int main(void)$!!
+block$\空欄 num1, num2;$!!
 block$printf("num1: ");$!!
 block$scanf("%lf", &num1);$!!
 block$printf("num2: ");$!!

@@ -1,0 +1,154 @@
+﻿<question>
+空白を補い，宿題基本で解いた以下の問題のプログラムを完成させよ．
+3 辺の長さを整数で入力し，その 3 辺が三角形を作るか否か，また三角形を作る場合は鋭角三角形か直角三角形か鈍角三角形かを判定し，さらに正三角形か二等辺三角形かを判定し，表示するプログラムを作成する．
+if-else 文を用いて，以下の手順で作成せよ．
+• キーボードから３辺を入力させるように求め，３辺を整数として格納
+する
+• ３辺を長い順に並べ替える
+• (最長辺)>=(他の２辺の和) のとき，「３辺が三角形を作らない」と表示
+する（実行例のように表示）．
+• 三角形を作るとき，(最長辺)
+2 と，(他の辺 1)2+(他の辺 2)2 の大小を比
+較して，鈍角三角形，直角三角形，鋭角三角形を分類し，結果を表示
+する（実行例のように表示）．
+• 三角形を作るとき，正三角形であるか，二等辺三角形であるか，どち
+らでもないかを判定し，結果を表示する（実行例のように表示）．
+
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 3
+３辺目: 7
+３辺 7 3 3 は三角形をつくりません．
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 3
+３辺目: 5
+３辺 5 3 3 は鈍角三角形です．
+さらに二等辺三角形です．
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 4
+３辺目: 5
+３辺 5 4 3 は直角三角形です．
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 3
+３辺目: 3
+３辺 3 3 3 は鋭角三角形です．
+さらに正三角形です．
+%
+
+</question>
+
+<block>
+block$#include <stdio.h>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
+submodule$int main(void)$!!
+block$int side1, side2, side3;$3辺の長さ!!
+block$int tmp;$辺を長さ順に並べかえる際に用いる変数!!
+block$printf("３辺の長さを整数で入力してください．\n");$"３辺の長さを整数で入力してください．" と標準出力へ表示．!!
+block$printf("１辺目: ");$"１辺目: "という入力プロンプトを印字;!!
+block$scanf("%d", &side1);$scanfでint型の値を標準入力から読み込み side1 に代入;!!
+block$printf("２辺目: ");$"２辺目: "という入力プロンプトを印字;!!
+block$scanf("%d", &side2);$scanfでint型の値を標準入力から読み込み side2 に代入;!!
+block$printf("３辺目: ");$"３辺目: "という入力プロンプトを印字;!!
+block$scanf("%d", &side3);$scanfでint型の値を標準入力から読み込み side3 に代入;!!
+branch$if(side2 > side1)$以下の3行で，side1 の値と side2 の値を入れ替える!!
+block$tmp = side1;$!!
+block$side1 = side2;$!!
+block$side2 = tmp;$!!
+branch$if(side3 > side1)$side1 の値と side3 の値を入れ替える!!
+block$tmp = side1;$!!
+block$side1 = side3;$!!
+block$side3 = tmp;$!!
+branch$if(side3 > side2)$side2 の値と side3 の値を入れ替える!!
+block$tmp = side2;$!!
+block$side2 = side3;$!!
+block$side3 = tmp;$!!
+branch$if(side1 >= side2 + side3 )$!!
+block$printf("３辺%d, %d, %dは三角形を作りません．\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は三角形をつくりません．" と標準出力へ表示．!!
+branch$else$鈍角三角形，直角三角形，鋭角三角形の判定!!
+branch$if(side1*side1>side2*side2+side3*side3)$!!
+block$printf("３辺%d, %d, %dは鈍角三角形です．\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は鈍角三角形です．" と標準出力へ表示．;!!
+branch$else if (side1*side1==side2*side2+side3*side3)$!!
+block$printf("３辺%d, %d, %dは直角三角形です．\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は直角三角形です．" と標準出力へ表示．;!!
+branch$else$!!
+block$printf("３辺%d, %d, %dは鋭角三角形です．\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は鋭角三角形です．" と標準出力へ表示．;!!
+branch$if(side1==side3)$最長辺と最短辺の長さが等しいので3辺が等しい!!
+block$printf("さらに正三角形です．\n");$"さらに正三角形です．" と標準出力へ表示．;!!
+branch$else if(side1==side2||side2==side3)$!!
+block$printf("さらに二等辺三角形です．\n");$"さらに二等辺三角形です．" と標準出力へ表示．;!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+  int side1, side2, side3;   /* 3辺の長さ */
+  int tmp;                   /* 辺を長さ順に並べかえる際に用いる変数 */
+
+  printf("３辺の長さを整数で入力してください．\n");
+// 	"３辺の長さを整数で入力してください．" と標準出力へ表示．;
+  printf("１辺目: ");
+// 	"１辺目: "という入力プロンプトを印字;
+  scanf("%d", &side1);
+//   scanfでint型の値を標準入力から読み込み side1 に代入;
+  printf("２辺目: ");
+// 	"２辺目: "という入力プロンプトを印字;
+  scanf("%d", &side2);
+//   scanfでint型の値を標準入力から読み込み side2 に代入;
+  printf("３辺目: ");
+// 	"３辺目: "という入力プロンプトを印字;
+  scanf("%d", &side3);
+//   scanfでint型の値を標準入力から読み込み side3 に代入;
+
+  /* 辺を長い順番に並べかえる */
+  if(side2 > side1){         /* 以下の3行で，side1 の値と side2 の値を入れ替える */
+	tmp = side1;
+	side1 = side2;
+	side2 = tmp;
+  }
+  if(side3 > side1)
+    tmp = side1;
+    side1 = side3;
+    side3 = tmp;
+// 	side1 の値と side3 の値を入れ替える
+  if(side3 > side2)
+    tmp = side2;
+    side2 = side3;
+    side3 = tmp;
+// 	side2 の値と side3 の値を入れ替える
+  if(side1 >= side2 + side3 ){
+    printf("３辺%d, %d, %dは三角形を作りません．\n", side1, side2, side3);
+// 	"３辺[side1(値)][side2(値)][side3(値)]は三角形をつくりません．" と標準出力へ表示．;
+  }else{
+	/* 鈍角三角形，直角三角形，鋭角三角形の判定 */
+	if(side1*side1>side2*side2+side3*side3){
+        printf("３辺%d, %d, %dは鈍角三角形です．\n", side1, side2, side3);
+// 	  "３辺[side1(値)][side2(値)][side3(値)]は鈍角三角形です．" と標準出力へ表示．;
+	}else if (side1*side1==side2*side2+side3*side3){
+        printf("３辺%d, %d, %dは直角三角形です．\n", side1, side2, side3);
+// 	  "３辺[side1(値)][side2(値)][side3(値)]は直角三角形です．" と標準出力へ表示．;
+	}else{
+        printf("３辺%d, %d, %dは鋭角三角形です．\n", side1, side2, side3);
+// 	  "３辺[side1(値)][side2(値)][side3(値)]は鋭角三角形です．" と標準出力へ表示．;
+	}
+	/* 正三角形，二等辺三角形の判定 */
+	if(side1==side3){	    /* 最長辺と最短辺の長さが等しいので3辺が等しい */
+        printf("さらに正三角形です．\n");
+// 	  "さらに正三角形です．" と標準出力へ表示．;
+	}else if(side1==side2||side2==side3){
+        printf("さらに二等辺三角形です．\n");
+// 	  "さらに二等辺三角形です．" と標準出力へ表示．;
+	}
+  }
+
+  return 0;
+}
+
+</answer>

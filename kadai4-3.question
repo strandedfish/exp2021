@@ -28,21 +28,30 @@ Table 4.2: 2001 年各月の1 日の曜日
 </question>
 
 <block>
-block$#include <\空欄>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
+block$#include <stdio.h>$標準入出力に関する関数をインポートするため，適切なライブラリ名を指定せよ!!
 submodule$int main(void)$!!
-block$int month;$!!
-block$printf("何月ですか: ");$"何月ですか: "という入力プロンプトを印字!!
-block$scanf("%d", &month);$scanfでint型の値を標準入力から読み込み month に代入!!
-branch$if(month>=3 && month<=5)$3~5月のとき!!
-block$printf("春です．\n");$"春です．" と標準出力へ表示．!!
-branch$else if(month>=6 && month<=8)$6~8月のとき!!
-block$printf("夏です．\n");$"夏です．" と標準出力へ表示．!!
-branch$else if(month>=9 && month<=11)$9~11月のとき!!
-block$printf("秋です．\n");$"秋です．" と標準出力へ表示．!!
-branch$else if(month==1 || month==2 || month==12)$12,1,2月のとき!!
-block$printf("冬です．\n");$"冬です．" と標準出力へ表示．!!
-branch$else$1~12の数字以外のとき!!
-block$printf("そんな月はありませんよ!!\n");$"そんな月はありませんよ!!"と標準出力へ表示．!!
+block$int date;$日付!!
+block$int day;$曜日 0:日,1:月,2:火,3:水,4:木,5:金,6:土!!
+block$int day1st=4;$2001年2月1日の曜日 表より木曜日なので 4 とする!!
+block$printf("2001年2月の曜日を調べます\n");$"2001年2月の曜日を調べます"と標準出力へ表示!!
+block$printf("調べたい日付は: ");$"調べたい日付は: "という入力プロンプトを印字!!
+block$scanf("%d", &date);$scanfでint型の値を標準入力から読み込み date に代入!!
+branch$if(date > 28)$!!
+block$printf("2001年2月には28日までしかありません\n");$"2001年2月には28日までしかありません"と標準出力へ表示!!
+branch$else if (date < 1)$!!
+block$printf("2001年2月は1日から始まります\n");$"2001年2月は1日から始まります"と標準出力へ表示;!!
+branch$else$!!
+block$day = (date + day1st - 1) % 7;$day は曜日に対応する整数!!
+block$printf("2001年2月%d日は\n", date);$"2001年2月[date(値)]日は"と標準出力へ表示!!
+branch$switch(day)$!!
+block$case 0: printf("日"); break;$!!
+block$case 1: printf("月"); break;$!!
+block$case 2: printf("火"); break;$!!
+block$case 3: printf("水"); break;$!!
+block$case 4: printf("木"); break;$!!
+block$case 5: printf("金"); break;$!!
+block$case 6: printf("土"); break;$!!
+block$printf("曜日です．\n");$!!
 block$return 0;$!!
 </block>
 
@@ -55,26 +64,32 @@ int main(void)
   int day;                       /* 曜日 0:日,1:月,2:火,3:水,4:木,5:金,6:土 */
   int day1st=4;                  /* 2001年2月1日の曜日 表より木曜日なので 4 とする*/
   
-  "2001年2月の曜日を調べます"と標準出力へ表示(2月というのは例);
-  "調べたい日付は: "という入力プロンプトを印字;
-  scanfでint型の値を標準入力から読み込み date に代入;
+  // "2001年2月の曜日を調べます"と標準出力へ表示;
+  printf("2001年2月の曜日を調べます\n");
+  // "調べたい日付は: "という入力プロンプトを印字;
+  printf("調べたい日付は: ");
+  // scanfでint型の値を標準入力から読み込み date に代入;
+  scanf("%d", &date);
   
-  if(date が 28 より大きい){        /* 2001年2月は28日までなので */
-	"2001年2月には28日までしかありません"と標準出力へ表示;
-  }else if (date が 1より小さい){
-	"2001年2月は1日から始まります"と標準出力へ表示;
+  if(date > 28){        /* 2001年2月は28日までなので */
+	// "2001年2月には28日までしかありません"と標準出力へ表示;
+	printf("2001年2月には28日までしかありません\n");
+  }else if (date < 1){
+	printf("2001年2月は1日から始まります\n");
+	// "2001年2月は1日から始まります"と標準出力へ表示;
   }else{
 	day = (date + day1st - 1) % 7;       /* day は曜日に対応する整数 */
-	"2001年2月[date(値)]日は"と標準出力へ表示;
+	printf("2001年2月%d日は\n", date);
+	// "2001年2月[date(値)]日は"と標準出力へ表示;
 
 	switch(day){
-	case 0: "日"と標準出力へ表示; break;
-	case 1: "月"と標準出力へ表示; break;
-	case 2: "火"と標準出力へ表示; break;
-	case 3: "水"と標準出力へ表示; break;
-	case 4: "木"と標準出力へ表示; break;
-	case 5: "金"と標準出力へ表示; break;
-	case 6: "土"と標準出力へ表示; break;
+	case 0: printf("日"); break;
+	case 1: printf("月"); break;
+	case 2: printf("火"); break;
+	case 3: printf("水"); break;
+	case 4: printf("木"); break;
+	case 5: printf("金"); break;
+	case 6: printf("土"); break;
 	}
 	printf("曜日です．\n");
   }
