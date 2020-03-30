@@ -37,7 +37,7 @@ var draggable_prop = {
     start: function (event, ui) {
         $(this).hide();
         now_drag_object = $(this);
-        block_touch_num[$(now_drag_object).attr("id")]++;
+        block_touch_num[$(now_drag_object).attr("isoid")]++;
         $("#pad-console-right").text(block_touch_num);
         allocateId();
     },
@@ -646,19 +646,19 @@ function loadKadai() {
 
             switch (s_block[0]) {
                 case 'block':
-                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'submodule':
-                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-submodule block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-submodule block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'loop':
-                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'branch':
-                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'ptloop':
-                    block_html = "<li class='draggable' id=" + temp_i + "><div id='block-" + temp_i + "' class='block-ptloop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-ptloop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
             }
 
@@ -704,6 +704,7 @@ function drawBranchline() {
         top: $(".pad-line").offset().top,
         left: $(".pad-line").offset().left
     });
+
     acgraph.events.removeAll(linePath);
     linePath.parent(stage);
     linePath.moveTo(150, 150);
@@ -1111,8 +1112,8 @@ $(function () {
             //$('#pad-console-left').append('<p>' + $.now() + $(this).find("p").text() +  ': Mouse Left</p>');
             //$('#pad-console-left').animate({scrollTop: $('#pad-console-left')[0].scrollHeight}, 0);
             if (hover_time >= 1000) {
-                block_hover_time[$(this).closest("li").attr("id")] += hover_time;
-                $('#pad-console-left').append('<p>' + $(this).find("p").text() + 'の説明を見た秒数' + block_hover_time[$(this).closest("li").attr("id")] + 'ms</p>');
+                block_hover_time[$(this).closest("li").attr("isoid")] += hover_time;
+                $('#pad-console-left').append('<p>' + $(this).find("p").text() + 'の説明を見た秒数' + block_hover_time[$(this).closest("li").attr("isoid")] + 'ms</p>');
                 // console.log(hover_time)
                 $('#pad-console-left').animate({ scrollTop: $('#pad-console-left')[0].scrollHeight }, 0);
             }
