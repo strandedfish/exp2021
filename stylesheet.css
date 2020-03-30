@@ -49,6 +49,13 @@ main {
   /* float: right; */
   padding-left: 20%;
 }
+.tab_wrap {
+  /* border: solid 1px black; */
+  /* border-radius: 10px; */
+  /* width: 80%; */
+  /* float: right; */
+  padding-left: 20%;
+}
 
 .pad-blockzone {
   position: fixed;
@@ -134,7 +141,6 @@ main {
   background-color: #6495ed;
   text-align: center;
   width: 180px;
-  z-index: 999;
 }
 .block-module {
   border: solid 1px black;
@@ -232,7 +238,6 @@ body.dragging, body.dragging * {
 .dragged {
   position: absolute;
   opacity: 0.2;
-  z-index: 2000;
 }
 
 ol.sortable li.placeholder {
@@ -522,9 +527,23 @@ td {
 }
 
 /* グラフィックス系 */
+.pad-line {
+  /* relativeにするとバグるんだよおおおおおお */
+  /* position: relative; */
+  z-index: 0;
+}
+
+#start-block, #end-block {
+}
+
+#draggable2 {
+  position: absolute;
+  z-index: 2;
+}
+
 #graphics_container {
   position: absolute;
   top: 0px;
   left: 0px;
-  z-index: -1;
+  z-index: 1;
 }

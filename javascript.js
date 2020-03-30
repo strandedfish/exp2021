@@ -19,14 +19,18 @@ var temp_jsonString = "";
 var temp_jsonString_innerText = "";
 var dataUpload_interval;
 var showInfo_interval;
-var stage = acgraph.create('graphics_container');
+var linePath = acgraph.path();
+var stage = null;
+
 
 var now_drag_object;
 var draggable_prop = {
     // ドラッグ開始時の処理
-    // containment: ".pad-editor",
+    containment: ".main-wrapper",
     /*    snap: ".droppable",　*/
-    helper: 'clone',
+    helper: "clone",
+    // stack: ".main-wrapper .pad-line",
+    zIndex: 1000,
     opacity: 0.3,
     revert: "invalid",
     revertDuration: 500,
@@ -87,11 +91,9 @@ function addTable(now_drag_object, ui) {
         allocateId();
     }, 5);
     setTimeout(function () {
+        drawBranchline();
         redrawLine();
     }, 10);
-    setTimeout(function () {
-        drawBranchline();
-    }, 100);
     setTimeout(function () {
         getJsonString();
         // コピーボタンを開放
@@ -287,11 +289,6 @@ function redrawLine() {
             }
 
             /* TODO */
-            var linePath = acgraph.path();
-            linePath.parent(stage);
-            linePath.moveTo(150, 150);
-            linePath.lineTo(50, 10, 50, 50, 10, 50).fill("cornflowerblue");
-            linePath.close();
         }
 
         // 分岐仕様変更のため削除
@@ -504,7 +501,7 @@ function dataUpload() {
         },
         error: function (data) {
             $('#pad-console').append("通信しっぱい…");
-            alert(($.now() - start_time) / 1000 + "秒目◇通信失敗しました！！！");
+            // alert(($.now() - start_time) / 1000 + "秒目◇通信失敗しました！！！");
             $('.pad-editor').css({
                 "background-color": "red"
             })
@@ -701,7 +698,22 @@ function loadKadai() {
         })
     )
 }
+
 function drawBranchline() {
+    $("#graphics_container").css({
+        top: $(".pad-line").offset().top,
+        left: $(".pad-line").offset().left
+    });
+    acgraph.events.removeAll(linePath);
+    linePath.parent(stage);
+    linePath.moveTo(150, 150);
+    linePath.lineTo(50, 10, 50, 50, 10, 50).fill("blue");
+    linePath.close();
+
+    $("#end-block").css({
+        "margin-top": parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top)
+    });
+
     return 0;
 }
 // canvasの大きさを動的に変更
@@ -1207,6 +1219,7 @@ $(function () {
                 });
                 // 問題文など各種読み込み
                 loadKadai();
+                stage = acgraph.create('graphics_container');
                 setTimeout(function () {
                     drawBranchline();
                     tab1_countStart();
