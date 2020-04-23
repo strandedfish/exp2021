@@ -51,51 +51,51 @@
 
         <!-- <div class="pad-editor"> -->
 
-            <div class="pad tab_wrap">
-                <div class="tab_area">
-                    <label class="tab1_label tab_label" for="tab1">問題文</label>
-                    <label class="tab2_label tab_label" for="tab2">PAD</label>
-                    <label class="tab3_label tab_label" for="tab3">実行</label>
-                    <label class="tab4_label tab_label" for="tab4">デバッグ</label>
+        <div class="pad tab_wrap">
+            <div class="tab_area">
+                <label class="tab1_label tab_label" for="tab1">問題文</label>
+                <label class="tab2_label tab_label" for="tab2">PAD</label>
+                <label class="tab3_label tab_label" for="tab3">実行</label>
+                <label class="tab4_label tab_label" for="tab4">デバッグ</label>
+            </div>
+            <div class="panel_area">
+                <div id="panel1" class="pad pad-question tab_panel">
+                    <p></p>
                 </div>
-                <div class="panel_area">
-                    <div id="panel1" class="pad pad-question tab_panel">
-                        <p></p>
+                <div id="panel2" class="pad pad-workzone tab_panel">
+                    <div class="pad-line">
+                        <ul>
+                            <li id="start-block" class="block">処理開始</li>
+                        </ul>
+                        <ol id='draggable2' class="sortable">
+                            <table id="table">
+                                <tr>
+                                    <td id="0-0" class="droppable ui-droppable"></td>
+                                </tr>
+                            </table>
+                        </ol>
+                        <ul>
+                            <li id="end-block" class="block">処理終了</li>
+                        </ul>
+                        <div id="graphics_container"></div>
                     </div>
-                    <div id="panel2" class="pad pad-workzone tab_panel">
-                        <div class="pad-line">
-                            <ul>
-                                <li id="start-block" class="block">処理開始</li>
-                            </ul>
-                            <ol id='draggable2' class="sortable">
-                                <table id="table">
-                                    <tr>
-                                        <td id="0-0" class="droppable ui-droppable"></td>
-                                    </tr>
-                                </table>
-                            </ol>
-                            <ul>
-                                <li id="end-block" class="block">処理終了</li>
-                            </ul>
-                            <div id="graphics_container"></div>
-                        </div>
-                    </div>
-                    <div id="panel3" class="pad pad-textzone tab_panel">
-                        <p>テキストゾーン</p>
-                        <button id="copy2clipboard">コードをクリップボードにコピー</button>
-                        <p id="copyalert" class="copy_alert">コピーしました</p>
-                        <textarea id="serialize_output"></textarea>
-                        <p>標準入力</p>
-                        <textarea id="std_input"></textarea>
-                        <button id="compile_clang">コンパイルっ！</button>
-                        <textarea id="compiler_output"></textarea>
-                    </div>
-                    <div id="panel4" class="pad pad-debugzone tab_panel">
-                        <p>デバッグゾーン</p>
-                        <div class="debugzone"></div>
-                    </div>
+                </div>
+                <div id="panel3" class="pad pad-textzone tab_panel">
+                    <p>テキストゾーン</p>
+                    <button id="copy2clipboard">コードをクリップボードにコピー</button>
+                    <p id="copyalert" class="copy_alert">コピーしました</p>
+                    <textarea id="serialize_output"></textarea>
+                    <p>標準入力</p>
+                    <textarea id="std_input"></textarea>
+                    <button id="compile_clang">コンパイルっ！</button>
+                    <textarea id="compiler_output"></textarea>
+                </div>
+                <div id="panel4" class="pad pad-debugzone tab_panel">
+                    <p>デバッグゾーン</p>
+                    <div class="debugzone"></div>
                 </div>
             </div>
+        </div>
 
         <!-- </div> -->
         <div class="submit-btn-wrapper">

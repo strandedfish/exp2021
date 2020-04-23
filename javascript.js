@@ -266,30 +266,6 @@ function redrawLine() {
     lineflag = 1;
 
     $("td").each(function (index, element) {
-        // ブランチが下に続いていれば同じブロックのように見せかける
-        if ($(element).children("li").children("div").hasClass("block-branch")) {
-            // ブランチの下にブランチが続いているか走査
-            var id = $(element).attr("id");
-            var followblock_distance = -1;
-            id = id.split("-");
-            if ($(getId(id[0], id[1])).find("li").length > 0) {
-                for (var i = 1; i < $("tr").length - id[0]; i++) {
-                    console.log(+id[0] + i+","+ id[1])
-                    console.log($(getId(+id[0] + i, +id[1])).find("li").length);
-                    if ($(getId(+id[0] + i, +id[1])).children("li").children("div").hasClass("block-branch")) {
-                        followblock_distance = i;
-                        break;
-                    } else if ($(getId(+id[0] + i, +id[1])).find("li").length > 0) {
-                        break;
-                    }
-                }
-            }
-            if (followblock_distance > 0) {
-                console.log(followblock_distance + "先に分岐ぶろっくがあります．")
-            }
-
-            /* TODO */
-        }
 
         // 分岐仕様変更のため削除
         //// 横につながっていたら線を引く ただしブランチなら別
@@ -710,6 +686,37 @@ function drawBranchline() {
     linePath.moveTo(150, 150);
     linePath.lineTo(50, 10, 50, 50, 10, 50).fill("blue");
     linePath.close();
+
+    $("td").each(function(index, element){
+        // ブランチが下に続いていれば同じブロックのように見せかける
+        if ($(element).children("li").children("div").hasClass("block-branch")) {
+            // ブランチの下にブランチが続いているか走査
+            var id = $(element).attr("id");
+            var followblock_distance = -1;
+            id = id.split("-");
+            if ($(getId(id[0], id[1])).find("li").length > 0) {
+                for (var i = 1; i < $("tr").length - id[0]; i++) {
+                    // console.log(+id[0] + i+","+ id[1])
+                    // console.log($(getId(+id[0] + i, +id[1])).find("li").length);
+                    if ($(getId(+id[0] + i, +id[1])).children("li").children("div").hasClass("block-branch")) {
+                        followblock_distance = i;
+                        // ここに図形描画のコード
+                        break;
+                    } else if ($(getId(+id[0] + i, +id[1])).find("li").length > 0) {
+                        break;
+                    }
+                }
+            }
+            if (followblock_distance > 0) {
+                console.log(followblock_distance + "先に分岐ぶろっくがあります．");
+                console.log($(getId(id[0], id[1])).find("p").text());
+                console.log($(getId(parseInt(id[0])+parseInt(followblock_distance), id[1])).find("p").text());
+                console.log(parseInt(id[0])+parseInt(followblock_distance) +", "+ id[1])
+            }
+
+            /* TODO */
+        }
+    });    
 
     $("#end-block").css({
         "margin-top": parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top)
