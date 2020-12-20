@@ -425,12 +425,12 @@ function createTable() {
         //通信が成功した時
         success: function (data) {
             $('#pad-console').append("通信せいこーっ☆☆☆");
-            //console.log(data);
             $('.pad-editor').before('<div class="tuushin"></div>');
+            console.log(data);
         },
         error: function (data) {
             $('#pad-console').append("通信しっぱい…(´・ω・｀)");
-            //console.log(data);
+            console.log(data);
         }
     });
 };
@@ -602,7 +602,8 @@ function loadKadai() {
         var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
             s_block = s_blocks[i].replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
-            // console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
+            s_block[1] = s_block[1].replace(/\\n/g, "<br>");
+            console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
             obj = s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');
             temp_i = id;
             var switch_flag = 1;
@@ -682,10 +683,10 @@ function drawBranchline() {
     });
 
     acgraph.events.removeAll(linePath);
-    linePath.parent(stage);
-    linePath.moveTo(150, 150);
-    linePath.lineTo(50, 10, 50, 50, 10, 50).fill("blue");
-    linePath.close();
+    // linePath.parent(stage);
+    // linePath.moveTo(150, 150);
+    // linePath.lineTo(50, 10, 50, 50, 10, 50).fill("blue");
+    // linePath.close();
 
     $("td").each(function(index, element){
         // ブランチが下に続いていれば同じブロックのように見せかける
@@ -716,6 +717,7 @@ function drawBranchline() {
 
             /* TODO */
         }
+    
     });    
 
     $("#end-block").css({

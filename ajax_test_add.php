@@ -34,12 +34,13 @@ $json = $_POST['json'];
 
 $table_name = $_POST['table_name'];
 
-$conn = mysqli_connect('localhost', 'exp2019', 'exp2019');
+$conn = mysqli_connect('localhost', 'HirokiItoExp2020', 'HirokiItoExp2020');
+
 if(!$conn) {
   die('SQLさーばーへの接続しっぱいしたよぉ…');
 }
 
-$db = mysqli_select_db($conn, 'exp2019_October');
+$db = mysqli_select_db($conn, 'exp2020');
 if(!$conn) {
   die('データベースへの接続しっぱいしたよぉ…');
 }

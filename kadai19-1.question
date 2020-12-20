@@ -1,0 +1,147 @@
+﻿<question>
+Complete the blanks and complete the program for the following problem solved with homework basics.
+Enter the lengths of the three sides as integers, determine whether the three sides form a triangle, and if so, determine whether the triangle is an acute triangle, a right triangle, or an obtuse triangle. Create a program to judge and display.
+Create it using the if-else statement as follows.
+• Ask for 3 sides from the keyboard and store 3 sides as integers
+• Sort 3 sides in ascending order
+• When (longest side)> = (sum of the other two sides), display "3 sides do not form a triangle" (displayed as in the execution example).
+• When creating a triangle, compare the size of (longest side) 2 and (other side 1) 2+ (other side 2) 2 to classify obtuse triangles, right triangles and acute triangles and display the result. Do (display as in the execution example).
+• When creating a triangle, determine whether it is an equilateral triangle, an isosceles triangle, or neither, and display the result (displayed as in the execution example).
+
+% ./triangle
+Please enter the length of 3 sides as an integer.
+First side: 3
+Second side: 3
+Third side: 7
+The three sides 7 3 3 do not form a triangle.
+% ./triangle
+Please enter the length of 3 sides as an integer.
+First side: 3
+Second side: 3
+Third side: 5
+The three sides 5 3 3 are obtuse triangles.
+Furthermore, it is an isosceles triangle.
+% ./triangle
+Please enter the length of 3 sides as an integer.
+First side: 3
+Second side: 4
+Third side: 5
+The three sides 5 4 3 are right triangles.
+% ./triangle
+Please enter the length of 3 sides as an integer.
+First side: 3
+Second side: 3
+Third side: 3
+3 sides 3 3 3 is an acute triangle.
+Furthermore, it is an equilateral triangle.
+%
+</question>
+
+<block>
+block$#include <stdio.h>$Specify an appropriate library name to import the standard input / output function!!
+submodule$int main(void)$!!
+block$int side1, side2, side3;$Length of 3 sides!!
+block$int tmp;$Variable used when rearranging edges in order of length!!
+block$printf("Please enter the length of 3 sides as an integer.\n");$"Please enter the length of 3 sides as an integer." と標準出力へ表示．!!
+block$printf("First side: ");$"１辺目: "という入力プロンプトを印字;!!
+block$scanf("%d", &side1);$scanfでint型の値を標準入力から読み込み side1 に代入;!!
+block$printf("Second side: ");$"２辺目: "という入力プロンプトを印字;!!
+block$scanf("%d", &side2);$scanfでint型の値を標準入力から読み込み side2 に代入;!!
+block$printf("Third side: ");$"３辺目: "という入力プロンプトを印字;!!
+block$scanf("%d", &side3);$scanfでint型の値を標準入力から読み込み side3 に代入;!!
+branch$if(side2 > side1)$以下の3行で，side1 の値と side2 の値を入れ替える!!
+block$tmp = side1;$!!
+block$side1 = side2;$!!
+block$side2 = tmp;$!!
+branch$if(side3 > side1)$side1 の値と side3 の値を入れ替える!!
+block$tmp = side1;$!!
+block$side1 = side3;$!!
+block$side3 = tmp;$!!
+branch$if(side3 > side2)$side2 の値と side3 の値を入れ替える!!
+block$tmp = side2;$!!
+block$side2 = side3;$!!
+block$side3 = tmp;$!!
+branch$if(side1 >= side2 + side3 )$!!
+block$printf("3 sides%d,%d,%d do not make a triangle.\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は三角形をつくりません．" と標準出力へ表示．!!
+branch$else$鈍角三角形，直角三角形，鋭角三角形の判定!!
+branch$if(side1*side1>side2*side2+side3*side3)$!!
+block$printf("The three sides%d,%d,%d are obtuse triangles.\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は鈍角三角形です．" と標準出力へ表示．;!!
+branch$else if (side1*side1==side2*side2+side3*side3)$!!
+block$printf("The three sides%d,%d,%d are right triangles.\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は直角三角形です．" と標準出力へ表示．;!!
+branch$else$!!
+block$printf("The three sides%d,%d,%d are acute triangles.\n", side1, side2, side3);$"３辺[side1(値)][side2(値)][side3(値)]は鋭角三角形です．" と標準出力へ表示．;!!
+branch$if(side1==side3)$最長辺と最短辺の長さが等しいので3辺が等しい!!
+block$printf("Furthermore, it is an equilateral triangle.\n");$"さらに正三角形です．" と標準出力へ表示．;!!
+branch$else if(side1==side2||side2==side3)$!!
+block$printf("Furthermore, it is an isosceles triangle.\n");$"さらに二等辺三角形です．" と標準出力へ表示．;!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+  int side1, side2, side3;   /* 3辺の長さ */
+  int tmp;                   /* 辺を長さ順に並べかえる際に用いる変数 */
+
+  printf("３辺の長さを整数で入力してください．\n");
+// 	"３辺の長さを整数で入力してください．" と標準出力へ表示．;
+  printf("１辺目: ");
+// 	"１辺目: "という入力プロンプトを印字;
+  scanf("%d", &side1);
+//   scanfでint型の値を標準入力から読み込み side1 に代入;
+  printf("２辺目: ");
+// 	"２辺目: "という入力プロンプトを印字;
+  scanf("%d", &side2);
+//   scanfでint型の値を標準入力から読み込み side2 に代入;
+  printf("３辺目: ");
+// 	"３辺目: "という入力プロンプトを印字;
+  scanf("%d", &side3);
+//   scanfでint型の値を標準入力から読み込み side3 に代入;
+
+  /* 辺を長い順番に並べかえる */
+  if(side2 > side1){         /* 以下の3行で，side1 の値と side2 の値を入れ替える */
+	tmp = side1;
+	side1 = side2;
+	side2 = tmp;
+  }
+  if(side3 > side1)
+    tmp = side1;
+    side1 = side3;
+    side3 = tmp;
+// 	side1 の値と side3 の値を入れ替える
+  if(side3 > side2)
+    tmp = side2;
+    side2 = side3;
+    side3 = tmp;
+// 	side2 の値と side3 の値を入れ替える
+  if(side1 >= side2 + side3 ){
+    printf("３辺%d, %d, %dは三角形を作りません．\n", side1, side2, side3);
+// 	"３辺[side1(値)][side2(値)][side3(値)]は三角形をつくりません．" と標準出力へ表示．;
+  }else{
+	/* 鈍角三角形，直角三角形，鋭角三角形の判定 */
+	if(side1*side1>side2*side2+side3*side3){
+        printf("３辺%d, %d, %dは鈍角三角形です．\n", side1, side2, side3);
+// 	  "３辺[side1(値)][side2(値)][side3(値)]は鈍角三角形です．" と標準出力へ表示．;
+	}else if (side1*side1==side2*side2+side3*side3){
+        printf("３辺%d, %d, %dは直角三角形です．\n", side1, side2, side3);
+// 	  "３辺[side1(値)][side2(値)][side3(値)]は直角三角形です．" と標準出力へ表示．;
+	}else{
+        printf("３辺%d, %d, %dは鋭角三角形です．\n", side1, side2, side3);
+// 	  "３辺[side1(値)][side2(値)][side3(値)]は鋭角三角形です．" と標準出力へ表示．;
+	}
+	/* 正三角形，二等辺三角形の判定 */
+	if(side1==side3){	    /* 最長辺と最短辺の長さが等しいので3辺が等しい */
+        printf("さらに正三角形です．\n");
+// 	  "さらに正三角形です．" と標準出力へ表示．;
+	}else if(side1==side2||side2==side3){
+        printf("さらに二等辺三角形です．\n");
+// 	  "さらに二等辺三角形です．" と標準出力へ表示．;
+	}
+  }
+
+  return 0;
+}
+
+</answer>

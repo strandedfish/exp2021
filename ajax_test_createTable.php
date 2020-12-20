@@ -33,11 +33,21 @@ $json = $_POST['json'];
 
 $table_name = $_POST['table_name'];
 
-$conn = mysqli_connect('localhost', 'exp2019', 'exp2019');
+$conn = mysqli_connect('localhost', 'HirokiItoExp2020', 'HirokiItoExp2020');
+
+// if (mysqli_connect_errno()) {
+//   die("データベースに接続できません:" . mysqli_connect_error() . "\n");
+// } else {
+//   echo "データテーブルの作成に成功しました。\n";
+// }
+
+
 if(!$conn) {
-  die('SQLさーばーへの接続しっぱいしたよぉ…');
+  die('SQLさーばーへの接続しっぱいしたよぉ…');  
 }
-$db = mysqli_select_db($conn, 'exp2019_October');
+
+
+$db = mysqli_select_db($conn, 'exp2020');
 if(!$conn) {
   die('データベースへの接続しっぱいしたよぉ…');
 }
@@ -47,7 +57,7 @@ for($i = 0; $i<count($block_touch_num); $i++){
   $column .= ", block_touch_num_${i} int";
   $column .= ", block_hover_time_${i} int";
 }
-$sql = sprintf("CREATE TABLE exp2019_October.${table_name} ($column)");
+$sql = sprintf("CREATE TABLE exp2020.${table_name} ($column)");
 #$sql = mb_convert_encoding($sql, "UTF-8", "auto");
 $result_flag = mysqli_query($conn, $sql);
 /*
