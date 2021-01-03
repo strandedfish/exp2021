@@ -64,16 +64,10 @@ if (isset($_POST['operation'])) {
         $success = $designerCommon->saveTablePositions($page);
         $response->setRequestStatus($success);
     } elseif ($_POST['operation'] == 'setDisplayField') {
-        list(
-            $success,
-            $message,
-        ) = $designerCommon->saveDisplayField(
-            $_POST['db'],
-            $_POST['table'],
-            $_POST['field']
+        $designerCommon->saveDisplayField(
+            $_POST['db'], $_POST['table'], $_POST['field']
         );
-        $response->setRequestStatus($success);
-        $response->addJSON('message', $message);
+        $response->setRequestStatus(true);
     } elseif ($_POST['operation'] == 'addNewRelation') {
         list($success, $message) = $designerCommon->addNewRelation(
             $_POST['db'],
@@ -200,7 +194,7 @@ $response->addHTML(
 
 $response->addHTML('<div id="canvas_outer">');
 $response->addHTML(
-    '<form action="" id="container-form" method="post">'
+    '<form action="" id="container-form" method="post" name="form1">'
 );
 
 $response->addHTML($databaseDesigner->getHtmlCanvas());

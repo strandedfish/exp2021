@@ -1,0 +1,101 @@
+<question>
+
+3つの文字列を格納するchar型変数の2次元配列を用意し， キーボードから2つの文字列を入力させてそれらを配列に格納し， それらを連結した文字列をさらに配列に格納して表示せよ． 文字列の単元であるので，実行結果の印字においては， printf()で印字された文字列が実行例に記載のとおりになっているかを厳正に検査する．注意すること．
+
+
+プログラムに必要な要素
+
+3 × 256 のchar型2次元配列を定義し， 文字数を数えるためのint型変数を用意せよ．
+fgets関数を用いて配列の最初の行（0行目）と次の行（1行目）にキーボードから入力された文字列を格納せよ．
+配列の残った行（2行目）の先頭から最初の行（0行目）の文字列を複写し，次の行（1行目）の内容をその続きに複写せよ．
+
+
+プログラム作成上のヒント
+
+教科書では文字列入力はscanf関数を用いているが， scanf関数では，途中に空白がある場合，空白までの文字列しか入力できない． よって，本演習ではfgets関数を使用する．
+1つ目の文字列の複写時には，改行コード，ナル文字は複写してはならないが， 2つ目の文字列の複写時には，ナル文字を忘れず書き込んでおくこと．
+連結した文字列の表示は1つのprintf関数で行える．
+
+
+実行例
+
+% ./a.out
+1つめの文字列を入力してください(最大255文字) Hello
+2つめの文字列を入力してください(最大255文字) World
+1つめの文字列はHelloでした
+2つめの文字列はWorldでした
+連結した文字列はHelloWorldです
+% ./a.out
+1つめの文字列を入力してください(最大255文字) BKC at Rits
+2つめの文字列を入力してください(最大255文字) meikan university
+1つめの文字列はBKC at Ritsでした
+2つめの文字列はmeikan universityでした
+連結した文字列はBKC at Ritsmeikan universityです
+%
+
+
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#include <stdlib.h>
+#define BUFFER_SIZE (256)$!!
+submodule$int main(void)$!!
+block$char str[3][256];
+int i,j; $!!
+loop$for (i=0; i < 2; i++) $!!
+block$printf("%dつめの文字列を入力してください(最大%d文字) ", i + 1, BUFFER_SIZE - 1);
+fgets(str[i], BUFFER_SIZE - 1, stdin);$!!
+loop$for(i = 0; str[0][i] != '\n'; i++)$!!
+block$str[2][i] = str[0][i];$!!
+block$str[0][i] = '\0';$!!
+loop$for(j = 0; str[1][j] != '\n'; j++)$!!
+block$str[2][i+j] = str[1][j];$!!
+block$str[1][j] = '\0';$!!
+block$str[2][i+j]='\0';  $連結した文字列の最後の処理!!
+loop$for (i = 0; i < 2; i++)$!!
+block$printf("%dつめの文字列は%sでした\n", i+1, str[i]);$!!
+block$printf("連結した文字列は%sです\n", str[2]);;$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+#include <stdlib.h>
+#define BUFFER_SIZE (256)
+
+int main(void)
+{
+  char str[3][256]; /* 3つの文字列を格納できる2次元配列 */
+  int i,j; /* 添字用の変数 */
+  
+  /* 2つの文字列をfgets()で獲得 */
+  for (i=0; i < 2; i++) {
+    printf("%dつめの文字列を入力してください(最大%d文字) ", i + 1, BUFFER_SIZE - 1);
+    fgets(str[i], BUFFER_SIZE - 1, stdin);
+  }
+
+  /* 1つめの文字列の改行コードの位置を探しながら3つめに複写 */
+  for(i = 0; str[0][i] != '\n'; i++)
+    str[2][i] = str[0][i];
+  str[0][i] = '\0';
+  
+
+  /* 2つめの文字列の改行コードの位置を探しながら3つめに複写 */
+  for(j = 0; str[1][j] != '\n'; j++)
+    str[2][i+j] = str[1][j];
+  str[1][j] = '\0';
+
+  str[2][i+j]='\0';  /* 連結した文字列の最後の処理 */
+
+  /* 連結前の2つの文字列の印字 */
+  for (i = 0; i < 2; i++)
+    printf("%dつめの文字列は%sでした\n", i+1, str[i]);
+
+  /* 連結後の文字列の印字 */
+  printf("連結した文字列は%sです\n", str[2]);;
+
+  return 0;
+}
+</answer>

@@ -21,6 +21,7 @@ var dataUpload_interval;
 var showInfo_interval;
 var linePath = acgraph.path();
 var stage = null;
+var inactive_time = 0;
 
 
 var now_drag_object;
@@ -178,7 +179,7 @@ function allocateId() {
     $("tr").each(function (index, element) {
         if ($(element).find("li").length == 0) {
             $(element).attr("class", "empty");
-            $(element).children().height(30);
+            $(element).children().height(15);
         } else {
             $(element).removeAttr("class");
         }
@@ -187,7 +188,7 @@ function allocateId() {
     $("td").droppable({ disabled: true });
     $("td").css({ "background-color": "rgba(25, 24, 23, 0.1)" });
     $("tr:first").children("td").droppable({ disabled: false }); // 最初は絶対droppable
-    $("tr:first").children("td").css({ "background-color": "rgba(135, 206, 250, 0.2)" });
+    $("tr:first").children("td").css({ "background-color": "rgba(135, 206, 250, 0.4)" });
     $("td").each(function (index, element) {
         if ($(element).find("li").length > 0) {
             id_num = $(element).attr("id");
@@ -426,11 +427,11 @@ function createTable() {
         success: function (data) {
             $('#pad-console').append("通信せいこーっ☆☆☆");
             $('.pad-editor').before('<div class="tuushin"></div>');
-            console.log(data);
+            // console.log(data);
         },
         error: function (data) {
             $('#pad-console').append("通信しっぱい…(´・ω・｀)");
-            console.log(data);
+            // console.log(data);
         }
     });
 };
@@ -481,7 +482,7 @@ function dataUpload() {
             $('.pad-editor').css({
                 "background-color": "red"
             })
-            console.log(data);
+            // console.log(data);
         }
     });
 };
@@ -580,7 +581,7 @@ function sleep(waitMsec) {
 function loadKadai() {
     name = decodeURIComponent(location.search.split("=")[1]);
     kadai = num;
-    str = name + ".question";
+    str = "./saiyou_mondai/" + name + ".question";
     $.get(str, function (text) {
         // 正答読み込み
         var s_start = text.indexOf("<answer>") + 8;
@@ -592,18 +593,25 @@ function loadKadai() {
         var s_question = text.slice(s_start, s_end).replace(/\n/g, "<br>");
         $(".pad-question").html(s_question);
         // ブロック読み込み
-        text = text.replace(/\r?\n/g, '');
+        // text = text.replace(/\r?\n/g, '');
         s_start = text.indexOf("<block>") + 7;
         s_end = text.indexOf("</block>");
         var block_part = (text.slice(s_start, s_end));
-        var s_blocks = block_part.split("!!");
+        console.log(block_part);
+        block_part = block_part.replace(/\r/g, '\\r');
+        block_part = block_part.replace(/\n/g, '\\n');
+        block_part = block_part.replace(/!!/g, '!!\n');
+        console.log(block_part);
+        var s_blocks = block_part.split("!!\n");
         var s_block;
         var block_html;
         var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
-            s_block = s_blocks[i].replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
-            s_block[1] = s_block[1].replace(/\\n/g, "<br>");
-            console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
+            s_block = s_blocks[i].replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
+            s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>"); // 表示上、実際の改行をbrに
+            s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
+            // console.log(s_block);
+            // console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
             obj = s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');
             temp_i = id;
             var switch_flag = 1;
@@ -677,52 +685,97 @@ function loadKadai() {
 }
 
 function drawBranchline() {
-    $("#graphics_container").css({
-        top: $(".pad-line").offset().top,
-        left: $(".pad-line").offset().left
-    });
+    // $("#graphics_container").css({
+    //     top: $(".pad-line").offset().top,
+    //     left: $(".pad-line").offset().left
+    // });
 
-    acgraph.events.removeAll(linePath);
+    // acgraph.events.removeAll(linePath);
     // linePath.parent(stage);
     // linePath.moveTo(150, 150);
     // linePath.lineTo(50, 10, 50, 50, 10, 50).fill("blue");
     // linePath.close();
 
-    $("td").each(function(index, element){
-        // ブランチが下に続いていれば同じブロックのように見せかける
-        if ($(element).children("li").children("div").hasClass("block-branch")) {
-            // ブランチの下にブランチが続いているか走査
-            var id = $(element).attr("id");
-            var followblock_distance = -1;
-            id = id.split("-");
-            if ($(getId(id[0], id[1])).find("li").length > 0) {
-                for (var i = 1; i < $("tr").length - id[0]; i++) {
-                    // console.log(+id[0] + i+","+ id[1])
-                    // console.log($(getId(+id[0] + i, +id[1])).find("li").length);
-                    if ($(getId(+id[0] + i, +id[1])).children("li").children("div").hasClass("block-branch")) {
-                        followblock_distance = i;
-                        // ここに図形描画のコード
-                        break;
-                    } else if ($(getId(+id[0] + i, +id[1])).find("li").length > 0) {
-                        break;
-                    }
-                }
-            }
-            if (followblock_distance > 0) {
-                console.log(followblock_distance + "先に分岐ぶろっくがあります．");
-                console.log($(getId(id[0], id[1])).find("p").text());
-                console.log($(getId(parseInt(id[0])+parseInt(followblock_distance), id[1])).find("p").text());
-                console.log(parseInt(id[0])+parseInt(followblock_distance) +", "+ id[1])
-            }
+    // $("td").each(function(index, element){
+    //     // ブランチが下に続いていれば同じブロックのように見せかける
+    //     if ($(element).children("li").children("div").hasClass("block-branch")) {
+    //         // ブランチの下にブランチが続いているか走査
+    //         var id = $(element).attr("id");
+    //         var followblock_distance = -1;
+    //         id = id.split("-");
+    //         if ($(getId(id[0], id[1])).find("li").length > 0) {
+    //             for (var i = 1; i < $("tr").length - id[0]; i++) {
+    //                 // console.log(+id[0] + i+","+ id[1])
+    //                 // console.log($(getId(+id[0] + i, +id[1])).find("li").length);
+    //                 if ($(getId(+id[0] + i, +id[1])).children("li").children("div").hasClass("block-branch")) {
+    //                     followblock_distance = i;
+    //                     // ここに図形描画のコード
+    //                     break;
+    //                 } else if ($(getId(+id[0] + i, +id[1])).find("li").length > 0) {
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         if (followblock_distance > 0) {
+    //             console.log(followblock_distance + "先に分岐ぶろっくがあります．");
+    //             console.log($(getId(id[0], id[1])).find("p").text());
+    //             console.log($(getId(parseInt(id[0])+parseInt(followblock_distance), id[1])).find("p").text());
+    //             console.log(parseInt(id[0])+parseInt(followblock_distance) +", "+ id[1])
+    //         }
 
-            /* TODO */
-        }
+    //         /* TODO */
+    //     }
     
-    });    
+    // });
 
-    $("#end-block").css({
-        "margin-top": parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top)
+    //
+    $(".block-branch").each(function(index, element){
+        // console.log($(element).children("p").html());
+        height = $(element).parent().height();
+
+        $(element).children("div").filter(":first").remove();
+        $(element).children("div").filter(":last").remove();
+
+        before = $(element).prepend("<div></div>");
+        
+        before.children("div").filter(":first").css({
+            "content": "",
+            "position": "absolute",
+            "right": "-15px",
+            "bottom": "-1px",
+            "width": "0px",
+            "border-style": "solid",
+            "border-color": "#000000",
+            "border-width": height/2 + "px 15px "+height/2+"px 0",
+            "border-right-color": "transparent",
+        });
+
+        after = $(element).append("<div></div>")
+        
+        after.children("div").filter(":last").css({
+            "content": "",
+            "position": "absolute",
+            "right": "-14px",
+            "bottom": "0px",
+            "width": "0px",
+            "border-style": "solid",
+            "border-color": "#99bbfd",
+            "border-width": (height/2-1) + "px 15px "+(height/2-1)+"px 0",
+            "border-right-color": "transparent",
+        });
+
+
     });
+    // end-blockの場所調整
+    if(parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top) != 0) {
+        $("#end-block").css({
+            "margin-top": parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top)
+        });    
+    } else {
+        $("#end-block").css({
+            "margin-top": "100px"
+        });
+    }
 
     return 0;
 }
@@ -830,7 +883,8 @@ function getJsonString() {
     jsonString = temp_jsonString_innerText;
 
     // replace
-    jsonString = jsonString.replace(/'/g, "''").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+    // HTML用の文字コードをプログラム用に再変換
+    jsonString = jsonString.replace(/'/g, "''").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n");
 
 
     $("#serialize_output").val(jsonString);
@@ -851,10 +905,11 @@ function searchFollowing(num1, num2, tab_count) {
             }
             if ($(getId(+num1 + i, num2)).find("li").length > 0 && flg) {
                 //console.log(getId(num1, num2) +"の下に"+ getId(+num1+i, num2) + "を発見");
-
+                var tab_num = 0;
                 for (var j = 0; j < tab_count; j++) {
                     temp_jsonString = temp_jsonString + '\t';
                     temp_jsonString_innerText = temp_jsonString_innerText + '\t';
+                    tab_num++;
                 }
 
                 var innerContent = $(getId(+num1 + i, num2)).find("p").html();
@@ -882,7 +937,18 @@ function searchFollowing(num1, num2, tab_count) {
                     }
                     innerContent = innerContent + " ";
                 }
-
+                
+                //複数行あるコードのタブを揃えるよ
+                var lineincontents = innerContent.split("<br>");
+                for(var l=1; l<lineincontents.length; l++) {
+                    for(var j=0; j<tab_num; j++) {
+                        lineincontents[l] = '\t' + lineincontents[l];
+                    }
+                    // console.log(lineincontents[l])
+                }
+                innerContent = lineincontents.join("\r\n");
+                // console.log(tab_num);
+                // console.log(innerContent);
                 temp_jsonString_innerText = temp_jsonString_innerText + innerContent + "\n";
                 temp_jsonString = temp_jsonString + $(getId(+num1 + i, num2)).find("li").find("div").attr("id") + "\n";
 
@@ -987,6 +1053,52 @@ $(function () {
         }
     });
 
+    $(".block_tab_label").on("click", function(){
+        var index = $(this).index();
+        $(".block_tab_label").removeClass("block_selected");
+        $(this).addClass("block_selected");
+
+        $(".draggable>.block").removeClass("hidden");
+        drawBranchline();
+        switch(index) {
+            case 0:
+                // $(".pad-blockzone-in .draggable>.block-module").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-branch").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
+
+                break;
+            case 1:
+                // $(".pad-blockzone-in .draggable>.block-module").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-branch").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
+                break;
+            case 2:
+                $(".pad-blockzone-in .draggable>.block-module").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-branch").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
+                break;
+            case 3:
+                $(".pad-blockzone-in .draggable>.block-module").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-branch").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
+                break;
+            case 4:
+                $(".pad-blockzone-in .draggable>.block-module").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-branch").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
+                $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
+                // $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
+        }
+    })
+
     // 画面を閉じている時間を計測
     // document.addEventListener('webkitvisibilitychange', function(){
     //     if ( document.webkitHidden ) {
@@ -1019,7 +1131,7 @@ $(function () {
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
-        console.log("The time is " + inactive_time)
+        // console.log("The inactive time is " + inactive_time)
         if (inactive_time != null) {
             tab4_time += ($.now() - inactive_time) / 10;
 
@@ -1043,7 +1155,7 @@ $(function () {
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
-        // $(".popup-content").css({"display": "table"});
+        // $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -1229,9 +1341,11 @@ $(function () {
                 });
                 // 問題文など各種読み込み
                 loadKadai();
-                stage = acgraph.create('graphics_container');
-                setTimeout(function () {
+                // stage = acgraph.create('graphics_container');
+                setTimeout(function(){
                     drawBranchline();
+                }, 40)
+                setTimeout(function () {
                     tab1_countStart();
                     start_time = $.now();
                     //          var data = group.sortable("serialize").get();

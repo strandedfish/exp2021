@@ -1,0 +1,47 @@
+<question>
+printf()と%d、さらにint型変数を使って、実行例に示すような9月から12月までの各月の英単語を表記するプログラムを作成せよ。
+プログラムの作成に当たっては，int型変数 monthを宣言し，その 初期値を9に設定せよ．
+
+[実行例 ]
+
+--------------------
+|  9月 | September |
+| 10月 | October   |
+| 11月 | November  |
+| 12月 | December  |
+--------------------
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int month = 9;$適切な型でmonth変数を作成し、適切な値で初期化せよ$!!
+block$printf("|  %d月 | September |\n", month);$!!
+block$month = month + 1;$!!
+block$printf("| %d月 | October   |\n", month);$!!
+block$month = month + 1;$!!
+block$printf("| %d月 | November  |\n", month);$!!
+block$month = month + 1;$!!
+block$printf("| %d月 | December  |\n", month);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+	int month = 9;
+	
+	printf("| %d月 | September |\n", month);
+	month = month + 1;
+	printf("| %d月 | October |\n", month);
+	month = month + 1;
+	printf("| %d月 | November |\n", month);
+	month = month + 1;
+	printf("| %d月 | December |\n", month);
+
+	return 0;	
+}
+</answer>

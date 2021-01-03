@@ -53,6 +53,7 @@ class Common
             $tables = $GLOBALS['dbi']->getTablesFull($db, $table);
         }
 
+
         foreach ($tables as $one_table) {
             $DF = $this->relation->getDisplayField($db, $one_table['TABLE_NAME']);
             $DF = is_string($DF) ? $DF : '';
@@ -60,7 +61,7 @@ class Common
             $designerTables[] = new DesignerTable(
                                     $db,
                                     $one_table['TABLE_NAME'],
-                                    is_string($one_table['ENGINE']) ? $one_table['ENGINE'] : '',
+                                    $one_table['ENGINE'],
                                     $DF
                                 );
         }
@@ -198,7 +199,7 @@ class Common
      * Returns all indices
      *
      * @param DesignerTable[] $designerTables The designer tables
-     * @param bool            $unique_only    whether to include only unique ones
+     * @param bool $unique_only whether to include only unique ones
      *
      * @return array indices
      */
@@ -456,9 +457,9 @@ class Common
         }
 
         $query =  "DELETE FROM "
-            . Util::backquote($cfgRelation['db'])
+            . Util::backquote($GLOBALS['cfgRelation']['db'])
             . "." . Util::backquote(
-                $cfgRelation['table_coords']
+                $GLOBALS['cfgRelation']['table_coords']
             )
             . " WHERE `pdf_page_number` = '" . $pageId . "'";
 
@@ -480,8 +481,8 @@ class Common
             }
 
             $query = "INSERT INTO "
-                . Util::backquote($cfgRelation['db']) . "."
-                . Util::backquote($cfgRelation['table_coords'])
+                . Util::backquote($GLOBALS['cfgRelation']['db']) . "."
+                . Util::backquote($GLOBALS['cfgRelation']['table_coords'])
                 . " (`db_name`, `table_name`, `pdf_page_number`, `x`, `y`)"
                 . " VALUES ("
                 . "'" . $GLOBALS['dbi']->escapeString($DB) . "', "
@@ -505,28 +506,19 @@ class Common
      * @param string $table table name
      * @param string $field display field name
      *
-     * @return array<bool,string>
+     * @return boolean
      */
     public function saveDisplayField($db, $table, $field)
     {
         $cfgRelation = $this->relation->getRelationsParam();
-        if (! $cfgRelation['displaywork']) {
-            return [
-                false,
-                _pgettext(
-                    'phpMyAdmin configuration storage is not configured for "Display Features" on designer when user tries to set a display field.',
-                    'phpMyAdmin configuration storage is not configured for "Display Features".'
-                ),
-            ];
+        if (!$cfgRelation['displaywork']) {
+            return false;
         }
 
         $upd_query = new Table($table, $db, $GLOBALS['dbi']);
         $upd_query->updateDisplayField($field, $cfgRelation);
 
-        return [
-            true,
-            null,
-        ];
+        return true;
     }
 
     /**
@@ -742,7 +734,7 @@ class Common
     {
         $cfgRelation = $this->relation->getRelationsParam();
         $success = true;
-        if ($cfgRelation['designersettingswork']) {
+        if ($GLOBALS['cfgRelation']['designersettingswork']) {
 
             $cfgDesigner = array(
                 'user'  => $GLOBALS['cfg']['Server']['user'],

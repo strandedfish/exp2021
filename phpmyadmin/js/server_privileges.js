@@ -308,12 +308,9 @@ AJAX.registerOnload('server_privileges.js', function () {
             $(this).dialog('close');
         };
         var argsep = PMA_commonParams.get('arg_separator');
-        var serverId = PMA_commonParams.get('server');
-        var selectedUsers = $('#usersForm input[name*=\'selected_usr\']:checkbox').serialize();
-        var postStr = selectedUsers + '&submit_mult=export' + argsep + 'ajax_request=true&server=' + serverId;
         $.post(
             $(this.form).prop('action'),
-            postStr,
+            $(this.form).serialize() + argsep + 'submit_mult=export' + argsep + 'ajax_request=true',
             function (data) {
                 if (typeof data !== 'undefined' && data.success === true) {
                     var $ajaxDialog = $('<div />')

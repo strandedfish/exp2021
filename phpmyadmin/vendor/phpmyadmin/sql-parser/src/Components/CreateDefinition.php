@@ -79,12 +79,7 @@ class CreateDefinition extends Component
         ),
         'VIRTUAL' => 10,
         'PERSISTENT' => 11,
-        'STORED' => 11,
-        'CHECK' => array(
-            12,
-            'expr',
-            array('parenthesesDelimited' => true),
-        )
+        'STORED' => 11
         // Common entries.
         //
         // NOTE: Some of the common options are not in the same order which

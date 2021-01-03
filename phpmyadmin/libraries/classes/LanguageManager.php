@@ -38,13 +38,6 @@ class LanguageManager
             'af|afrikaans',
             '',
         ),
-        'am' => array(
-            'am',
-            'Amharic',
-            'አማርኛ',
-            'am|amharic',
-            '',
-        ),
         'ar' => array(
             'ar',
             'Arabic',
@@ -871,8 +864,8 @@ class LanguageManager
         }
 
         // check previous set language
-        if (! empty($GLOBALS['PMA_Config']->getCookie('pma_lang'))) {
-            $lang = $this->getLanguage($GLOBALS['PMA_Config']->getCookie('pma_lang'));
+        if (! empty($_COOKIE['pma_lang'])) {
+            $lang = $this->getLanguage($_COOKIE['pma_lang']);
             if ($lang !== false) {
                 return $lang;
             }

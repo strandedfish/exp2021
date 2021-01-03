@@ -99,7 +99,7 @@ class UtfString implements \ArrayAccess
      *
      * @param int $offset the offset to be returned
      *
-     * @return string|null
+     * @return string
      */
     public function offsetGet($offset)
     {

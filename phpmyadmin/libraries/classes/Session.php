@@ -5,7 +5,7 @@
  *
  * @package PhpMyAdmin
  *
- * @see     https://www.php.net/manual/en/features.sessions.php
+ * @see     https://secure.php.net/session
  */
 namespace PhpMyAdmin;
 
@@ -175,12 +175,12 @@ class Session
         // proxy servers
         session_cache_limiter('private');
 
-        $httpCookieName = $config->getCookieName('phpMyAdmin');
-        @session_name($httpCookieName);
+        $session_name = 'phpMyAdmin';
+        @session_name($session_name);
 
         // Restore correct sesion ID (it might have been reset by auto started session
-        if ($config->issetCookie('phpMyAdmin')) {
-            session_id($config->getCookie('phpMyAdmin'));
+        if (isset($_COOKIE['phpMyAdmin'])) {
+            session_id($_COOKIE['phpMyAdmin']);
         }
 
         // on first start of session we check for errors
@@ -192,7 +192,7 @@ class Session
         if ($session_result !== true
             || $orig_error_count != $errorHandler->countErrors(false)
         ) {
-            setcookie($httpCookieName, '', 1);
+            setcookie($session_name, '', 1);
             $errors = $errorHandler->sliceErrors($orig_error_count);
             self::sessionFailed($errors);
         }

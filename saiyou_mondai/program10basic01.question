@@ -1,0 +1,169 @@
+<question>
+
+これまで整数や浮動小数点数の入力にはscanf()を使ってきたが，scanf()は指定 された書式以外でデータが入力されたときに予想できないふるまいをとるので， その使用は勧められない．
+
+scanf()の代わりに以下を用いる．
+
+標準入力 stdin から数字を文字の並びとして受け取るfgets() と数字の並びを数値に変換する関数を組み合わせるのが，もっと も正しい方法である．
+数値に変換する関数は
+          #include <stdlib.h>
+を記述したうえで利用する．これら関数には，
+数字の並びを整数に変換するatoi()関数
+数字の並びを浮動小数点数に変換するatof()関数
+の2つがある．
+たとえば，整数を入力するには，
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_BUF (256) /* 文字の並びを格納する配列の最大長 */
+
+int main(void)
+{
+  int count;
+  char buf[MAX_BUF]; /* 文字の並びを格納する配列 */
+
+  printf("整数: ");
+  fgets(buf, MAX_BUF-1, stdin);  /* 文字の並びをbufに格納(\0も格納するので，多くともMAX_BUF-1文字まで) */
+  count = atoi(buf); /* buf上の文字の並びを整数に */
+  printf("整数は%d\n", count);
+  return 0;
+}
+
+
+浮動小数点数を入力するには，
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_BUF (256) /* 文字の並びを格納する配列の最大長 */
+
+int main(void)
+{
+  double number;
+  char buf[MAX_BUF]; /* 文字の並びを格納する配列 */
+
+  printf("浮動小数点数: ");
+  fgets(buf, MAX_BUF-1, stdin);  /* 文字の並びをbufに格納(\0も格納するので，多くともMAX_BUF-1文字まで) */
+  number = atof(buf); /* buf上の文字の並びを浮動少数点数に */
+  printf("浮動小数点数は%f\n", number);
+  return 0;
+}
+とする．
+
+この例題をもとに，以下の関数を作れ
+
+int get_int(void)
+機能: ユーザから入力された整数を返す
+double get_float(void)
+機能: ユーザから入力された浮動少数点数を返す
+
+さらにこれらの関数をつかって， ユーザから入力された整数を整数型変数inに格納し， ユーザから入力された浮動少数点数を浮動少数点数型変数fnに格納したう えで，これらの2数の和，差，積，商を印字するプログラムを作れ．
+
+
+% ./i-f
+整数: 3
+浮動少数点数: 11.6
+和: 3 + 11.6000000 = 14.600000
+差: 3 - 11.6000000 = -8.600000
+積: 3 * 11.6000000 = 34.800000
+商: 3 / 11.6000000 = 0.258621
+%
+
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#include <stdlib.h>
+#define MAX_BUF (256) $!!
+submodule$int get_int(void);$!!
+submodule$double get_float(void);$!!
+submodule$int main(void)$!!
+block$int i_number;
+double f_number;$!!
+block$printf("整数: ");$!!
+block$i_number = get_int();$!!
+block$printf("浮動少数点数: ");$!!
+block$f_number = get_float();$!!
+block$printf("和: %d + %f = %f\n", i_number, f_number, i_number + f_number);
+printf("差: %d - %f = %f\n", i_number, f_number, i_number - f_number);
+printf("積: %d * %f = %f\n", i_number, f_number, i_number * f_number);
+printf("商: %d / %f = %f\n", i_number, f_number, i_number / f_number);$!!
+block$return 0;$!!
+submodule$int get_int(void)$!!
+block$int number;
+char buf[MAX_BUF]; $文字の並びを格納する配列!!
+block$fgets(buf, MAX_BUF-1, stdin);$!!
+block$number = atoi(buf); $!!
+block$return number;$!!
+submodule$double get_float(void)$!!
+block$double number;
+char buf[MAX_BUF]; $文字の並びを格納する配列!!
+block$fgets(buf, MAX_BUF-1, stdin);  $!!
+block$number = atof(buf); $!!
+block$return number;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_BUF (256) /* 文字の並びを格納する配列の最大長 */
+
+/*****************
+ * prototype宣言 *
+ *****************/
+int get_int(void);
+double get_float(void);
+
+/********
+ * 関数 *
+ ********/
+int main(void)
+{
+  int i_number;
+  double f_number;
+
+  printf("整数: ");
+  i_number = get_int();
+  printf("浮動少数点数: ");
+  f_number = get_float();
+
+  printf("和: %d + %f = %f\n", i_number, f_number, i_number + f_number);
+  printf("差: %d - %f = %f\n", i_number, f_number, i_number - f_number);
+  printf("積: %d * %f = %f\n", i_number, f_number, i_number * f_number);
+  printf("商: %d / %f = %f\n", i_number, f_number, i_number / f_number);
+
+  return 0;
+}
+  
+/************
+ * 整数入力 *
+ ************/
+int
+get_int(void)
+{
+  int number;
+  char buf[MAX_BUF]; /* 文字の並びを格納する配列 */
+
+  fgets(buf, MAX_BUF-1, stdin);  /* 文字の並びをbufに格納(\0も格納するので，多くともMAX_BUF-1文字まで) */
+  number = atoi(buf); /* buf上の文字の並びを整数に */
+  return number;
+}  
+  
+/********************
+ * 浮動小数点数入力 *
+ ********************/
+double
+get_float(void)
+{
+  double number;
+  char buf[MAX_BUF]; /* 文字の並びを格納する配列 */
+
+  fgets(buf, MAX_BUF-1, stdin);  /* 文字の並びをbufに格納(\0も格納するので，多くともMAX_BUF-1文字まで) */
+  number = atof(buf); /* buf上の文字の並びを浮動少数点数に */
+  return number;
+}
+
+</answer>

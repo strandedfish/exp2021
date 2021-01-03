@@ -574,112 +574,74 @@ class Relation
         $GLOBALS['dbi']->freeResult($tab_rs);
 
         if (isset($cfgRelation['relation'])) {
-            if ($this->canAccessStorageTable($cfgRelation['relation'])) {
-                $cfgRelation['relwork']     = true;
-            }
+            $cfgRelation['relwork']     = true;
         }
 
         if (isset($cfgRelation['relation']) && isset($cfgRelation['table_info'])) {
-            if ($this->canAccessStorageTable($cfgRelation['table_info'])) {
-                $cfgRelation['displaywork'] = true;
-            }
+            $cfgRelation['displaywork'] = true;
         }
 
         if (isset($cfgRelation['table_coords']) && isset($cfgRelation['pdf_pages'])) {
-            if ($this->canAccessStorageTable($cfgRelation['table_coords'])) {
-                if ($this->canAccessStorageTable($cfgRelation['pdf_pages'])) {
-                    $cfgRelation['pdfwork']     = true;
-                }
-            }
+            $cfgRelation['pdfwork']     = true;
         }
 
         if (isset($cfgRelation['column_info'])) {
-            if ($this->canAccessStorageTable($cfgRelation['column_info'])) {
-                $cfgRelation['commwork']    = true;
-                // phpMyAdmin 4.3+
-                // Check for input transformations upgrade.
-                $cfgRelation['mimework'] = $this->tryUpgradeTransformations();
-            }
+            $cfgRelation['commwork']    = true;
+            // phpMyAdmin 4.3+
+            // Check for input transformations upgrade.
+            $cfgRelation['mimework'] = $this->tryUpgradeTransformations();
         }
 
         if (isset($cfgRelation['history'])) {
-            if ($this->canAccessStorageTable($cfgRelation['history'])) {
-                $cfgRelation['historywork']     = true;
-            }
+            $cfgRelation['historywork']     = true;
         }
 
         if (isset($cfgRelation['recent'])) {
-            if ($this->canAccessStorageTable($cfgRelation['recent'])) {
-                $cfgRelation['recentwork']      = true;
-            }
+            $cfgRelation['recentwork']      = true;
         }
 
         if (isset($cfgRelation['favorite'])) {
-            if ($this->canAccessStorageTable($cfgRelation['favorite'])) {
-                $cfgRelation['favoritework']    = true;
-            }
+            $cfgRelation['favoritework']    = true;
         }
 
         if (isset($cfgRelation['table_uiprefs'])) {
-            if ($this->canAccessStorageTable($cfgRelation['table_uiprefs'])) {
-                $cfgRelation['uiprefswork']     = true;
-            }
+            $cfgRelation['uiprefswork']     = true;
         }
 
         if (isset($cfgRelation['tracking'])) {
-            if ($this->canAccessStorageTable($cfgRelation['tracking'])) {
-                $cfgRelation['trackingwork']     = true;
-            }
+            $cfgRelation['trackingwork']     = true;
         }
 
         if (isset($cfgRelation['userconfig'])) {
-            if ($this->canAccessStorageTable($cfgRelation['userconfig'])) {
-                $cfgRelation['userconfigwork']   = true;
-            }
+            $cfgRelation['userconfigwork']   = true;
         }
 
         if (isset($cfgRelation['bookmark'])) {
-            if ($this->canAccessStorageTable($cfgRelation['bookmark'])) {
-                $cfgRelation['bookmarkwork']     = true;
-            }
+            $cfgRelation['bookmarkwork']     = true;
         }
 
         if (isset($cfgRelation['users']) && isset($cfgRelation['usergroups'])) {
-            if ($this->canAccessStorageTable($cfgRelation['users'])) {
-                if ($this->canAccessStorageTable($cfgRelation['usergroups'])) {
-                    $cfgRelation['menuswork']        = true;
-                }
-            }
+            $cfgRelation['menuswork']        = true;
         }
 
         if (isset($cfgRelation['navigationhiding'])) {
-            if ($this->canAccessStorageTable($cfgRelation['navigationhiding'])) {
-                $cfgRelation['navwork']          = true;
-            }
+            $cfgRelation['navwork']          = true;
         }
 
         if (isset($cfgRelation['savedsearches'])) {
-            if ($this->canAccessStorageTable($cfgRelation['savedsearches'])) {
-                $cfgRelation['savedsearcheswork']      = true;
-            }
+            $cfgRelation['savedsearcheswork']      = true;
         }
 
         if (isset($cfgRelation['central_columns'])) {
-            if ($this->canAccessStorageTable($cfgRelation['central_columns'])) {
-                $cfgRelation['centralcolumnswork']      = true;
-            }
+            $cfgRelation['centralcolumnswork']      = true;
         }
 
         if (isset($cfgRelation['designer_settings'])) {
-            if ($this->canAccessStorageTable($cfgRelation['designer_settings'])) {
-                $cfgRelation['designersettingswork']    = true;
-            }
+            $cfgRelation['designersettingswork']    = true;
         }
 
         if (isset($cfgRelation['export_templates'])) {
-            if ($this->canAccessStorageTable($cfgRelation['export_templates'])) {
-                $cfgRelation['exporttemplateswork']      = true;
-            }
+            $cfgRelation['exporttemplateswork']      = true;
         }
 
         $allWorks = true;
@@ -712,21 +674,6 @@ class Relation
         $cfgRelation['allworks'] = $allWorks;
 
         return $cfgRelation;
-    }
-
-    /**
-     * Check if the table is accessible
-     *
-     * @param string $tableDbName The table or table.db
-     * @return boolean The table is accessible
-     */
-    public function canAccessStorageTable($tableDbName) {
-        $result = $this->queryAsControlUser(
-            'SELECT NULL FROM ' . $tableDbName . ' LIMIT 0',
-            false,
-            DatabaseInterface::QUERY_STORE
-        );
-        return $result !== false;
     }
 
     /**
@@ -995,7 +942,7 @@ class Relation
                     AND table_name  = ''
                     AND column_name = '(db_comment)'";
             $com_rs = $this->queryAsControlUser(
-                $com_qry, false, DatabaseInterface::QUERY_STORE
+                $com_qry, true, DatabaseInterface::QUERY_STORE
             );
 
             if ($com_rs && $GLOBALS['dbi']->numRows($com_rs) > 0) {
@@ -1029,7 +976,7 @@ class Relation
                     . "
                 WHERE `column_name` = '(db_comment)'";
             $com_rs = $this->queryAsControlUser(
-                $com_qry, false, DatabaseInterface::QUERY_STORE
+                $com_qry, true, DatabaseInterface::QUERY_STORE
             );
 
             if ($com_rs && $GLOBALS['dbi']->numRows($com_rs) > 0) {

@@ -1,0 +1,94 @@
+<question>
+
+アスタリスク(*)を並べることにより直角三角形を印字するプログラムを， 関数を使って作成せよ． 
+この課題で学ぶべきことは， 指定された文字を指定された回数だけ連続して印字する処理を関数化することである． 
+たとえば，この関数はアスタリスク(*)を4回連続して印字したり， 空白を5回連続して印字できる． この関数をmain()関数から呼び出すことによってプログラムを実現せよ．
+
+この関数のプロトタイプ宣言を
+ void run(char c, int length);
+とする．すなわち，関数runは文字cを長さlengthだけ印字する．
+この関数runを作成し， キーボードより入力された任意の正の整数を高さとする 直角三角形を印字するプログラムを作成せよ． 具体的には以下の条件を満たすこと．
+
+*の数は，1行目はn個とし，1行ごとに1ずつ減っていくこと．
+各行の左端には”行番号:”を印字すること
+各行の端は右に揃えること
+0や負の数が入力された場合には，繰り返し入力を求めること．
+ % ./decWithFunc
+ 正の整数: -5
+ 正の整数: 15
+  1: ***************
+  2:  **************
+  3:   *************
+  4:    ************
+  5:     ***********
+  6:      **********
+  7:       *********
+  8:        ********
+  9:         *******
+ 10:          ******
+ 11:           *****
+ 12:            ****
+ 13:             ***
+ 14:              **
+ 15:               *
+ % 
+
+</question>
+
+<block>
+block$#include<stdio.h>$!!
+submodule$void run(char, int);$!!
+submodule$int main(void)$!!
+block$int line;
+int input;$!!
+block$printf("正の整数: ");
+scanf("%d", &input);$!!
+b_loop$while(input <= 0);$!!
+loop$for(line = 0; line < input; line++) $!!
+block$printf("%2d: ", line+1);$!!
+block$run(' ', line);$!!
+block$run('*', input-line);$!!
+block$printf("\n");$!!
+block$return 0;$!!
+submodule$void run(char c, int length)$!!
+block$int i;$!!
+loop$for(i = 0; i < length; i++) $!!
+block$printf("%c", c);$!!
+block$return;$!!
+</block>
+
+<answer>
+#include<stdio.h>
+
+void run(char, int);
+
+int main(void)
+{
+  int i;
+  int input;
+
+  do {
+    printf("正の整数: ");
+    scanf("%d", &input);
+  } while(input <= 0);
+
+  for(i = 0; i < input; i++) {
+    printf("%2d: ", i+1);
+    run(' ', i);
+    run('*', input-i);
+    printf("\n");
+  }
+  return 0;
+}
+
+void run(char c, int length)
+{
+  int i;
+
+  for(i = 0; i < length; i++) {
+    printf("%c", c);
+  }
+
+  return;
+}
+</answer>

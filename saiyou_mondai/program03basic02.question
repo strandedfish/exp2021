@@ -1,0 +1,42 @@
+<question>
+変数の定義域について学習しよう。
+文字を扱う型であるchar型の取りうる値の範囲は-128〜127である。
+この範囲を越えるとどうなるか以下の計算を実行してみよ。
+
+まずchar型変数cに-128を代入し，そこから1を引くと変数の内容はいくつになるか．
+次にchar型変数cに127を代入し，そこへ1を足すと変数の内容はいくつになるか．
+
+なお，上記の動作をするプログラムをコンパイルしようとすると，「this decimal constant is unsigned only in ISO C90」のような警告が表示されるこ とがある．故意に範囲を越えようとしているので，今回に限りこの警告を無視してもよい．
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$char c; $!!
+block$c = -128;$!!
+block$c = c-1;$!!
+block$printf("%d\n",c); $!!
+block$c = 127; $!!
+block$c = c + 1;  $!!
+block$printf("%d\n",c); $!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+   char c; /*cを文字型として定義*/
+	
+   c = -128;
+   c = c-1;
+   printf("%d\n",c); /* cを整数として印字して改行 */
+   
+   c = 127; /* cに127の代入 */
+   c = c + 1; /* cに1を足す */ 
+   printf("%d\n",c); /* cを整数として印字して改行 */
+   
+   return 0;
+}
+</answer>

@@ -1041,7 +1041,7 @@ class Normalization
         $res = $this->dbi->fetchResult($query, null, null);
         foreach ($columns as $column) {
             if ($column) {
-                $result[$column] = isset($res[0][$column . '_cnt']) ? $res[0][$column . '_cnt'] : null;
+                $result[$column] = $res[0][$column . '_cnt'];
             }
         }
         return $result;

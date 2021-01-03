@@ -1,0 +1,100 @@
+<question>
+
+int型のポインタ変数 left と right を引数に持つ void型関数
+
+void sort(int *left, int *right)
+を作成せよ。 この関数は left が指す int型の変数の値が、rightが指すそれより大きければ何も行わず、 そうでなければ left が指す値と right が指す値を交換する関数である。
+この関数を用いて、次のような機能をもつプログラムを作成せよ．
+
+fgets()とatoi()で２つの数字を入力し、 入力した２つの数字を int型の変数 a および b に代入した上で、 入力した数字のうち大きい数字を表示するプログラムを作成せよ。
+
+
+実行例
+
+% ./a.out
+最初の数字を入力してください
+5
+２つ目の数字を入力してください
+2
+大きい数字は5です
+% ./a.out
+最初の数字を入力してください
+8
+２つ目の数字を入力してください
+20
+大きい数字は20です
+%
+
+</question>
+
+<block>
+block$#include<stdio.h>
+#include<stdlib.h>
+#define MAX_LINE (256)$!!
+block$void sort(int *, int *);$ポインタを使い大きい方がleftになるように交換!!
+submodule$int main(void)$!!
+block$int a,b;
+char line[MAX_LINE];
+block$printf("１つ目の整数: ");
+fgets(line, MAX_LINE - 1, stdin);$!!
+block$a = atoi(line);$!!
+block$printf("２つ目の整数: ");
+fgets(line, MAX_LINE - 1, stdin);$!!
+block$b = atoi(line);$!!
+block$sort(&a, &b);$ポインタを使い大きい方がleftになるように交換!!
+block$printf("大きい数字は %d です．\n", a);$!!
+block$return 0;$!!
+submodule$void sort(int *left, int *right)$!!
+block$int temp;   $!!
+branch$if(*right > *left) $!!
+block$temp = *left;$!!
+block$*left = *right;$!!
+block$*right = temp;$!!
+block$return;$!!
+</block>
+
+<answer>
+#include<stdio.h>
+#include<stdlib.h>
+
+#define MAX_LINE (256)
+
+void sort(int *, int *);
+
+int main(void)
+{
+  int a;  /* 入力する２つの整数の内、１つめの整数 */
+  int b;  /* 入力する２つの整数の内、２つめの整数 */
+  char line[MAX_LINE];  /* fgets()の入力バッファ */
+
+  /* １つめの整数をaへ */  
+  printf("１つ目の整数: ");
+  fgets(line, MAX_LINE - 1, stdin);
+  a = atoi(line);
+  
+  /* 2つめの整数をbへ */  
+  printf("２つ目の整数: ");
+  fgets(line, MAX_LINE - 1, stdin);
+  b = atoi(line);
+  
+  /* 2つの整数をsort()関数へわたす */  
+  sort(&a, &b);
+
+  printf("大きい数字は %d です．\n", a);
+  return 0;
+}
+
+/* ポインタを使い大きい方がleftになるように交換 */  
+void sort(int *left, int *right)
+{
+  int temp; /* 交換時の値を一時保存する変数 */  
+
+
+  if(*right > *left) {
+    temp = *left;
+    *left = *right;
+    *right = temp;
+  }
+  return;
+}
+</answer>

@@ -225,11 +225,7 @@ class File
      */
     public function isUploaded()
     {
-        if (! is_string($this->getName())) {
-            return false;
-        } else {
-            return is_uploaded_file($this->getName());
-        }
+        return is_uploaded_file($this->getName());
     }
 
     /**

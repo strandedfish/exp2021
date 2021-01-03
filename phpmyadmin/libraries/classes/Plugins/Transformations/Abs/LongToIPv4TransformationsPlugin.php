@@ -9,7 +9,6 @@
 namespace PhpMyAdmin\Plugins\Transformations\Abs;
 
 use PhpMyAdmin\Plugins\TransformationsPlugin;
-use PhpMyAdmin\Util;
 
 /**
  * Provides common methods for all of the long to IPv4 transformations plugins.
@@ -42,12 +41,13 @@ abstract class LongToIPv4TransformationsPlugin extends TransformationsPlugin
      */
     public function applyTransformation($buffer, array $options = array(), $meta = '')
     {
-        if (! Util::isInteger($buffer) || $buffer < 0 || $buffer > 4294967295) {
+        if ($buffer < 0 || $buffer > 4294967295) {
             return htmlspecialchars($buffer);
         }
 
-        return long2ip((int) $buffer);
+        return long2ip($buffer);
     }
+
 
     /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
 

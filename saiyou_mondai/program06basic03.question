@@ -1,0 +1,107 @@
+<question>
+
+キーボードから配列の要素数 n を入力し，次に n 個の整数値を配列 の各要素に入力することを考える．
+
+そのうえで，さきに入力された配列の n 個の要素を，n次元ベクトルの要素とみなし， その偏差ベクトルを計算して表示するプログラムを作成せよ．
+
+偏差ベクトルとは，それぞれベクトルの全要素の平均をベクトルの各要素から差し引いたものである．
+
+配列の要素の最大数は500とし， あとから変更しやすくするため#define を用いてこれを定義すること．
+
+ベクトルの各要素は整数であるが，偏差ベクトルの各要素は浮動小数点数として求めること．
+
+ベクトルの要素数として入力された値が1より小さい場合，および， 500より大きい場合は，要素数として範囲外の値が入力されたことを表示し， 再度入力を求めるようにすること．
+
+実行例
+
+% ./program08basic03
+ベクトルの要素数は？(最大 500): 1000
+要素数は 1以上 500 以下にしてください
+ベクトルの要素数は？(最大 500): 4
+0 番目の要素: 2
+1 番目の要素: 3
+2 番目の要素: 4
+3 番目の要素: 5
+偏差ベクトルは(-1.500000, -0.500000, 0.500000, 1.500000)です．
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>$!!
+block$#define MAX_SIZE (500) $!!
+submodule$int main(void)$!!
+block$int size;
+int array[MAX_SIZE];
+int i;
+int sum;
+double average;
+double difference;$!!
+block$printf("ベクトルの要素数は? (最大%d): ", MAX_SIZE);
+scanf("%d", &size);$!!
+branch$if((size > MAX_SIZE) || (size < 1))$!!
+block$printf("要素数は 1以上 %d 以下にしてください\n", MAX_SIZE);$!!
+b_loop$while((size > MAX_SIZE) || (size < 1));$!!
+block$sum = 0;$!!
+loop$for (i = 0; i < size; i++) $!!
+block$printf("%d番目の要素: ", i);$!!
+block$scanf("%d", &array[i]);$!!
+block$sum += array[i];$!!
+block$average = (double)sum / size; $!!
+block$printf("偏差ベクトルは(");$!!
+loop$for (i = 0; i < size; i++) $!!
+block$difference = array[i] - average; $!!
+branch$if(i < size - 1)$!!
+block$printf("%f, ", difference);$!!
+branch$else$!!
+block$printf("%f)です．\n", difference);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define MAX_SIZE (500) /* 最大要素数 */
+
+int main(void)
+{
+  int size; /* ベクトルの要素数 */
+  int array[MAX_SIZE]; /* 配列の定義 */
+  int i;    //ループカウンタ
+  int sum;  //合計値
+  double average; /* 平均 */
+  double difference; /* 平均と差 */
+
+  do {
+    printf("ベクトルの要素数は? (最大%d): ", MAX_SIZE);
+    scanf("%d", &size);
+	  
+    if((size > MAX_SIZE) || (size < 1))
+      printf("要素数は 1以上 %d 以下にしてください\n", MAX_SIZE);
+	    
+  } while((size > MAX_SIZE) || (size < 1));
+
+  //sumに合計値を求める
+  sum = 0;
+  for (i = 0; i < size; i++) {
+    printf("%d番目の要素: ", i);
+    scanf("%d", &array[i]);
+    sum += array[i];
+  }
+  average = (double)sum / size; /* 平均 */
+	
+  printf("偏差ベクトルは(");
+  for (i = 0; i < size; i++) {
+    difference = array[i] - average; /* 偏差 */
+    if(i < size - 1)
+      printf("%f, ", difference);
+    else
+      printf("%f)です．\n", difference);
+  }
+
+  return 0;
+}
+</answer>

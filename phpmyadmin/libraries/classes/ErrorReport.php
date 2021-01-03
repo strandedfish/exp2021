@@ -72,9 +72,6 @@ class ErrorReport
      */
     public function getData($exceptionType = 'js')
     {
-        /** @var Config $PMA_Config */
-        global $PMA_Config;
-
         $relParams = $this->relation->getRelationsParam();
         // common params for both, php & js exceptions
         $report = [
@@ -84,7 +81,7 @@ class ErrorReport
             "user_os" => PMA_USR_OS,
             "server_software" => $_SERVER['SERVER_SOFTWARE'],
             "user_agent_string" => $_SERVER['HTTP_USER_AGENT'],
-            "locale" => $PMA_Config->getCookie('pma_lang'),
+            "locale" => $_COOKIE['pma_lang'],
             "configuration_storage" =>
                 is_null($relParams['db']) ? "disabled" : "enabled",
             "php_version" => phpversion()

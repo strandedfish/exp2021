@@ -23,9 +23,6 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
  */
 class Advisor
 {
-    const GENERIC_RULES_FILE = 'libraries/advisory_rules_generic.txt';
-    const BEFORE_MYSQL80003_RULES_FILE = 'libraries/advisory_rules_mysql_before80003.txt';
-
     protected $dbi;
     protected $variables;
     protected $globals;
@@ -224,15 +221,8 @@ class Advisor
         $this->variables['system_memory']
             = isset($memory['MemTotal']) ? $memory['MemTotal'] : 0;
 
-        $ruleFiles = $this->defineRulesFiles();
-
         // Step 2: Read and parse the list of rules
-        $parsedResults = [];
-        foreach ($ruleFiles as $ruleFile) {
-            $parsedResults[] = $this->parseRulesFile($ruleFile);
-        }
-        $this->setParseResult(call_user_func_array('array_merge_recursive', $parsedResults));
-
+        $this->setParseResult(static::parseRulesFile());
         // Step 3: Feed the variables to the rules and let them fire. Sets
         // $runResult
         $this->runRules();
@@ -440,22 +430,6 @@ class Advisor
     }
 
     /**
-     * Defines the rules files to use
-     *
-     * @return array
-     */
-    protected function defineRulesFiles()
-    {
-        $isMariaDB = false !== strpos($this->getVariables()['version'], 'MariaDB');
-        $ruleFiles = [self::GENERIC_RULES_FILE];
-        // If MariaDB (= not MySQL) OR MYSQL < 8.0.3, add another rules file.
-        if ($isMariaDB || $this->globals['PMA_MYSQL_INT_VERSION'] < 80003) {
-            $ruleFiles[] = self::BEFORE_MYSQL80003_RULES_FILE;
-        }
-        return $ruleFiles;
-    }
-
-    /**
      * Callback for wrapping links with Core::linkURL
      *
      * @param array $matches List of matched elements form preg_replace_callback
@@ -506,12 +480,11 @@ class Advisor
      * Reads the rule file into an array, throwing errors messages on syntax
      * errors.
      *
-     * @param string $filename Name of file to parse
-     *
      * @return array with parsed data
      */
-    public static function parseRulesFile($filename)
+    public static function parseRulesFile()
     {
+        $filename = 'libraries/advisory_rules.txt';
         $file = file($filename, FILE_IGNORE_NEW_LINES);
 
         $errors = array();

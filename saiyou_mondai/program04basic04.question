@@ -1,0 +1,137 @@
+<question>
+
+3辺の長さを整数で入力し、その3辺が三角形を作るか否か、また三角形を作る場合は鋭角三角形か直角三角形か鈍角三角形かを判定し、さらに正三角形か二等辺三角形かを判定し、表示するプログラムを作成する。
+
+if-else文を用いて、以下の手順で作成せよ。
+
+キーボードから３辺を入力させるように求め、３辺を整数として格納する
+３辺を長い順に並べ替える
+(最長辺)$>=$(他の２辺の和)のとき、「３辺が三角形を作らない」と表示する（実行例のように表示）。
+三角形を作るとき、(最長辺)$^2$と、(他の辺1)$^2+$(他の辺2)$^2$の大小を比較して、鈍角三角形、直角三角形、鋭角三角形を分類し、結果を表示する（実行例のように表示）。
+三角形を作るとき、正三角形であるか、二等辺三角形であるか、どちらでもないかを判定し、結果を表示する（実行例のように表示）。
+
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 3
+３辺目: 7
+３辺 7 3 3 は三角形をつくりません．
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 3
+３辺目: 5
+３辺 5 3 3 は鈍角三角形です．
+さらに二等辺三角形です．
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 4
+３辺目: 5
+３辺 5 4 3 は直角三角形です．
+% ./triangle
+３辺の長さを整数で入力してください．
+１辺目: 3
+２辺目: 3
+３辺目: 3
+３辺 3 3 3 は鋭角三角形です．
+さらに正三角形です．
+%
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int side1, side2, side3;
+int tmp;$!!
+block$printf("３辺の長さを整数で入力してください．\n");
+printf("１辺目: ");
+scanf("%d",&side1);
+printf("２辺目: ");
+scanf("%d",&side2);
+printf("３辺目: ");
+scanf("%d",&side3);$!!
+branch$if(side2 > side1)$!!
+block$tmp=side1;
+side1=side2;
+side2=tmp;$!!
+branch$if(side3 > side1)$!!
+block$tmp=side1;
+side1=side3;
+side3=tmp;$!!
+branch$if(side3 > side2)$!!
+block$tmp=side2;
+side2=side3;
+side3=tmp;$!!
+branch$if(side1 >= side2+side3)$!!
+block$printf("３辺 %d %d %d は三角形をつくりません．\n",side1,side2,side3);$!!
+branch$else$!!
+branch$if(side1*side1>side2*side2+side3*side3)$!!
+block$printf("３辺 %d %d %d は鈍角三角形です．\n",side1,side2,side3);$!!
+branch$else if (side1*side1==side2*side2+side3*side3)$!!
+block$printf("３辺 %d %d %d は直角三角形です．\n",side1,side2,side3);$!!
+branch$else$!!
+block$printf("３辺 %d %d %d は鋭角三角形です．\n",side1,side2,side3);$!!
+branch$if(side1==side3)	    $!!
+block$printf("さらに正三角形です．\n");$!!
+branch$else if(side1==side2||side2==side3)$!!
+block$printf("さらに二等辺三角形です．\n");$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{ 
+  int side1, side2, side3;   /* 3辺の長さ */
+  int tmp;                   /* 辺を長さ順に並べかえる際に用いる変数 */
+
+  printf("３辺の長さを整数で入力してください．\n");
+  printf("１辺目: ");
+  scanf("%d",&side1);
+  printf("２辺目: ");
+  scanf("%d",&side2);
+  printf("３辺目: ");
+  scanf("%d",&side3);
+
+  /* 辺を長い順番に並べかえる． */
+  if(side2 > side1){         /* 以下の3行で，side1 の値と side2 の値を入れ替える */
+	tmp=side1;
+	side1=side2;
+	side2=tmp;
+  }
+  if(side3 > side1){         /* 以下の3行で，side1 の値と side3 の値を入れ替える */
+	tmp=side1;
+	side1=side3;
+	side3=tmp;
+  }
+  if(side3 > side2){         /* 以下の3行で，side2 の値と side3 の値を入れ替える */
+	tmp=side2;
+	side2=side3;
+	side3=tmp;
+  }
+
+  if(side1 >= side2+side3){
+	printf("３辺 %d %d %d は三角形をつくりません．\n",side1,side2,side3);
+  }else{
+	/* 鈍角三角形，直角三角形，鋭角三角形の判定 */
+	if(side1*side1>side2*side2+side3*side3){
+	  printf("３辺 %d %d %d は鈍角三角形です．\n",side1,side2,side3);
+	}else if (side1*side1==side2*side2+side3*side3){
+	  printf("３辺 %d %d %d は直角三角形です．\n",side1,side2,side3);
+	}else{
+	  printf("３辺 %d %d %d は鋭角三角形です．\n",side1,side2,side3);
+	}
+	/* 正三角形，二等辺三角形の判定 */
+	if(side1==side3){	    /* 最長辺と最短辺の長さが等しいので3辺が等しい */
+	  printf("さらに正三角形です．\n");
+	}else if(side1==side2||side2==side3){
+	  printf("さらに二等辺三角形です．\n");
+	}
+  }
+
+  return 0;
+}
+</answer>

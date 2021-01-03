@@ -1,0 +1,121 @@
+<question>
+
+一次元配列で表された2つのベクトルに対して，その内積を計算するプログラムを作成せよ．
+
+
+プログラムに必要な要素
+
+ベクトルの要素数（int型）とベクトルの要素（int型）はキーボードから入力させよ．
+ベクトルの最大要素数は512とし，#defineを用いて定義せよ．
+ベクトルの要素数として入力された値が1より小さい場合および512より大きい場合は，要素数として範囲外の値が入力されたことを表示し，再度入力を求めるようにすること．
+ベクトルの内積を計算する関数を定義し，これを用いて計算せよ．
+ベクトルを表す配列を必ず関数の引数として渡すこと．ベクトルを表す配列を外部変数として定義してはならない．
+ベクトルの内積を表示せよ．
+
+
+プログラム作成上のヒント
+
+ベクトル $\textgt{x}=(x_1, x_2, ..., x_n)$, $\textgt{y}=(y_1, y_2,..., y_n)$ の内積 $\textgt{x}\cdot\textgt{y}$ は $x_1y_1+x_2y_2+...+x_ny_n$ で与えられる．
+実行例
+
+% ./a.out
+   ベクトルの要素数は？(最大 512): 3
+   ベクトル x の 1 番目の要素: 3
+   ベクトル x の 2 番目の要素: 4
+   ベクトル x の 3 番目の要素: 5
+   ベクトル y の 1 番目の要素: -4
+   ベクトル y の 2 番目の要素: 5
+   ベクトル y の 3 番目の要素: 6
+   ベクトルx, yの内積は 38 です．
+%
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#define MAXSIZE (512) $ベクトルの最大要素数!!
+submodule$int inner_product(int [MAXSIZE], int [MAXSIZE], int);$!!
+submodule$int main(void)$!!
+block$int size, i;
+int x[MAXSIZE];
+int y[MAXSIZE];$!!
+block$printf("ベクトルの要素数は？(最大 %d): ", MAXSIZE);
+scanf("%d", &size);$!!
+branch$if (size > MAXSIZE) $!!
+block$printf("要素数は%d以下にしてください\n", MAXSIZE);$!!
+branch$else if (size < 1) $!!
+block$printf("要素数は 1 以上にしてください\n");$!!
+b_loop$while((size < 1) || (size > MAXSIZE));$!!
+loop$for (i = 0; i < size; i++)$!!
+block$printf("ベクトル x の %d 番目の要素: ", i+1);
+scanf("%d", &x[i]);$!!
+loop$for (i = 0; i < size; i++)$!!
+block$printf("ベクトル y の %d 番目の要素: ", i+1);
+scanf("%d", &y[i]);$!!
+block$printf("ベクトルx, yの内積は %d です．\n", inner_product(x, y, size));$!!
+block$return 0;$!!
+submodule$int inner_product(int vector1[MAXSIZE], int vector2[MAXSIZE], int size)$!!
+block$int i, result; $!!
+block$result = 0;$!!
+loop$for (i = 0; i < size; i++)$!!
+block$result += vector1[i] * vector2[i];$!!
+block$return result;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+#define MAXSIZE (512) /* ベクトルの最大要素数 */
+
+/* 内積を計算する関数 */
+int inner_product(int [MAXSIZE], int [MAXSIZE], int);
+
+int main(void)
+{
+  int size; /* ベクトルの要素数 */
+  int x[MAXSIZE]; /* ベクトルx */
+  int y[MAXSIZE]; /* ベクトルy */
+  int i; /* for文用のカウンタ変数 */
+ 
+  /* ベクトルの要素数を入力してもらう */
+  do {
+    printf("ベクトルの要素数は？(最大 %d): ", MAXSIZE);
+    scanf("%d", &size);
+    if (size > MAXSIZE) 
+      printf("要素数は%d以下にしてください\n", MAXSIZE);
+    else if (size < 1) 
+      printf("要素数は 1 以上にしてください\n");
+  } while((size < 1) || (size > MAXSIZE));
+
+  /* ベクトルxの各要素の値を入力してもらう */
+  for (i = 0; i < size; i++){
+    printf("ベクトル x の %d 番目の要素: ", i+1);
+    scanf("%d", &x[i]);
+  }
+  
+  /* ベクトルyの各要素の値を入力してもらう */
+  for (i = 0; i < size; i++){
+    printf("ベクトル y の %d 番目の要素: ", i+1);
+    scanf("%d", &y[i]);
+  }
+  
+  printf("ベクトルx, yの内積は %d です．\n", inner_product(x, y, size));
+  
+  return 0;
+}
+
+
+/* 内積を計算する関数 */
+int inner_product(int vector1[MAXSIZE], int vector2[MAXSIZE], int size)
+{
+  int i; /* for文用のカウンタ変数 */
+  int result; /* 内積の計算用変数 */
+
+  result = 0;
+  for (i = 0; i < size; i++)
+    /* 2つのベクトルの第i要素の積を足しこむ */
+    result += vector1[i] * vector2[i];
+
+  return result;
+}
+</answer>

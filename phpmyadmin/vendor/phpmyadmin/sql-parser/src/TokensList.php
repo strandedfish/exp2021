@@ -93,7 +93,7 @@ class TokensList implements \ArrayAccess
      * Gets the next token. Skips any irrelevant token (whitespaces and
      * comments).
      *
-     * @return Token|null
+     * @return Token
      */
     public function getNext()
     {
@@ -113,7 +113,7 @@ class TokensList implements \ArrayAccess
      *
      * @param int $type the type
      *
-     * @return Token|null
+     * @return Token
      */
     public function getNextOfType($type)
     {
@@ -132,7 +132,7 @@ class TokensList implements \ArrayAccess
      * @param int    $type  the type of the token
      * @param string $value the value of the token
      *
-     * @return Token|null
+     * @return Token
      */
     public function getNextOfTypeAndValue($type, $value)
     {

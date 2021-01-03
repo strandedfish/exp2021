@@ -357,13 +357,12 @@ class AuthenticationCookie extends AuthenticationPlugin
         // and $this->password variables from cookies
 
         // check cookies
-        $serverCookie = $GLOBALS['PMA_Config']->getCookie('pmaUser-' . $GLOBALS['server']);
-        if (empty($serverCookie)) {
+        if (empty($_COOKIE['pmaUser-' . $GLOBALS['server']])) {
             return false;
         }
 
         $value = $this->cookieDecrypt(
-            $serverCookie,
+            $_COOKIE['pmaUser-' . $GLOBALS['server']],
             $this->_getEncryptionSecret()
         );
 
@@ -405,13 +404,11 @@ class AuthenticationCookie extends AuthenticationPlugin
         }
 
         // check password cookie
-        $serverCookie = $GLOBALS['PMA_Config']->getCookie('pmaAuth-' . $GLOBALS['server']);
-
-        if (empty($serverCookie)) {
+        if (empty($_COOKIE['pmaAuth-' . $GLOBALS['server']])) {
             return false;
         }
         $value = $this->cookieDecrypt(
-            $serverCookie,
+            $_COOKIE['pmaAuth-' . $GLOBALS['server']],
             $this->_getSessionEncryptionSecret()
         );
         if ($value === false) {
@@ -871,22 +868,20 @@ class AuthenticationCookie extends AuthenticationPlugin
      */
     public function logOut()
     {
-        /** @var Config $PMA_Config */
-        global $PMA_Config;
-
         // -> delete password cookie(s)
         if ($GLOBALS['cfg']['LoginCookieDeleteAll']) {
             foreach ($GLOBALS['cfg']['Servers'] as $key => $val) {
-                $PMA_Config->removeCookie('pmaAuth-' . $key);
-                if ($PMA_Config->issetCookie('pmaAuth-' . $key)) {
-                    $PMA_Config->removeCookie('pmaAuth-' . $key);
+                $GLOBALS['PMA_Config']->removeCookie('pmaAuth-' . $key);
+                if (isset($_COOKIE['pmaAuth-' . $key])) {
+                    unset($_COOKIE['pmaAuth-' . $key]);
                 }
             }
         } else {
-            $cookieName = 'pmaAuth-' . $GLOBALS['server'];
-            $PMA_Config->removeCookie($cookieName);
-            if ($PMA_Config->issetCookie($cookieName)) {
-                $PMA_Config->removeCookie($cookieName);
+            $GLOBALS['PMA_Config']->removeCookie(
+                'pmaAuth-' . $GLOBALS['server']
+            );
+            if (isset($_COOKIE['pmaAuth-' . $GLOBALS['server']])) {
+                unset($_COOKIE['pmaAuth-' . $GLOBALS['server']]);
             }
         }
         parent::logOut();

@@ -193,7 +193,6 @@ abstract class Statement
      *
      * @param Parser     $parser the instance that requests parsing
      * @param TokensList $list   the list of tokens to be parsed
-     * @throws Exceptions\ParserException
      */
     public function parse(Parser $parser, TokensList $list)
     {
@@ -321,15 +320,11 @@ abstract class Statement
             }
 
             // Checking if this is the beginning of a clause.
-            // Fix Issue #221: As `truncate` is not a keyword
-            // but it might be the beginning of a statement of truncate,
-            // so let the value use the keyword field for truncate type.
-            $token_value = in_array($token->keyword, array('TRUNCATE')) ? $token->keyword : $token->value;
-            if (! empty(Parser::$KEYWORD_PARSERS[$token_value]) && $list->idx < $list->count) {
-                $class = Parser::$KEYWORD_PARSERS[$token_value]['class'];
-                $field = Parser::$KEYWORD_PARSERS[$token_value]['field'];
-                if (! empty(Parser::$KEYWORD_PARSERS[$token_value]['options'])) {
-                    $options = Parser::$KEYWORD_PARSERS[$token_value]['options'];
+            if (! empty(Parser::$KEYWORD_PARSERS[$token->value]) && $list->idx < $list->count) {
+                $class = Parser::$KEYWORD_PARSERS[$token->value]['class'];
+                $field = Parser::$KEYWORD_PARSERS[$token->value]['field'];
+                if (! empty(Parser::$KEYWORD_PARSERS[$token->value]['options'])) {
+                    $options = Parser::$KEYWORD_PARSERS[$token->value]['options'];
                 }
             }
 
@@ -408,11 +403,12 @@ abstract class Statement
             $this->after($parser, $list, $token);
 
             // #223 Here may make a patch, if last is delimiter, back one
-            // TODO: when not supporting PHP 5.3 anymore, replace this by FunctionCall::class.
-            if ($class === 'PhpMyAdmin\\SqlParser\\Components\\FunctionCall'
-                && $list->offsetGet($list->idx)->type === Token::TYPE_DELIMITER
-            ) {
-                --$list->idx;
+            if ($class !== null) {
+                if ((new $class()) instanceof FunctionCall) {
+                    if ($list->offsetGet($list->idx)->type === Token::TYPE_DELIMITER) {
+                        --$list->idx;
+                    }
+                }
             }
         }
 
@@ -473,7 +469,6 @@ abstract class Statement
      * @param TokensList $list   the list of tokens to be parsed
      *
      * @return bool
-     * @throws Exceptions\ParserException
      */
     public function validateClauseOrder($parser, $list)
     {

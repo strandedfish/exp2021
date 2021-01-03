@@ -1,0 +1,73 @@
+<question>
+勤務開始時刻と勤務終了時刻を4桁の整数で入力すると，アルバイト先での1日分の給与を計算するプログラムを作る．
+時給を1000円とする．
+給与は1分ごとに(1000.0/60.0)円が支払われるが，1円に満たない金額は切り捨てられる．
+
+[実行例]
+勤務開始時間 (hhmm): 0834
+勤務終了時間 (hhmm): 1712
+8時間38分勤務 給与:8633
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+block$#define PAYMENT_BY_HOUR (1000) $時給を表す定数を定義!!
+submodule$int main(void)$!!
+block$int start;\n
+int end;\n
+int hour;\n
+int minute;\n
+int salary;$start: 勤務開始時間 end: 勤務終了時間 hour: 時間単位での勤務期間長 minute: 分単位での勤務期間長 salary: 給与!!
+block$printf("勤務開始時間 (hhmm): ");\n
+scanf("%d", &start);$!!
+block$printf("勤務終了時間 (hhmm): ");\n
+scanf("%d", &end);$!!
+block$hour = end / 100 - start / 100;\n
+minute = hour * 60 + (end % 100 - start % 100); $分単位で勤務期間長を計算!!
+block$hour = minute / 60;\n
+minute = minute % 60; $勤務期間長を時間と分に分けて計算!!
+block$salary = (int)((hour + minute / 60.0) * PAYMENT_BY_HOUR); $!!
+block$printf("%2d時間%2d分勤務 給与:%d\n", hour, minute, salary);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+/*
+ * time recorder 作成のための浮動小数点演算
+ */
+
+#include <stdio.h>
+#define PAYMENT_BY_HOUR (1000) /* 時給 */
+
+int
+main(void)
+{
+  int start; /* 勤務開始時間 */
+  int end; /* 勤務終了時間 */
+  int hour; /* 時間単位での勤務期間長 */
+  int minute; /* 分単位での勤務期間長 */
+  //  double salary; /* 給与 */
+  int salary; /* 給与 */
+
+  printf("勤務開始時間 (hhmm): ");
+  scanf("%d", &start);
+
+  printf("勤務終了時間 (hhmm): ");
+  scanf("%d", &end);
+
+  hour = end / 100 - start / 100;
+  minute = hour * 60 + (end % 100 - start % 100); /* 分単位で勤務期間長を計算 */
+
+  hour = minute / 60; /* 時間単位での勤務期間長 */
+  minute = minute % 60; /* 分単位での勤務期間長 */
+
+  /* 給与を計算（小数点以下切り捨て） */
+  salary = (int)((hour + minute / 60.0) * PAYMENT_BY_HOUR); /* キャストは演算の優先順位が乗算より高いので，（）で括って式全体をキャストしないといけない */
+
+  printf("%2d時間%2d分勤務 給与:%d\n", hour, minute, salary);
+
+  return 0;
+}
+
+</answer>

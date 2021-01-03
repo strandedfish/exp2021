@@ -1,0 +1,98 @@
+<question>
+分岐処理if文、switch文について学習しよう。
+
+2001年の2月について、日付を入力するとその曜日が出力されるようなプログラムを作成する。。
+
+指定された日の曜日を調べるプログラムをswitch文を用いて、以下の手順で作成せよ。
+
+「2001年X(自分の誕生月)月の曜日を調べます」と出力せよ。
+「調べたい日付は?:」と出力せよ。
+任意の日を入力されたときに，その日の曜日を表示せよ。
+ただし、その月にない日を指定されたときは，エラーを表示せよ。
+日曜を０、月曜を１、火曜を２、水曜を３、木曜を４、金曜を５、土曜を６とし、曜日を数字で表現してswitch文を使用せよ。
+
+ヒント: 2001年X月1日の曜日day1stを上記の数字で表現し， 曜日を調べたい日付を dateとすると，dateの曜日day は
+day = (date + day1st - 1) % 7
+で計算できる。
+
+% ./dayOfWeek
+2001年2月の曜日を調べます
+調べたい日付は?: 24
+2001年2月24日は土曜日です
+ % ./dayOfWeek
+2001年2月の曜日を調べます．
+調べたい日付は?: 33
+2001年2月には28日までしかありません
+% ./dayOfWeek
+2001年2月の曜日を調べます．
+調べたい日付は?: -4
+2001年2月は1日から始まります
+%
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int date;
+int day;
+int day1st=4;$!!
+block$printf("2001年2月の曜日を調べます\n");
+printf("調べたい日付は?：");
+scanf("%d",&date);$!!
+branch$if(date > 28)$!!
+block$printf("2001年2月には28日までしかありません\n");$!!
+branch$else if (date < 1)$!!
+block$printf("2001年2月は1日から始まります\n");$!!
+branch$else$if(date > 28)でも、if(date < 1)でもないとき、つまり正常な値が入力された時!!
+block$day = (date + day1st - 1) % 7;$!!
+block$printf("2001年2月%d日は",date);$!!
+branch$switch(day)$!!
+block$case 0: printf("日"); break;
+case 1: printf("月"); break;
+case 2: printf("火"); break;
+case 3: printf("水"); break;
+case 4: printf("木"); break;
+case 5: printf("金"); break;
+case 6: printf("土"); break;$!!
+block$printf("曜日です．\n");$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+  int date;                      /* 日付 */
+  int day;                       /* 曜日 0:日,1:月,2:火,3:水,4:木,5:金,6:土 */
+  int day1st=4;                  /* 2001年2月1日の曜日 表より木曜日なので 4 とする*/
+  
+  printf("2001年2月の曜日を調べます\n");
+  printf("調べたい日付は?：");
+  scanf("%d",&date);
+  
+  if(date > 28){                 /* 2001年2月は28日までなので */
+	printf("2001年2月には28日までしかありません\n");
+  }else if (date < 1){
+	printf("2001年2月は1日から始まります\n");
+  }else{
+	day = (date + day1st - 1) % 7;       /* day は曜日に対応する整数 */			
+	printf("2001年2月%d日は",date);
+
+	switch(day){
+	case 0: printf("日"); break;
+	case 1: printf("月"); break;
+	case 2: printf("火"); break;
+	case 3: printf("水"); break;
+	case 4: printf("木"); break;
+	case 5: printf("金"); break;
+	case 6: printf("土"); break;
+	}
+	printf("曜日です．\n");
+  }
+
+  return 0;
+}
+
+</answer>

@@ -331,7 +331,6 @@ class AlterOperation extends Component
      * between column and table alteration
      *
      * @param string $tokenValue Value of current token
-     * @return bool
      */
     private static function checkIfColumnDefinitionKeyword($tokenValue)
     {
@@ -340,11 +339,7 @@ class AlterOperation extends Component
             'COMMENT',
             'DEFAULT',
             'CHARACTER SET',
-            'COLLATE',
-            'PRIMARY',
-            'UNIQUE',
-            'PRIMARY KEY',
-            'UNIQUE KEY'
+            'COLLATE'
         );
         // Since these options can be used for
         // both table as well as a specific column in the table

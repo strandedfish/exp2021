@@ -404,9 +404,6 @@ class TableStructureController extends TableController
         $column_names = array_keys($columns);
         $changes = array();
 
-        // @see https://mariadb.com/kb/en/library/changes-improvements-in-mariadb-102/#information-schema
-        $usesLiteralNull = $this->dbi->isMariaDB() && $this->dbi->getVersion() >= 100200;
-        $defaultNullValue = $usesLiteralNull ? 'NULL' : null;
         // move columns from first to last
         for ($i = 0, $l = count($_POST['move_columns']); $i < $l; $i++) {
             $column = $_POST['move_columns'][$i];
@@ -425,12 +422,11 @@ class TableStructureController extends TableController
                 unset($data['Extra']);
             }
             $current_timestamp = ($data['Type'] == 'timestamp'
-                    || $data['Type'] == 'datetime' || $data['DATA_TYPE'] == 'int')
+                    || $data['Type'] == 'datetime')
                 && ($data['Default'] == 'CURRENT_TIMESTAMP'
                     || $data['Default'] == 'current_timestamp()');
 
-            // @see https://mariadb.com/kb/en/library/information-schema-columns-table/#examples
-            if ($data['Null'] === 'YES' && in_array($data['Default'], [$defaultNullValue, null])) {
+            if ($data['Null'] === 'YES' && $data['Default'] === null) {
                 $default_type = 'NULL';
             } elseif ($current_timestamp) {
                 $default_type = 'CURRENT_TIMESTAMP';
@@ -458,7 +454,7 @@ class TableStructureController extends TableController
                 $extracted_columnspec['spec_in_brackets'],
                 $extracted_columnspec['attribute'],
                 isset($data['Collation']) ? $data['Collation'] : '',
-                $data['Null'] === 'YES' ? 'YES' : 'NO',
+                $data['Null'] === 'YES' ? 'NULL' : 'NOT NULL',
                 $default_type,
                 $current_timestamp ? '' : $data['Default'],
                 isset($data['Extra']) && $data['Extra'] !== '' ? $data['Extra']

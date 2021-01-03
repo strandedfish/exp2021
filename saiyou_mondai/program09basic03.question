@@ -1,0 +1,106 @@
+<question>
+
+行列を二次元配列で表し， $2 \times 3$ 行列のデータと $3 \times 2$ 行列の積を求めるプログラムを作成せよ．
+
+
+プログラムに必要な要素
+
+$2 \times 3$ 行列のデータと $3 \times 2$ 行列のデータを引数に取り，その積を計算する関数を作成せよ．
+2つの行列はmain関数内で宣言，初期化せよ．
+行列を表す多次元配列は必ず関数の引数として渡し，外部変数として定義してはならない．
+積の計算には三重ループを用いよ．
+本プログラムで用いる行列は
+$A=\begin{pmatrix}1 & 2 & 3 \\ 4 & 5 & 6 \end{pmatrix}$,
+
+$B=\begin{pmatrix}2 & 3 \\ 4 & 5 \\ 6 & 7 \end{pmatrix}$
+
+とせよ．
+
+第1引数と第2引数の行列の積を計算する関数は，計算結果を第3引数の行 列に格納し，返り値としては何も返さないものとする．
+
+
+プログラム作成上のヒント
+
+二次元配列を関数に渡す場合，関数の引数宣言部には列の次元の数を明記する．例えば int a[5][10]という二次元配列を引数に取り，int型の値を返す関数は以下の形になる．
+int foo(int matrix[5][10]) {...}
+$2 \times 3$ 行列 $A=\begin{pmatrix}a & b & c \\ d & e & f \end{pmatrix}$ と $3 \times 2$ 行列 $B=\begin{pmatrix}g & h \\ i & j \\ k & l \end{pmatrix}$ の積は $AB=\begin{pmatrix}ag+bi+ck & ah+bj+cl \\ dg+ei+fk & dh+ej+fl \end{pmatrix}$ として求められる．
+実行例
+
+% ./a.out
+   28  34
+   64  79
+%
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$void product(int [2][3], int [3][2], int [2][2]);$!!
+submodule$int main(void)$!!
+block$int matrix_a[2][3] =  {{1, 2, 3}, {4, 5, 6}};$!!
+block$int matrix_b[3][2] =  {{2, 3}, {4, 5}, {6, 7}};$!!
+block$int matrix_c[2][2]; $結果を格納する行列!!
+block$int i, j;  $for文用のカウンタ変数!!
+block$product(matrix_a, matrix_b, matrix_c);$!!
+loop$for (i = 0; i < 2; i++) $!!
+loop$for (j = 0; j < 2; j++)$!!
+block$printf("%4d", matrix_c[i][j]);$!!
+block$printf("\n");$!!
+block$return 0;$!!
+submodule$void product(int x[2][3], int y[3][2], int z[2][2])$!!
+block$int a, b, c; $for文用のカウンタ変数!!
+loop$for(a = 0; a < 2; a++) $!!
+loop$for(b = 0; b < 2; b++) $!!
+block$z[a][b] = 0;$!!
+loop$for(c = 0; c < 3; c++) $!!
+block$z[a][b] += x[a][c] * y[c][b];$!!
+block$return;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+/* 行列の積を計算する関数（引数の書き方に注意） */
+void product(int [2][3], int [3][2], int [2][2]);
+
+int main(void)
+{
+  /* 行列の初期化 */
+  int matrix_a[2][3] = { {1, 2, 3},
+			 {4, 5, 6} };
+  int matrix_b[3][2] = { {2, 3},
+			 {4, 5},
+			 {6, 7} };
+  int matrix_c[2][2]; /* 結果を格納する行列 */
+  int i, j;  /* for文用のカウンタ変数 */
+
+  /* product()でmatrix_a, matrix_bの積をmatrix_cに設定 */
+  product(matrix_a, matrix_b, matrix_c);
+
+  /* 結果を印字 */
+  for (i = 0; i < 2; i++) {
+    for (j = 0; j < 2; j++)
+      printf("%4d", matrix_c[i][j]);
+    printf("\n");
+  }
+
+  return 0;
+}
+
+/* 行列の積を計算する関数 */
+void product(int x[2][3], int y[3][2], int z[2][2])
+{
+  int i, j, k; /* for文用のカウンタ変数 */
+
+  /* 行列の積を計算 */
+  for(i = 0; i < 2; i++) {
+    for(j = 0; j < 2; j++) {
+      /* xの第i行ベクトルとyの第j列ベクトルの内積を計算 */
+      z[i][j] = 0;
+      for (k = 0; k < 3; k++) 
+	z[i][j] += x[i][k] * y[k][j];
+    }
+  }
+  return;
+}
+</answer>

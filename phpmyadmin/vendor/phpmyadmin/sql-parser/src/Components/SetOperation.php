@@ -40,7 +40,7 @@ class SetOperation extends Component
      * @param string $column Field's name..
      * @param string $value  new value
      */
-    public function __construct($column = '', $value = '')
+    public function __construct($column = null, $value = null)
     {
         $this->column = $column;
         $this->value = $value;

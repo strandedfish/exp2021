@@ -1,0 +1,78 @@
+<question>
+
+最大要素数が8の配列を定義せよ．
+
+最初の要素から順にキーボードから入力された8個の整数を格納する。
+
+この8個の整数の中で最大の要素を見つけ、 それが何番目（index）の要素かを示すインデックスの値とともに， 最大の要素の値を画面に出力せよ。
+
+最大の整数が複数ある場合は，もっとも小さいindexを出力せよ．
+
+% ./program05basic03
+0番目のデータ:5
+1番目のデータ:2
+2番目のデータ:3
+3番目のデータ:4
+4番目のデータ:6
+5番目のデータ:-1
+6番目のデータ:-4
+7番目のデータ:6
+最大の要素は6で、そのインデックスは4である。
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#include <stdlib.h>
+#define MAX_NUM (8)$MAX_NUMは最大データ数!!
+submodule$int main(void)$!!
+block$int array[MAX_NUM];
+int i;
+int max, index;$array: 配列の宣言・要素数の最大値はMAX_NUM， i: ループカウンタ， max: バッファー， index: 最大要素のindex!!
+loop$for(i = 0; i < MAX_NUM; i++)$!!
+block$printf("%d番目のデータ:", i);$!!
+block$scanf("%d", &array[i]); $!!
+block$max = array[0];$初期の最大値なので、何の値でもいい!!
+block$index = 0;$!!
+loop$for(i = 1; i < MAX_NUM; i++)$!!
+branch$if(array[i] > max) $!!
+block$max = array[i];$!!
+block$index = i;$!!
+block$printf("最大の要素は%dで、そのインデックスは%dである。", max, index);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_NUM (8)     //最大データ数
+
+int
+main(void)
+{
+  int array[MAX_NUM];  //配列の宣言, 要素数の最大値はMAX_NUM
+  int i;               //ループカウンタ
+  int max, index;   //バッファー、最大要素のindex
+  
+  /* キーボードからのデータの入力 */
+  for(i = 0; i < MAX_NUM; i++) {
+    printf("%d番目のデータ:", i);
+    scanf("%d", &array[i]); /* 整数を入力し、array[i]に代入する */
+  }
+
+  /* 最大要素の探索 */
+  max = array[0];
+  index = 0;
+  for(i = 1; i < MAX_NUM; i++){
+    if(array[i] > max) {
+      max = array[i];
+      index = i;
+    }
+  }
+
+  printf("最大の要素は%dで、そのインデックスは%dである。", max, index);
+	
+  return 0;
+}
+
+</answer>

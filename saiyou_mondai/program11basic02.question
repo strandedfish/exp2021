@@ -1,0 +1,128 @@
+<question>
+
+キーボードから入力された，256以下の任意の正の整数 n に対し， 要素数 n の配列をキーボードで２つ入力する。 ここで入力された配列の内容を，n次元ベクトルのデータとみなし， ２つのn次元ベクトルの和を出力するプログラムを作成せよ。 ただしこのプログラムは， int型のポインタ a と b，および int型の変数 sizeを引数に持つ void型関数
+
+void arrayPlus(int *a, int *b,int size)
+を作成し、この関数を用いて作成するものとする。
+この関数において 引数 size は，ポインタa, bが表現する配列の要素数 n である。 この関数は a, b が表現する配列をn次元ベクトルのデータとみなし， ２つのn次元ベクトルの和をa が表現する配列に代入する関数である。
+
+ただしベクトル各要素の和は、配列の添字は用いずに ポインタを使って求めること。
+
+本課題の採点においては，実行例と厳密に同じ形式の出力結果をもって正解とみなすこととする．
+
+</question>
+
+<block>
+block$#include<stdio.h>
+#include<stdlib.h>
+#define MAX (256)
+#define MAX_LINE (256)$!!
+block$void arrayPlus(int *, int *, int);
+void arrayPrint(int *, int);$!!
+submodule$int main(void)$!!
+block$int size;
+int a[MAX];
+int b[MAX];
+int x;
+char line[MAX_LINE]; $!!
+block$printf("ベクトルの要素数を入力してください(最大%d)", MAX);
+fgets(line, MAX_LINE - 1, stdin);$!!
+block$size = atoi(line);$!!
+loop$for(x = 0; x < size; x++) $!!
+block$printf("１つめのベクトルの %d 番目の要素を入力してください: ", x + 1);
+fgets(line, MAX_LINE - 1, stdin);$!!
+block$*(a + x) = atoi(line);$!!
+loop$for(x = 0; x < size; x++) $!!
+block$printf("１つめのベクトルの %d 番目の要素を入力してください: ", x + 1);
+fgets(line, MAX_LINE - 1, stdin);$!!
+block$*(b + x) = atoi(line);$!!
+block$printf("２つのベクトル\n");
+arrayPrint(a, size);
+arrayPrint(b, size);
+printf("の和は\n");$!!
+block$arrayPlus(a, b, size);$!!
+block$arrayPrint(a, size);$!!
+block$return 0;$!!
+submodule$void arrayPlus(int *a, int *b, int size)$!!
+block$int i; $!!
+loop$for(i = 0; i < size; i++)$!!
+block$*(a + i) += *(b + i); $!!
+block$return;$!!
+submodule$void arrayPrint(int *a, int size)$!!
+block$int i;$!!
+block$printf("(");$!!
+loop$for(i = 0; i < size - 1; i++)$!!
+block$printf("%d,", *(a+i)); $!!
+block$printf("%d)\n", *(a + size - 1));$!!
+block$return;$!!
+</block>
+
+<answer>
+#include<stdio.h>
+#include<stdlib.h>
+
+#define MAX (256)
+#define MAX_LINE (256)
+
+void arrayPlus(int *, int *, int);
+void arrayPrint(int *, int);
+
+int main(void)
+{
+  int size;  /* ベクトルの次元数を示す int型の変数 */
+  int a[MAX]; /* １つめのベクトルの内容を示す配列 */
+  int b[MAX]; /* ２つめのベクトルの内容を示す配列 */
+  int x; /* 配列の何番目の要素にアクセスするかを示す変数 */
+  char line[MAX_LINE]; /* fgets()のバッファ */
+
+  /* sizeにベクトルの次元数を設定 */
+  printf("ベクトルの要素数を入力してください(最大%d)", MAX);
+  fgets(line, MAX_LINE - 1, stdin);
+  size = atoi(line);
+
+  for(x = 0; x < size; x++) {
+    /* １つめのベクトルの内容をコマンドラインから入力させる処理 */
+    printf("１つめのベクトルの %d 番目の要素を入力してください: ", x + 1);
+    fgets(line, MAX_LINE - 1, stdin);
+    *(a + x) = atoi(line);
+  }
+	
+  for(x = 0; x < size; x++) {
+    /* ２つめのベクトルの内容をコマンドラインから入力させる処理 */
+    printf("１つめのベクトルの %d 番目の要素を入力してください: ", x + 1);
+    fgets(line, MAX_LINE - 1, stdin);
+    *(b + x) = atoi(line);
+  }
+  printf("２つのベクトル\n");
+  arrayPrint(a, size);
+  arrayPrint(b, size);
+  printf("の和は\n");
+
+  arrayPlus(a, b, size);
+  arrayPrint(a, size);
+  return 0;
+}
+
+/* 配列aと配列bとの和を配列aに設定する関数 */
+void arrayPlus(int *a, int *b, int size)
+{
+  int i; /* 配列の何番目の要素にアクセスするかを示す変数 */
+
+  for(i = 0; i < size; i++)
+    *(a + i) += *(b + i); /* a[i] += b[i]という計算をポインタで書く */
+  return;
+}
+
+/* 配列の値を印字する関数 */
+void arrayPrint(int *a, int size)
+{
+  int i;
+
+  printf("(");
+  for(i = 0; i < size - 1; i++)
+    printf("%d,", *(a+i)); /* aのi番目の要素の表示 */
+  printf("%d)\n", *(a + size - 1));
+
+  return;
+}
+</answer>

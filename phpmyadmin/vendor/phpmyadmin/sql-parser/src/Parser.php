@@ -379,7 +379,6 @@ class Parser extends Core
 
     /**
      * Builds the parse trees.
-     * @throws ParserException
      */
     public function parse()
     {

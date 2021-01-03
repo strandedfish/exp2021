@@ -1,0 +1,90 @@
+<question>
+
+charへのポインタ3つからなる配列ptrを作成せよ．配列ptrを定義すると きに，その3つの要素が，それぞれ，文字列リテラル"BKC" "NojiHigashi" "Kusatsu" を指すように初期化せよ．これら３つの文字列は，配列の定義時にメモリ上に配置されるので，連続した領域に置かれることに注意せよ．
+
+これとは別に，3行16列のchar型の2次元配列strを用意し， 3行のそれぞれに，先の配列ptrが指す3つの文字列をコピーし、表示せよ．
+
+次にptr, strそれぞれについて文字列がメモリ領域をどの程度必要かを、 ポインタのアドレスの差を計算することによって表示せよ．
+
+
+プログラムに必要な要素
+
+charへのポインタ3つからなる配列ptrを定義し，その定義時に3つ の要素が，それぞれ，文字列リテラル"BKC" "NojiHigashi" "Kusatsu"を 指すように初期化せよ．
+3行16列のchar型変数による2次元配列strを用意せよ．
+strの3つの行のそれぞれに，ptrの3つの文字列のそれぞれを strcpy関数を用いてコピーし格納せよ． インクルードファイルとしてstring.hが必要である．
+コピーの際にprintf関数を用いてstrの各行の文字列を出力せよ．
+strにおいて"BKC"の先頭文字Bのアドレスと、"Kusatsu"が含まれる行の最 後の要素のアドレスの差から、配列strが占めているメモリ領域の大きさ を計算し表示せよ．
+配列ptrが指す3つの文字列は，ptrを定義したときにメモリ上に配置される ので，連続したメモリ領域に置かれる．
+ptrにおいてptr[0]が指す"BKC"の先頭文字Bのアドレス、ptr[2]が指す "Kusatsu"の末尾のナル文字のアドレスを求め、これらの差から，配列ptr が指す，連続した3つの文字列が占めているメモリ領域の大きさを計算し 表示せよ．
+
+アドレス同士の差を計算すると，コンパイル時にwarningが発生すること があるが，本課題ではこれを無視してよい．
+
+
+プログラム作成上のヒント
+
+strにおいては'B'がstr[0][0]に相当するなど、配列要素について自明なことは利用してよい．
+アドレスを得るには必要に応じて&演算子を使う。
+表示結果については、教科書p.292のFig.11-5を参考にせよ。
+strについてはstr[2][8]からstr[2][15]までの領域もstr によって占められているとみなす．
+実行例（ただし数値が正しいとは限らない）
+
+   % ./a.out
+   1つ目の文字列BKCをコピーしました
+   2つ目の文字列NojiHigashiをコピーしました
+   3つ目の文字列Kusatsuをコピーしました
+   strが占めるメモリ領域の大きさは 48 
+   ptrが指す文字列が占めるメモリ領域の大きさは 24
+   %
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#include <string.h>$!!
+submodule$int main(void)$!!
+block$char *ptr[] = {"BKC", "NojiHigashi", "Kusatsu"};
+char str[3][16]; 
+char *end;$!!
+block$int length, i;$end: 文字列の最後のナル文字へのポインタ!!
+loop$for(i = 0; i < 3; i++) $!!
+block$strcpy(str[i], ptr[i]);$!!
+block$printf("%dつ目の文字列%sをコピーしました\n", i+1, ptr[i]);$!!
+block$length = (int)&str[2][15] - (int)&str[0][0] + 1;$配列strの長さを計算!!
+block$printf("strの長さは %d \n", length);$!!
+block$end = ptr[2]+ strlen(ptr[2])+1; $文字列最後のナル文字のアドレス!!
+block$length = (int)end - (int)ptr[0]; $文字列先頭との差がptr[]の長さ!!
+block$printf("ptrの長さは %d \n", length);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+#include <string.h>
+
+int
+main(void)
+{
+  char *ptr[] /* ３つのポインタからなる配列 */
+    = {"BKC", "NojiHigashi", "Kusatsu"}; /* ３つの文字列で初期化 */
+  char str[3][16]; /* ３行16列の文字型配列 */
+  char *end; /* 文字列の最後のナル文字へのポインタ */
+  int length; /* 長さ */
+  int i; /* ループ変数 */
+
+  /* ptr[]から3つの文字列をstr[]にコピー */
+  for(i = 0; i < 3; i++) {
+    strcpy(str[i], ptr[i]);
+    printf("%dつ目の文字列%sをコピーしました\n", i+1, ptr[i]);
+  }
+
+  /* 配列strの長さを計算 */
+  length = (int)&str[2][15] - (int)&str[0][0] + 1;
+  printf("strの長さは %d \n", length);
+  /* 配列ptrの長さを計算 */
+  end = ptr[2]+ strlen(ptr[2])+1; /* 文字列最後のナル文字のアドレス */
+  length = (int)end - (int)ptr[0]; /* 文字列先頭との差がptr[]の長さ */
+  printf("ptrの長さは %d \n", length);
+
+  return 0;
+}
+</answer>

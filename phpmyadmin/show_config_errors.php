@@ -30,10 +30,7 @@ header('Content-Type: text/html; charset=utf-8');
 
 require 'libraries/vendor_config.php';
 
-if (function_exists('error_reporting')) {
-    error_reporting(E_ALL);
-}
-
+error_reporting(E_ALL);
 /**
  * Read config file.
  */

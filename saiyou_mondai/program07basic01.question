@@ -1,0 +1,133 @@
+<question>
+
+行列A (p行 q列)と行列B (q行 r列)の積C (p行 r列)を求めるプログラムを作成せよ．
+
+プログラムに必要な要素
+
+p, q, rの値は#defineを用いて定義せよ．
+行列A, Bの要素の値は入力せず、実行例の値で直接初期化せよ．
+行列Cの要素は0で初期化せよ。
+行列A, Bを表示した後，行列の積を表示せよ
+
+
+プログラム作成上のヒント
+
+二次元配列内の要素の初期値は、ソースコード内で配列を定義するときに以下のようにして指定できる．
+  int  main(void)
+  {
+    int matrix[2][3] = {
+      {1, 2, 3}, 
+      {4, 5, 6}
+    };
+           :
+
+行列AとBを二次元配列(例えば，matrixA[MAXSIZE][MAXSIZE]．ただし，MAXSIZEは適切にdefineされ ているとする)で宣言する．
+このとき，行列A の i 行 j 列の要素は，C言語ではmatrixA[i-1][j-1]に記憶させることに注意する．matrixBに ついても同様．
+このときmatrixCは次のように計算できる．
+matrixC[i][j] = matrixA[i][0]*matrixB[0][j] + matrixA[i][1]*matrixB[1][j] + ... + matrixA[i][q-1]*matrixB[q-1][j];
+実行例
+
+ % ./a.out
+    行列 A = 
+       2  4  8
+       7  3  3
+    行列 B = 
+       4  5  2  7
+       5  6  2  8
+       1  2  3  6
+    行列 A * B =
+      36 50 36 94
+      46 59 29 91
+ %
+
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#define P (2)
+#define Q (3)
+#define R (4)  $!!
+submodule$int main(void)$!!
+block$int matrixA[P][Q] = }
+{2, 4, 8},
+{7, 3, 3}
+};$!!
+block$int matrixB[Q][R] = {
+{4, 5, 2, 7},
+{5, 6, 2, 8},
+{1, 2, 3, 6}
+};$!!
+block$int matrixC[P][R] = {};
+int i, j, k;$matrixC: 行列Cのすべての要素を0にする(初期化)!!
+block$printf("行列A = \n");$!!
+loop$for(i = 0; i < P; i++)$!!
+loop$for(j = 0; j < Q; j++)$!!
+block$printf("%3d", matrixA[i][j]);$!!
+block$printf("\n");$!!
+block$printf("行列B = \n");$!!
+loop$for(i = 0; i < Q; i++) $!!
+loop$for(j = 0; j < R; j++)$!!
+block$printf("%3d", matrixB[i][j]);$!!
+block$printf("\n");$!!
+block$printf("行列A*B = \n");$!!
+loop$for(i = 0; i < P; i++) $!!
+loop$for(j = 0; j < R; j++) $!!
+loop$for(k = 0; k < Q; k++)$!!
+block$matrixC[i][j] += matrixA[i][k] * matrixB[k][j];$!!
+block$printf("%3d", matrixC[i][j]);$!!
+block$printf("\n");$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+#define P (2)  
+#define Q (3)  
+#define R (4)  
+
+int main(void)
+{
+  int matrixA[P][Q] = {
+    {2, 4, 8},
+    {7, 3, 3}
+  };
+  int matrixB[Q][R] = {
+    {4, 5, 2, 7},
+    {5, 6, 2, 8},
+    {1, 2, 3, 6},
+  };
+  int matrixC[P][R] = {};  /* 行列Cのすべての要素を0にする(初期化) */
+  int i, j, k;
+
+  /* 行列Aを表示する */
+  printf("行列A = \n");
+  for(i = 0; i < P; i++) {
+    for(j = 0; j < Q; j++)
+      printf("%3d", matrixA[i][j]);
+    printf("\n");
+  }
+
+  /* 行列Bを表示する */
+  printf("行列B = \n");
+  for(i = 0; i < Q; i++) {
+    for(j = 0; j < R; j++)
+      printf("%3d", matrixB[i][j]);
+    printf("\n");
+  }
+
+  /* 行列の積を計算する */
+  printf("行列A*B = \n");
+  for(i = 0; i < P; i++) {
+    for(j = 0; j < R; j++) {
+      for(k = 0; k < Q; k++)
+	matrixC[i][j] += matrixA[i][k] * matrixB[k][j];
+      printf("%3d", matrixC[i][j]);
+    }
+    printf("\n");
+  }
+  
+  return 0;
+}
+</answer>

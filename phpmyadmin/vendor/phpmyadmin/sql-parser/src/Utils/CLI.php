@@ -31,7 +31,7 @@ class CLI
 
     public function usageHighlight()
     {
-        echo "Usage: highlight-query --query SQL [--format html|cli|text] [--ansi]\n";
+        echo "Usage: highlight-query --query SQL [--format html|cli|text]\n";
         echo "       cat file.sql | highlight-query\n";
     }
 
@@ -45,11 +45,10 @@ class CLI
         $longopts = array(
             'help',
             'query:',
-            'format:',
-            'ansi'
+            'format:'
         );
         $params = $this->getopt(
-            'hq:f:a',
+            'hq:f:',
             $longopts
         );
         if ($params === false) {
@@ -84,10 +83,6 @@ class CLI
                 $params['q'] = $stdIn;
             }
         }
-
-        if (isset($params['a'])) {
-            Context::setMode('ANSI_QUOTES');
-        }
         if (isset($params['q'])) {
             echo Formatter::format(
                 $params['q'],
@@ -105,7 +100,7 @@ class CLI
 
     public function usageLint()
     {
-        echo "Usage: lint-query --query SQL [--ansi]\n";
+        echo "Usage: lint-query --query SQL\n";
         echo "       cat file.sql | lint-query\n";
     }
 
@@ -114,11 +109,10 @@ class CLI
         $longopts = array(
             'help',
             'query:',
-            'context:',
-            'ansi'
+            'context:'
         );
         $params = $this->getopt(
-            'hq:c:a',
+            'hq:c:',
             $longopts
         );
         $this->mergeLongOpts($params, $longopts);
@@ -145,10 +139,6 @@ class CLI
                 $params['q'] = $stdIn;
             }
         }
-        if (isset($params['a'])) {
-            Context::setMode('ANSI_QUOTES');
-        }
-
         if (isset($params['q'])) {
             $lexer = new Lexer($params['q'], false);
             $parser = new Parser($lexer->list);
@@ -170,7 +160,7 @@ class CLI
 
     public function usageTokenize()
     {
-        echo "Usage: tokenize-query --query SQL [--ansi]\n";
+        echo "Usage: tokenize-query --query SQL\n";
         echo "       cat file.sql | tokenize-query\n";
     }
 
@@ -178,11 +168,10 @@ class CLI
     {
         $longopts = array(
             'help',
-            'query:',
-            'ansi'
+            'query:'
         );
         $params = $this->getopt(
-            'hq:a',
+            'hq:',
             $longopts
         );
         $this->mergeLongOpts($params, $longopts);
@@ -205,10 +194,6 @@ class CLI
             if ($stdIn = $this->readStdin()) {
                 $params['q'] = $stdIn;
             }
-        }
-
-        if (isset($params['a'])) {
-            Context::setMode('ANSI_QUOTES');
         }
         if (isset($params['q'])) {
             $lexer = new Lexer($params['q'], false);
@@ -233,7 +218,7 @@ class CLI
         return 1;
     }
 
-    public function readStdin() {
+    private function readStdin() {
         stream_set_blocking(STDIN, false);
         $stdin = stream_get_contents(STDIN);
         // restore-default block-mode setting

@@ -207,7 +207,6 @@ class Bookmark
     /**
      * Defines the bookmark parameters for the current user
      *
-     * @param string $user Current user
      * @return array the bookmark parameters for the current user
      * @access  public
      */
@@ -237,12 +236,10 @@ class Bookmark
     /**
      * Creates a Bookmark object from the parameters
      *
-     * @param DatabaseInterface $dbi        DatabaseInterface object
-     * @param string            $user       Current user
-     * @param array             $bkm_fields the properties of the bookmark to add; here,
-     *                                      $bkm_fields['bkm_sql_query'] is urlencoded
-     * @param boolean           $all_users  whether to make the bookmark
-     *                                      available for all users
+     * @param array   $bkm_fields the properties of the bookmark to add; here,
+     *                            $bkm_fields['bkm_sql_query'] is urlencoded
+     * @param boolean $all_users  whether to make the bookmark available
+     *                            for all users
      *
      * @return Bookmark|false
      */
@@ -272,9 +269,7 @@ class Bookmark
     /**
      * Gets the list of bookmarks defined for the current database
      *
-     * @param DatabaseInterface $dbi  DatabaseInterface object
-     * @param string            $user Current user
-     * @param string|bool       $db   the current database name or false
+     * @param string|bool $db the current database name or false
      *
      * @return Bookmark[] the bookmarks list
      *
@@ -325,14 +320,12 @@ class Bookmark
     /**
      * Retrieve a specific bookmark
      *
-     * @param DatabaseInterface $dbi                 DatabaseInterface object
-     * @param string            $user                Current user
-     * @param string            $db                  the current database name
-     * @param mixed             $id                  an identifier of the bookmark to get
-     * @param string            $id_field            which field to look up the identifier
-     * @param boolean           $action_bookmark_all true: get all bookmarks regardless
-     *                                               of the owning user
-     * @param boolean           $exact_user_match    whether to ignore bookmarks with no user
+     * @param string  $db                  the current database name
+     * @param mixed   $id                  an identifier of the bookmark to get
+     * @param string  $id_field            which field to look up the identifier
+     * @param boolean $action_bookmark_all true: get all bookmarks regardless
+     *                                     of the owning user
+     * @param boolean $exact_user_match    whether to ignore bookmarks with no user
      *
      * @return Bookmark the bookmark
      *

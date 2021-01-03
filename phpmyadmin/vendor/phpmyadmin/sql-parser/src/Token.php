@@ -258,16 +258,17 @@ class Token
                 if ($this->flags & self::FLAG_NUMBER_HEX) {
                     if ($this->flags & self::FLAG_NUMBER_NEGATIVE) {
                         $ret = str_replace('-', '', $this->token);
-                        $ret = -hexdec($ret);
+                        sscanf($ret, '%x', $ret);
+                        $ret = -$ret;
                     } else {
-                        $ret = hexdec($ret);
+                        sscanf($ret, '%x', $ret);
                     }
                 } elseif (($this->flags & self::FLAG_NUMBER_APPROXIMATE)
                 || ($this->flags & self::FLAG_NUMBER_FLOAT)
                 ) {
-                    $ret = (float) $ret;
-                } elseif (! ($this->flags & self::FLAG_NUMBER_BINARY)) {
-                    $ret = (int) $ret;
+                    sscanf($ret, '%f', $ret);
+                } else {
+                    sscanf($ret, '%d', $ret);
                 }
 
                 return $ret;

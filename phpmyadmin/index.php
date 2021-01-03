@@ -376,7 +376,7 @@ if ($server > 0 && $GLOBALS['cfg']['ShowServerInfo']) {
         $GLOBALS['cfg']['Server']['DisableIS']
     );
 
-    echo '           ' , (isset($charsets[$charset]) ? $charsets[$charset] : '') , ' (' . $charset, ')';
+    echo '           ' , $charsets[$charset], ' (' . $charset, ')';
     echo '        </span>'
        . '    </li>'
        . '  </ul>'

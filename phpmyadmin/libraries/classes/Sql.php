@@ -763,7 +763,7 @@ EOT;
         $retval = $pmatable->setUiProp(
             $property_to_set,
             $property_value,
-            isset($_POST['table_create_time']) ? $_POST['table_create_time'] : null
+            $_POST['table_create_time']
         );
         if (gettype($retval) != 'boolean') {
             $response = Response::getInstance();
@@ -1465,7 +1465,6 @@ EOT;
      * @param DisplayResults $displayResultsObject DisplayResult instance
      * @param array          $extra_data           extra data
      * @param string         $pmaThemeImage        uri of the theme image
-     * @param array|null     $profiling_results    profiling results
      * @param object         $result               executed query results
      * @param string         $sql_query            sql query
      * @param string         $complete_query       complete sql query
@@ -1474,7 +1473,7 @@ EOT;
      */
     private function getQueryResponseForNoResultsReturned(array $analyzed_sql_results, $db,
         $table, $message_to_show, $num_rows, $displayResultsObject, $extra_data,
-        $pmaThemeImage, $profiling_results, $result, $sql_query, $complete_query
+        $pmaThemeImage, $result, $sql_query, $complete_query
     ) {
         if ($this->isDeleteTransformationInfo($analyzed_sql_results)) {
             $this->deleteTransformationInfo($db, $table, $analyzed_sql_results);
@@ -1532,17 +1531,6 @@ EOT;
                     false, 0, $num_rows, true, $result,
                     $analyzed_sql_results, true
                 );
-
-                if (isset($profiling_results)) {
-                    $header   = $response->getHeader();
-                    $scripts  = $header->getScripts();
-                    $scripts->addFile('sql.js');
-                    $html_output .= $this->getHtmlForProfilingChart(
-                        $url_query,
-                        $db,
-                        isset($profiling_results) ? $profiling_results : []
-                    );
-                }
 
                 $html_output .= $displayResultsObject->getCreateViewQueryResultOp(
                     $analyzed_sql_results
@@ -2256,7 +2244,7 @@ EOT;
                 $analyzed_sql_results, $db, $table,
                 isset($message_to_show) ? $message_to_show : null,
                 $num_rows, $displayResultsObject, $extra_data,
-                $pmaThemeImage, $profiling_results, isset($result) ? $result : null,
+                $pmaThemeImage, isset($result) ? $result : null,
                 $sql_query, isset($complete_query) ? $complete_query : null
             );
         } else {

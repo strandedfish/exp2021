@@ -1,0 +1,61 @@
+<question>
+キーボードから入力された3以上の整数nについて， nが素数か否かを判定するプログラムをfor文とbreak文を使って作成せよ．
+
+ただし，入力された整数が3未満であるときは，再度の入力を促せ．
+
+n を，2からn - 1 までの整数で順に割ったとき， どれかひとつでも余りが0となる場合があれば素数ではない． for文を用いたループの中で， 余りが0となったとき break文でループを脱出するプログラムで， 素数判定を実現せよ．
+
+% ./primeNumber
+3以上の整数: 10
+10 は素数ではありません．
+% ./primeNumber
+3以上の整数: 13
+13 は素数です．
+% 
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int number, remainder, n;$remainderは余りを表す!!
+block$printf("3以上の整数: ");$!!
+block$scanf("%d", &number);$!!
+b_loop$while(number < 3);$!!
+loop$for(n = 2; n < number; n++)  $!!
+block$remainder = number % n;$!!
+branch$if(remainder == 0)$!!
+block$break;$!!
+branch$if( n == number )         $!!
+block$printf("%d は素数です．\n", number);$!!
+branch$else                     $!!
+block$printf("%d は素数でない．\n", number);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+  int number, remainder, n;
+
+  do {
+    printf("3以上の整数: ");
+    scanf("%d", &number);
+  } while(number < 3);
+
+  for(n = 2; n < number; n++) { /* 素数判定のループ */
+    remainder = number % n;
+    if(remainder == 0)
+      break;
+  }
+
+  if( n == number ) {        /*割り切れたときの n が number に等しいとき*/
+    printf("%d は素数です．\n", number);
+  } else {                    /*割り切れたときの n が number より小さいとき*/
+    printf("%d は素数でない．\n", number);
+  }
+  return 0;
+}
+</answer>

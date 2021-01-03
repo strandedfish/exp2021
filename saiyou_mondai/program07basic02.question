@@ -1,0 +1,134 @@
+<question>
+
+以下のように，100点満点の試験の点数が10人分あるとする．
+
+点数
+67
+48
+56
+97
+30
+88
+76
+55
+66
+78
+
+2×10の二次元配列を用意し、1行目に10人分の点数を格納し，この点数の順位を2行目に格納し表示するプログラムを作成せよ。
+
+順位付けをする際はfor文の中で行え．
+
+
+プログラムに必要な要素
+
+2×10の二次元配列score_rankを宣言し，1行目に点数，2行目に0を代入し，初期化せよ．
+点数とその順位を表示せよ．
+
+
+プログラム上のヒント
+
+点数(score)に対応した順位（rank）を行列score_rankの2行目に代入するときは，順位がまだついていない点数の中で最も高いものを探す．最も高いものに1位，次に高いものに2位と順に順位を下げていく．疑似コードは以下の通りとなる。
+ 疑似コード
+  
+ int型の変数rankを宣言し、1を代入して初期化;
+ 
+ for(i=100からi>=0までiを1ずつ減らす) {
+   for(j=0からj<10までjを1ずつ増やす) {
+     if(score_rank[0][j]とiが等しい) {
+         score_rank[1][j]にrankを代入;
+         rankを1増やす;
+         最も内側のループを抜ける;
+     }
+   }
+ }
+実行例
+
+ % ./a.out
+     67 5
+     48 9
+     56 7
+     97 1
+     30 10
+     88 2
+     76 4
+     55 8
+     66 6
+     78 3
+ %
+
+
+</question>
+
+<block>
+block$#include <stdio.h>
+define NUMBER (10)
+#define MAX_SCORE (100) $ NUMBER: 人数の最大値, MAX_SCORE: 点数の最大値!!
+submodule$int main(void)$!!
+block$int score_rank[2][NUMBER] = {
+{67, 48, 56, 97, 30, 88, 76, 55, 66, 78},
+{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+};$!!
+block$int i,j;
+int score;
+int rank;
+score = MAX_SCORE;
+rank = 1;$i,j: for文用のカウンタ変数, MAX_SCORE: スコアの最大値をMAX_SCOREで初期化, rank: 順位の変数!!
+loop$for(i = MAX_SCORE; i >= 0; i--)$!!
+loop$for(j=0; j < NUMBER; j++)$!!
+branch$if(score_rank[0][j] == i) $!!
+block$score_rank[1][j] = rank;$!!
+block$rank++;$!!
+block$break;$!!
+loop$for(i = 0; i < NUMBER; i++)$!!
+block$printf("%d %d\n", score_rank[0][i], score_rank[1][i]);$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+#define NUMBER (10) /* 人数の最大値 */
+#define MAX_SCORE (100) /* 点数の最大値 */
+
+int main(void)
+{
+  /*スコアと順位を代入する配列*/
+  int score_rank[2][NUMBER] = {
+    {67, 48, 56, 97, 30, 88, 76, 55, 66, 78}, /* スコア */
+    {0,0,0,0,0,0,0,0,0,0} /*順位．0で初期化*/
+  };
+
+  int i,j; /* for文用のカウンタ変数 */
+  int score; /* スコアの最大値をMAX_SCOREで初期化 */
+  int rank; /* 順位の変数 */
+
+  score = MAX_SCORE;
+  rank = 1;
+
+  /* スコアに対する順位を代入 */
+  for(i = MAX_SCORE; i >= 0; i--)
+    for(j=0; j < NUMBER; j++)
+      if(score_rank[0][j] == i) {
+	score_rank[1][j] = rank;
+	rank++;
+	break;
+      }
+
+  /* 結果の印字 */
+  for(i = 0; i < NUMBER; i++)
+    printf("%d %d\n", score_rank[0][i], score_rank[1][i]);
+
+  return 0;
+}
+
+/*
+
+本問題は
+http://www9.plala.or.jp/sgwr-t/c/Q/ens09-1.html
+の問1を参考にし作成しました．
+
+*/
+
+
+
+</answer>
