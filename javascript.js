@@ -426,7 +426,7 @@ function createTable() {
         success: function (data) {
             $('#pad-console').append("通信せいこーっ☆☆☆");
             $('.pad-editor').before('<div class="tuushin"></div>');
-            // console.log(data);
+            console.log(data);
         },
         error: function (data) {
             $('#pad-console').append("通信しっぱい…(´・ω・｀)");
