@@ -606,7 +606,7 @@ function loadKadai() {
         var block_html;
         var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
-            s_block = s_blocks[i].replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
+            s_block = s_blocks[i].replace(/^\\n/g, "").replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>"); // 表示上、実際の改行をbrに
             s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
             console.log(s_block);
