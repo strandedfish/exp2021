@@ -19,7 +19,6 @@ var temp_jsonString = "";
 var temp_jsonString_innerText = "";
 var dataUpload_interval;
 var showInfo_interval;
-// var linePath = acgraph.path();
 var stage = null;
 var inactive_time = 0;
 
@@ -653,12 +652,9 @@ function loadKadai() {
                     getJsonString();
                 }
             }, ".input-text");
-            // console.log(block_html);
+            console.log("追加します" + block_html);
+            // ###########ここで実際に追加############
             $(".pad-blockzone-in").children(".sortable").append(block_html);
-            /*      $("#block-"+i).balloon({
-                        contents: s_block[2]
-                  });
-            */
             // 既存のブロックにポップアップを設定
             $("#block-" + temp_i).balloon({
                 position: "right",
