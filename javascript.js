@@ -473,7 +473,7 @@ function dataUpload() {
             }
             tuushin_count += 1;
 
-            // console.log(data);
+            console.log("データ送信成功中…", data);
         },
         error: function (data) {
             $('#pad-console').append("通信しっぱい…");
@@ -596,11 +596,11 @@ function loadKadai() {
         s_start = text.indexOf("<block>") + 7;
         s_end = text.indexOf("</block>");
         var block_part = (text.slice(s_start, s_end));
-        console.log(block_part);
+        // console.log(block_part);
         block_part = block_part.replace(/\r/g, '\\r');
         block_part = block_part.replace(/\n/g, '\\n');
         block_part = block_part.replace(/!!/g, '!!\n');
-        console.log(block_part);
+        // console.log(block_part);
         var s_blocks = block_part.split("!!\n");
         var s_block;
         var block_html;
@@ -1332,7 +1332,7 @@ $(function () {
                     //'display': 'hidden'
                 });
                 $(".debug-console").css({
-                    'display': 'none'
+                    // 'display': 'none'
                     //          'display': 'none'
                 });
                 // 問題文など各種読み込み

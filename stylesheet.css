@@ -385,7 +385,8 @@ console 系
   margin: 0px;
 }
 .debug-console {
-  display: none;
+  /* display: block; */
+  /* display: none; */
   background-color: #EEEEEE;
   margin: 100px 0 0 0;
 }

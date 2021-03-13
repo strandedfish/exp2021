@@ -43,12 +43,14 @@ $conn = mysqli_connect('121.83.2.95', 'HirokiItoExp2020', 'HirokiItoExp2020');
 
 
 if(!$conn) {
+  http_response_code(400);
   die('SQLさーばーへの接続しっぱいしたよぉ…');  
 }
 
 
 $db = mysqli_select_db($conn, 'exp2020');
 if(!$conn) {
+  http_response_code(400);
   die('データベースへの接続しっぱいしたよぉ…');
 }
 
@@ -70,6 +72,7 @@ $sql = sprintf("INSERT INTO ${table_name} (user, time_stamp, tab1_time, tab2_tim
 $result_flag = mysqli_query($conn, $sql);
 */
 if (!$result_flag) {
+    http_response_code(400);
     die('INSERTクエリーが失敗しました。'.mysqli_error($conn));
 }
 
