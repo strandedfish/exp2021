@@ -34,7 +34,7 @@ $json = $_POST['json'];
 
 $table_name = $_POST['table_name'];
 
-$conn = mysqli_connect('localhost', 'HirokiItoExp2020', 'HirokiItoExp2020');
+$conn = mysqli_connect('121.83.2.95', 'HirokiItoExp2020', 'HirokiItoExp2020');
 
 if(!$conn) {
   die('SQLさーばーへの接続しっぱいしたよぉ…');
