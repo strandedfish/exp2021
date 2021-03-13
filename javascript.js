@@ -609,7 +609,7 @@ function loadKadai() {
             s_block = s_blocks[i].replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>"); // 表示上、実際の改行をbrに
             s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
-            // console.log(s_block);
+            console.log(s_block);
             // console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
             obj = s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');
             temp_i = id;
@@ -652,7 +652,6 @@ function loadKadai() {
                     getJsonString();
                 }
             }, ".input-text");
-            console.log("追加します" + block_html);
             // ###########ここで実際に追加############
             $(".pad-blockzone-in").children(".sortable").append(block_html);
             // 既存のブロックにポップアップを設定
