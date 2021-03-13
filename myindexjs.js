@@ -8,11 +8,17 @@ $(function(){
     $.ajax({
         url: "saiyou_mondai",
         success: function(data) {
-            $(data).find(":contains('.question')").each(function() {
-                var filename = $(this).text();
-                filename = filename.replace(".question", "").replace(" ", "");
+            console.log(data);
+            $(data).find("a[href*='.question']").each(function() {
+                console.log(this)
+                var filename = this.pathname;
+                filename = filename.replace("/", "").replace(".question", "").replace(" ", "");
+                console.log(filename);
                 $(".kadai_list").append('<li><a href="kadai.html?name='+filename+'">' + filename + '</a></li>')
             });
+        },
+        error: function(data) {
+            console.log(data);
         }
     });
     // for(var i=1; i<20; i++){

@@ -19,7 +19,7 @@ var temp_jsonString = "";
 var temp_jsonString_innerText = "";
 var dataUpload_interval;
 var showInfo_interval;
-var linePath = acgraph.path();
+// var linePath = acgraph.path();
 var stage = null;
 var inactive_time = 0;
 
