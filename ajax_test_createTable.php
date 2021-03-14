@@ -35,11 +35,11 @@ $table_name = $_POST['table_name'];
 
 $conn = mysqli_connect('www.osakanalab.work:3306', 'HirokiItoExp2020', 'HirokiItoExp2020');
 
-// if (mysqli_connect_errno()) {
-//   die("データベースに接続できません:" . mysqli_connect_error() . "\n");
-// } else {
-//   echo "データテーブルの作成に成功しました。\n";
-// }
+if (mysqli_connect_errno()) {
+  die("www.osakanalab.work:3306に接続できません:" . mysqli_connect_error() . "\n");
+} else {
+  echo "www.osakanalab.work:3306の接続に成功しました。\n";
+}
 
 
 if(!$conn) {
