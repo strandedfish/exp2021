@@ -33,7 +33,7 @@ $json = $_POST['json'];
 
 $table_name = $_POST['table_name'];
 
-$conn = mysqli_connect('121.83.2.95', 'HirokiItoExp2020', 'HirokiItoExp2020');
+$conn = mysqli_connect('www.osakanalab.work:3306', 'HirokiItoExp2020', 'HirokiItoExp2020');
 
 // if (mysqli_connect_errno()) {
 //   die("データベースに接続できません:" . mysqli_connect_error() . "\n");
