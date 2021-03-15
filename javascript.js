@@ -1,10 +1,16 @@
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+データ送信用グローバル変数の定義
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
 var start_time = 0;
 
 var table_name = "default";
 var user = "default";
 var time_stamp = 0;
-var jsonString = "";
-var prev_jsonString = "";
+var culcurated_raw_code = "";
+var culcurating_raw_code_id = "";
+var culcurating_raw_code = "";
 var s_answer = "";
 var tab1_time = 0;
 var tab2_time = 0;
@@ -15,38 +21,64 @@ var compile_num = 0;
 var kadai = null;
 var block_touch_num = [];
 var block_hover_time = [];
-var temp_jsonString = "";
-var temp_jsonString_innerText = "";
 var dataUpload_interval;
 var showInfo_interval;
 var stage = null;
 var inactive_time = 0;
 
+// タッチ回数ホバー回数保存用のArrayを定義
+function createArray() {
+    $(".block-module, .block-submodule, .block-branch, .block-loop, .block-ptloop").each(function (index, element) {
+        block_touch_num.push(0);
+        block_hover_time.push(0);
+        // $(element).parent().attr({
+        //     'id': index
+        // });
+    });
+}
 
-var now_drag_object;
+
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+　ドラッグアンドドロップに関する処理
+
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
+
+// 現在ドラッグ中のオブジェクト
+// 他の関数からアクセスするのでグローバル
+var dragging_object;
+
+// ドラッグできるオブジェクトのプロパティ
 var draggable_prop = {
-    // ドラッグ開始時の処理
     containment: ".main-wrapper",
-    /*    snap: ".droppable",　*/
+    // snap: ".droppable",
     helper: "clone",
     // stack: ".main-wrapper .pad-line",
     zIndex: 1000,
     opacity: 0.3,
     revert: "invalid",
     revertDuration: 500,
+
+    // ドラッグ開始時の処理
     start: function (event, ui) {
         $(this).hide();
-        now_drag_object = $(this);
-        block_touch_num[$(now_drag_object).attr("isoid")]++;
+        dragging_object = $(this);
+        // ログ用変数を更新
+        block_touch_num[$(dragging_object).attr("isoid")]++;
         $("#pad-console-right").text(block_touch_num);
-        allocateId();
+        // ドロップできる位置やブロックIDを再割り当て
+        reAllocate_droppable();
     },
     // ドラッグ終了時の処理
     stop: function (event, ui) {
         $(this).show();
-        now_drag_object = null;
+        dragging_object = null;
     }
 };
+
+// ドロップできるオブジェクトのプロパティ
 var droppable_prop = {
     classes: {
         "ui-droppable-hover": "placeholder"
@@ -54,55 +86,73 @@ var droppable_prop = {
     greedy: true,
     hoverClass: "hilite",
     tolerance: "pointer",
-    over: function (event, ui) {
 
-    },
+    // ドロップされた時の処理
     drop: function (event, ui) {
-        $("#" + event.target.id).append(now_drag_object);
-        now_drag_object.css({
+        // ドロップされた位置にドラッグ中のオブジェクトを挿入
+        $("#" + event.target.id).append(dragging_object);
+        dragging_object.css({
             'top': '0px',
             'left': '0px'
         });
-        addTable(now_drag_object, ui);
+        // 配置可能位置の再計算や線の描画や生コードの取得など
+        after_drop_procedures(dragging_object, ui);
     }
 };
-var sortable_prop = {
 
-}
+// ドラッグ可能オブジェクトとドロップ可能オブジェクトの定義・設定
+function myDraggable() {
+    $('.draggable').draggable(draggable_prop);
+    $('.droppable').droppable(droppable_prop);
+    $('#draggable1').droppable(droppable_prop);
+};
 
-var id_num;
-var right_id;
-var bottom_id;
-var now_dropped_object;
+/* --------------------------
 
-// ドロップした場所によって関数
-function addTable(now_drag_object, ui) {
-    id_num = $(now_drag_object).parent().attr("id");
+ここからしばらくドロップ時の処理
+class化しろよ
+
+----------------------------- */
+
+/* 基本方針：枠にID（i, j）を割り振り、IDを操作して左右のブロック配置状況を把握する */
+var id_num; // 動かした場所の枠のID
+var right_id; // 動かした場所の右の枠のID
+var bottom_id; // 動かした場所の下の枠のID
+var now_dropped_object; // 動かした場所の枠のオブジェクト
+
+// ドロップした場所と近辺の情報を格納し、様々な関数を順番に呼び出す
+function after_drop_procedures(dragging_object, ui) {
+    id_num = $(dragging_object).parent().attr("id");
     id_num = id_num.split("-");
     right_id = id_num[0] + '-' + (+id_num[1] + 1);
     bottom_id = (+id_num[0] + 1) + '-' + id_num[1];
-    now_dropped_object = $(now_drag_object).parent();
-    /* 横を伸ばす */
-    createColumn();
-    /* 縦を伸ばす */
-    createRow();
-    createBlank(ui);
+    now_dropped_object = $(dragging_object).parent();
+    /* 必要なら右側に枠を伸ばす */
+    extend_column();
+    /* 必要なら下側に枠を伸ばす */
+    extend_row();
+    /* ブロックとブロックの間に挿入するための空行を追加する */
+    create_blankline(ui);
+    /* 余分な枠の削除・配置可能位置の再割当て */
     setTimeout(function () {
-        allocateId();
+        reAllocate_droppable();
     }, 5);
+    /* 描画系 */
     setTimeout(function () {
-        drawBranchline();
-        redrawLine();
+        draw_branch_border(); // 分岐の複雑な枠を描画してる
+        redrawLine(); // 枠と枠の間の線を描画してる
     }, 10);
+    /* 移動後の生コードを取得 */
     setTimeout(function () {
-        getJsonString();
+        get_raw_code();
         // コピーボタンを開放
         document.getElementById("copy2clipboard").disabled = "";
     }, 50)
 }
 
 // 一行追加
-function createColumn() {
+function extend_column() {
+    // 要素の数を取得し、足りなければ追加
     if ($("#" + right_id).length == 0 && $(now_dropped_object).closest("table").length > 0) {
         $(now_dropped_object).parent().append('<td id=' + right_id + ' class="droppable ui-droppable"></td>')
         $("#" + right_id).droppable(droppable_prop);
@@ -110,7 +160,7 @@ function createColumn() {
 }
 
 // 一列追加
-function createRow() {
+function extend_row() {
     if ($(now_dropped_object).closest("table").length > 0) {
         if ($("#" + (+id_num[0] + 1) + '-' + 0).length == 0) {
             $(now_dropped_object).parent().parent().append('<tr></tr>');
@@ -125,10 +175,10 @@ function createRow() {
 }
 
 // ドロップ場所を確保するため空行を追加
-function createBlank(ui) {
+function create_blankline(ui) {
     $("tr").each(function (index, element) {
         if ($(element).children().children("li").length > 0 && $(element).next().children().children("li").length > 0) {
-            id_num = $(now_drag_object).parent().attr("id");
+            id_num = $(dragging_object).parent().attr("id");
             id_num = id_num.split("-");
             $('<tr class="temp_row"></tr>').insertAfter($(element));
             for (var i = 0; i <= (+id_num[1]); i++) {
@@ -140,7 +190,7 @@ function createBlank(ui) {
 }
 
 // ドロッパブル位置を計算・余分なセルを削除・番号振り分け
-function allocateId() {
+function reAllocate_droppable() {
     // ２列以上の空列は存在しないはず
     var row_size = $("tr").length;
     for (var i = row_size; i > 0; i--) {
@@ -241,15 +291,69 @@ function allocateId() {
     });
 }
 
+function draw_branch_border() {
+    $(".block-branch").each(function(index, element){
+        // console.log($(element).children("p").html());
+        height = $(element).parent().height();
+
+        $(element).children("div").filter(":first").remove();
+        $(element).children("div").filter(":last").remove();
+
+        before = $(element).prepend("<div></div>");
+        
+        before.children("div").filter(":first").css({
+            "content": "",
+            "position": "absolute",
+            "right": "-15px",
+            "bottom": "-1px",
+            "width": "0px",
+            "border-style": "solid",
+            "border-color": "#000000",
+            "border-width": height/2 + "px 15px "+height/2+"px 0",
+            "border-right-color": "transparent",
+        });
+
+        after = $(element).append("<div></div>")
+        
+        after.children("div").filter(":last").css({
+            "content": "",
+            "position": "absolute",
+            "right": "-14px",
+            "bottom": "0px",
+            "width": "0px",
+            "border-style": "solid",
+            "border-color": "#99bbfd",
+            "border-width": (height/2-1) + "px 15px "+(height/2-1)+"px 0",
+            "border-right-color": "transparent",
+        });
+
+
+    });
+    // end-blockの場所調整
+    if(parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top) != 0) {
+        $("#end-block").css({
+            "margin-top": parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top)
+        });    
+    } else {
+        $("#end-block").css({
+            "margin-top": "100px"
+        });
+    }
+
+    return 0;
+}
+
 var lineflag = 0;
 var line_array = [];
 function redrawLine() {
+    // 前の線をすべて削除
     if (lineflag == 1) {
         $.each(line_array, function (index, element) {
             element.remove();
             line_array = [];
         });
     }
+    // startとendのブロックの線を描画
     line_array.push(new LeaderLine(
         document.getElementById("start-block"),
         document.getElementById("end-block"),
@@ -265,58 +369,9 @@ function redrawLine() {
     ));
     lineflag = 1;
 
+    // すべての枠を走査
     $("td").each(function (index, element) {
-
-        // 分岐仕様変更のため削除
-        //// 横につながっていたら線を引く ただしブランチなら別
-        //if ($(element).children("li").children("div").hasClass("block-branch")) {
-        //    var followblock_distance = 0;
-        //    // 走査
-        //    var num_branch = $(element).attr("id");
-        //    num_branch = num_branch.split("-");
-        //    num1_branch = num_branch[0];
-        //    num2_branch = num_branch[1];
-        //    //console.log( getId(num1_branch, num2_branch) + "はブランチ" );
-        //    branches = $(element).children("li").children("div").attr("branch").split("|")
-        //    // console.log(branches)
-        //    if ($(getId(num1_branch, +num2_branch + 1)).find("li").length > 0) {
-        //        //console.log( getId(num1_branch, +num2_branch+1) + "は存在" );
-        //        branch_count = 0
-        //        for (var i = 0; i < $("tr").length - num1_branch - 1; i++) {
-        //            console.log(branches[branch_count])
-        //            if (branches.length <= branch_count) {
-        //                branches[branch_count] = "undefined"
-        //            }
-        //            var flg = (isFollowing(+num1_branch + i, +num2_branch + 1) == 1 || i == 0);
-        //            if ($(getId(+num1_branch + i, +num2_branch + 1)).find("li").length > 0 && flg) {
-        //                //console.log(getId(num1_branch, +num2_branch+1) +"の下に"+ getId(+num1_branch+i, +num2_branch+1) + "を発見");
-        //                line_array.push(new LeaderLine(
-        //                    document.getElementById($(element).children("li").children("div").attr("id")),
-        //                    document.getElementById($(getId(+num1_branch + i, +num2_branch + 1)).find("li").children("div").attr("id")),
-        //                    {
-        //                        color: 'rgba(12, 10, 9, 1.0)',
-        //                        size: 1,
-        //                        startSocket: 'right',
-        //                        endSocket: 'left',
-        //                        startPlug: 'behind',
-        //                        endPlug: 'behind',
-        //                        path: 'straight',
-        //                        endLabel: LeaderLine.captionLabel({
-        //                            text: branches[branch_count],
-        //                            offset: [5, -40]
-        //                        }),
-        //                    }
-        //                ));
-        //                branch_count++;
-        //            }
-        //            if (flg == 0) {
-        //                break;
-        //            }
-
-        //        }
-        //    }
-        //    // ブランチじゃないなら普通に横に線を引く
-        //} else
+        // 線を引く
         if ($(element).children("li").length > 0 && $(element).next().children("li").length > 0) {
             line_array.push(new LeaderLine(
                 document.getElementById($(element).children("li").children("div").attr("id")),
@@ -330,20 +385,11 @@ function redrawLine() {
                 }
             ));
         }
-        // 下の要素が、左側になにもないブロックであれば線を引く
+        // 下のブロックの左側が存在しなければ（兄弟ブロックであれば）、下のブロックとの間に線を引く
         var id_num_forline = $(element).attr("id");
         id_num_forline = id_num_forline.split("-");
         var followblock_distance = -1;
         var isFollowing_flag = 1;
-        // 同上・ 分岐仕様変更により削除
-        // 左か左上の要素が、ブランチなら先はひかない
-        //for (var i = 0; i < id_num_forline[0]; i++) {
-        //    if ($(getId(id_num_forline[0] - i, id_num_forline[1] - 1)).find("li").children("div").hasClass("block-branch")) {
-        //        return;
-        //    } else if ($(getId(id_num_forline[0] - i, id_num_forline[1] - 1)).find("li").length > 0) {
-        //        break;
-        //    }
-        //}
         // 下のブロックがなんブロック離れているか取得
         if ($("#" + (+id_num_forline[0]) + '-' + (+id_num_forline[1] + 0)).find("li").length > 0) {
             for (var i = 1; i < $("tr").length - id_num_forline[0]; i++) {
@@ -379,24 +425,132 @@ function redrawLine() {
     });
 
 }
-function myDraggable() {
-    $('.draggable').draggable(draggable_prop);
-    $('.droppable').droppable(droppable_prop);
-    $('#draggable1').droppable(droppable_prop);
-};
-function mySortable() {
+
+function get_raw_code() {
+    culcurating_raw_code_id = ""; // 未使用
+    culcurating_raw_code = "";
+
+    var tab_count = 0;
+    /* 生コード取得用　再帰関数 */
+    /* 結果は culcurating_raw_code に格納されている */
+    searchFollowing(1, 0, tab_count);
+
+    culcurated_raw_code = culcurating_raw_code;
+
+    // replace
+    // HTML用の文字コードをプログラム用に再変換
+    culcurated_raw_code = culcurated_raw_code.replace(/'/g, "''").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n");
+
+
+    $("#serialize_output").val(culcurated_raw_code);
+
+    /* culcurated_raw_codeはグローバル変数
+       SQL送信時に一緒に送信する
+    */
 
 }
-// タッチ回数ホバー回数保存用のArrayを定義
-function createArray() {
-    $(".block-module, .block-submodule, .block-branch, .block-loop, .block-ptloop").each(function (index, element) {
-        block_touch_num.push(0);
-        block_hover_time.push(0);
-        // $(element).parent().attr({
-        //     'id': index
-        // });
-    });
+
+// 階層を走査してtime_culcurated_raw_codeに書き込み
+function searchFollowing(num1, num2, tab_count) {
+    var followblock_distance = 0;
+    // 走査
+    if ($(getId(num1, num2)).find("li").length > 0) {
+        outer_loop:
+        for (var i = 0; i < $("tr").length - num1 - 1; i++) {
+            var flg = (isFollowing(+num1 + i, num2) == 1 || i == 0);
+            if (flg == 0) {
+                break;
+            }
+            if ($(getId(+num1 + i, num2)).find("li").length > 0 && flg) {
+                //console.log(getId(num1, num2) +"の下に"+ getId(+num1+i, num2) + "を発見");
+                var tab_num = 0;
+                for (var j = 0; j < tab_count; j++) {
+                    culcurating_raw_code_id = culcurating_raw_code_id + '\t';
+                    culcurating_raw_code = culcurating_raw_code + '\t';
+                    tab_num++;
+                }
+
+                var innerContent = $(getId(+num1 + i, num2)).find("p").html();
+                // inputを文字列に置き換える 一時的に！！
+                $(getId(+num1 + i, num2)).find("p").find("input").each(function (index, element) {
+                    var s_start = innerContent.indexOf("<input");
+                    var s_end = innerContent.indexOf(">") + 1;
+                    if (s_start !== -1 && s_end !== -1) {
+                        var s_input = innerContent.slice(s_start, s_end);
+                        innerContent = innerContent.replace(s_input, $(element).val());
+                    }
+                });
+
+                // elseなら前の行の改行を消す
+                if (innerContent.match(/else/)) {
+                    len = culcurating_raw_code.length;
+                    len2 = culcurating_raw_code_id.length;
+                    if (culcurating_raw_code[len - 1] == '\n' && culcurating_raw_code[len - 2] == '}') {
+                        culcurating_raw_code = culcurating_raw_code.slice(0, -1);
+                        culcurating_raw_code = culcurating_raw_code + " ";
+                    }
+                    if (culcurating_raw_code_id[len2 - 1] == '\n' && culcurating_raw_code_id[len2 - 2] == '}') {
+                        culcurating_raw_code_id = culcurating_raw_code_id.slice(0, -1);
+                        culcurating_raw_code_id = culcurating_raw_code_id + " ";
+                    }
+                    innerContent = innerContent + " ";
+                }
+                
+                //複数行あるコードのタブを揃えるよ
+                var lineincontents = innerContent.split("<br>");
+                for(var l=1; l<lineincontents.length; l++) {
+                    for(var j=0; j<tab_num; j++) {
+                        lineincontents[l] = '\t' + lineincontents[l];
+                    }
+                }
+                innerContent = lineincontents.join("\r\n");
+                culcurating_raw_code = culcurating_raw_code + innerContent + "\n";
+                culcurating_raw_code_id = culcurating_raw_code_id + $(getId(+num1 + i, num2)).find("li").find("div").attr("id") + "\n";
+
+                // もう一段深い階層で同じことをするよ
+                if ($(getId(+num1 + i, +num2 + 1)).find("li").length > 0) {
+                    culcurating_raw_code_id = insertStr(culcurating_raw_code_id, culcurating_raw_code_id.length - 1, "{")
+                    culcurating_raw_code = insertStr(culcurating_raw_code, culcurating_raw_code.length - 1, "{")
+                    searchFollowing(+num1 + i, +num2 + 1, tab_count + 1);
+                    for (var j = 0; j < tab_count; j++) {
+                        culcurating_raw_code_id = culcurating_raw_code_id + '\t';
+                        culcurating_raw_code = culcurating_raw_code + '\t';
+                    }
+                    culcurating_raw_code_id = culcurating_raw_code_id + '}\n';
+                    culcurating_raw_code = culcurating_raw_code + '}\n'
+                } else {
+
+                }
+                followblock_distance = i;
+            }
+        }
+    }
 }
+function insertStr(str, index, insert) {
+    return str.slice(0, index) + insert + str.slice(index, str.length);
+}
+function getId(num1, num2) {
+    return '#' + num1 + '-' + num2;
+}
+function isFollowing(num1, num2) {
+    var isFollowing_f = 1;
+    for (var i = 1; i <= num2; i++) {
+        if ($(getId(num1, +num2 - i)).find("li").length > 0) {
+            isFollowing_f = 0;
+        }
+    }
+    return isFollowing_f;
+}
+
+/* ドロップ後の処理 ここまで */
+
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    データ送信用AJAX関数
+    PHPに一度データを送信し、それを経由してSQLにアクセス
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
+
 // ajax_test_createTable
 function createTable() {
     var now = new Date();
@@ -420,7 +574,7 @@ function createTable() {
             'block_touch_num': block_touch_num,
             'block_hover_time': block_hover_time,
             'table_name': table_name,
-            'json': jsonString
+            'json': culcurated_raw_code
         },
         //通信が成功した時
         success: function (data) {
@@ -454,7 +608,7 @@ function dataUpload() {
             'block_touch_num': block_touch_num,
             'block_hover_time': block_hover_time,
             'table_name': table_name,
-            'json': jsonString
+            'json': culcurated_raw_code
         },
         //通信が成功した時
         success: function (data) {
@@ -486,9 +640,11 @@ function dataUpload() {
     });
 };
 
+// paiza api を使って生コードと標準入力から出力結果を表示
 function paiza_api_create() {
+    
     source = jsonString;
-    input_value = document.getElementById("std_input").value; //未実装！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+    input_value = document.getElementById("std_input").value;
     $.ajax({
         type: "POST",
         url: "http://api.paiza.io/runners/create",
@@ -576,6 +732,13 @@ function sleep(waitMsec) {
   while (new Date() - startMsec < waitMsec);
 }
 
+/*
+■■■■■■■■■■■■■■■■■■■■
+    問題読み込み
+    現状ではサーバー上の独自形式ローカルファイルから取得
+■■■■■■■■■■■■■■■■■■■■
+*/
+
 // .questionファイルから問題データを読み込み
 function loadKadai() {
     name = decodeURIComponent(location.search.split("=")[1]);
@@ -592,33 +755,33 @@ function loadKadai() {
         var s_question = text.slice(s_start, s_end).replace(/\n/g, "<br>");
         $(".pad-question").html(s_question);
         // ブロック読み込み
-        // text = text.replace(/\r?\n/g, '');
         s_start = text.indexOf("<block>") + 7;
         s_end = text.indexOf("</block>");
         var block_part = (text.slice(s_start, s_end));
-        // console.log(block_part);
+        /* 改行コードの処理がややこしい */
         block_part = block_part.replace(/\r/g, '\\r');
         block_part = block_part.replace(/\n/g, '\\n');
         block_part = block_part.replace(/!!/g, '!!\n');
-        // console.log(block_part);
+
+        /* ここで、コード断片毎に分割 */
         var s_blocks = block_part.split("!!\n");
         var s_block;
         var block_html;
         var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
+            /* 再度文字コードの処理 */
             s_block = s_blocks[i].replace(/^\\n/g, "").replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>"); // 表示上、実際の改行をbrに
             s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
-            // 読み込み出来ているかテスト
-            // console.log(s_block);
-            // console.log(s_block[0] + ", " + s_block[1] + ", " + s_block[2] + ";");
+
+            /* 重複の確認 データ分析の関係上、各コード断片は独立でなければならないため、重複がないことを想定して作られている */
             obj = s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');
             temp_i = id;
             var switch_flag = 1;
             $(".draggable").each(function(index, element){
                 if(obj == element.innerText) {
-                    // console.log(obj + "は重複しています");
-                    // console.log(element);
+                    console.log(obj + "は重複しています");
+                    console.log(element);
                     temp_i = $(element).attr("id");
                     // console.log(temp_i);
                     switch_flag = 0;
@@ -629,6 +792,7 @@ function loadKadai() {
             });
             // console.log(temp_i + ", " + obj);
 
+            /* コード断片の種類によってHTMLを挿入 */
             switch (s_block[0]) {
                 case 'block':
                     block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
@@ -648,14 +812,17 @@ function loadKadai() {
             }
 
             // テキストが更新されたら取得
+            // なんでここに書いてあるんだろ
             $(document).on({
                 'change': function () {
-                    getJsonString();
+                    get_raw_code();
                 }
             }, ".input-text");
-            // ###########ここで実際に追加############
+
+            // ここで実際に左の枠に追加
             $(".pad-blockzone-in").children(".sortable").append(block_html);
-            // 既存のブロックにポップアップを設定
+
+            // 既存のブロックにポップアップを設定（もしあるなら）
             $("#block-" + temp_i).balloon({
                 position: "right",
                 minLifetime: 0,
@@ -672,6 +839,7 @@ function loadKadai() {
         }
     });
     // ランダムに並び替え
+    // 出来てなくない？
     var bool = [1, -1];
     $('#draggable1').html(
         $(".draggable").sort(function(a, b) {
@@ -680,132 +848,7 @@ function loadKadai() {
     )
 }
 
-function drawBranchline() {
-    // $("#graphics_container").css({
-    //     top: $(".pad-line").offset().top,
-    //     left: $(".pad-line").offset().left
-    // });
-
-    // acgraph.events.removeAll(linePath);
-    // linePath.parent(stage);
-    // linePath.moveTo(150, 150);
-    // linePath.lineTo(50, 10, 50, 50, 10, 50).fill("blue");
-    // linePath.close();
-
-    // $("td").each(function(index, element){
-    //     // ブランチが下に続いていれば同じブロックのように見せかける
-    //     if ($(element).children("li").children("div").hasClass("block-branch")) {
-    //         // ブランチの下にブランチが続いているか走査
-    //         var id = $(element).attr("id");
-    //         var followblock_distance = -1;
-    //         id = id.split("-");
-    //         if ($(getId(id[0], id[1])).find("li").length > 0) {
-    //             for (var i = 1; i < $("tr").length - id[0]; i++) {
-    //                 // console.log(+id[0] + i+","+ id[1])
-    //                 // console.log($(getId(+id[0] + i, +id[1])).find("li").length);
-    //                 if ($(getId(+id[0] + i, +id[1])).children("li").children("div").hasClass("block-branch")) {
-    //                     followblock_distance = i;
-    //                     // ここに図形描画のコード
-    //                     break;
-    //                 } else if ($(getId(+id[0] + i, +id[1])).find("li").length > 0) {
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //         if (followblock_distance > 0) {
-    //             console.log(followblock_distance + "先に分岐ぶろっくがあります．");
-    //             console.log($(getId(id[0], id[1])).find("p").text());
-    //             console.log($(getId(parseInt(id[0])+parseInt(followblock_distance), id[1])).find("p").text());
-    //             console.log(parseInt(id[0])+parseInt(followblock_distance) +", "+ id[1])
-    //         }
-
-    //         /* TODO */
-    //     }
-    
-    // });
-
-    //
-    $(".block-branch").each(function(index, element){
-        // console.log($(element).children("p").html());
-        height = $(element).parent().height();
-
-        $(element).children("div").filter(":first").remove();
-        $(element).children("div").filter(":last").remove();
-
-        before = $(element).prepend("<div></div>");
-        
-        before.children("div").filter(":first").css({
-            "content": "",
-            "position": "absolute",
-            "right": "-15px",
-            "bottom": "-1px",
-            "width": "0px",
-            "border-style": "solid",
-            "border-color": "#000000",
-            "border-width": height/2 + "px 15px "+height/2+"px 0",
-            "border-right-color": "transparent",
-        });
-
-        after = $(element).append("<div></div>")
-        
-        after.children("div").filter(":last").css({
-            "content": "",
-            "position": "absolute",
-            "right": "-14px",
-            "bottom": "0px",
-            "width": "0px",
-            "border-style": "solid",
-            "border-color": "#99bbfd",
-            "border-width": (height/2-1) + "px 15px "+(height/2-1)+"px 0",
-            "border-right-color": "transparent",
-        });
-
-
-    });
-    // end-blockの場所調整
-    if(parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top) != 0) {
-        $("#end-block").css({
-            "margin-top": parseInt($("#draggable2").css("height")) + parseInt($("#draggable2").offset().top)
-        });    
-    } else {
-        $("#end-block").css({
-            "margin-top": "100px"
-        });
-    }
-
-    return 0;
-}
-// canvasの大きさを動的に変更
-// うまく動かないので廃止
-// function drawBranchline() {
-
-
-//     $('canvas').each(function (index, element) {
-//         var w = $(element).parent().outerWidth(true);
-//         var h = $(element).parent().outerHeight(true);
-//         $(element).attr('width', w);
-//         $(element).attr('height', h);
-
-//         $.jCanvas.defaults.fromCenter = false;
-//         $(element).clearCanvas();
-//         $(element).drawLine({
-//             strokeStyle: "black",
-//             strokeWidth: "1",
-//             x1: $(element).closest('.block-branch').width(),
-//             y1: 0,
-//             x2: $(element).closest('.block-branch').width() - 20,
-//             y2: $(element).closest('.block-branch').height() / 2
-//         });
-//         $(element).drawLine({
-//             strokeStyle: "black",
-//             strokeWidth: "1",
-//             x1: $(element).closest('.block-branch').width() - 20,
-//             y1: $(element).closest('.block-branch').height() / 2,
-//             x2: $(element).closest('.block-branch').width(),
-//             y2: $(element).closest('.block-branch').height()
-//         });
-//     });
-// };
+/* 未使用　機能的にもDebug画面に移行 */
 function showInfo() {
     $("#stage-info").html("<h2>" + user + "さん</h2>");
     $("#stage-info").append("<p>問題文：" + tab1_time / 100 + "秒<br>" +
@@ -815,6 +858,12 @@ function showInfo() {
     $("#stage-info").append("<p>処理時間：" + Math.round(($.now() - start_time) / 1000 * 100)/100 + "秒</p>");
     $("#stage-info").append("<p>経過時間：" + Math.round((tab1_time + tab2_time + tab3_time + tab4_time)/100 * 100)/100 + "秒</p>");
 }
+
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    タブ視聴時間計測用関数
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
 
 var passageTab1;
 var passageTab2;
@@ -861,128 +910,7 @@ function tab3_countStop() {
     passageTab3 = null;
 }
 
-function getJsonString() {
-    prev_jsonString = jsonString
-
-    temp_jsonString = "";
-    temp_jsonString_innerText = "";
-    //temp_jsonString = "{\n"; //最上層
-    //temp_jsonString_innerText = "{\n"
-
-    var tab_count = 0;
-    searchFollowing(1, 0, tab_count);
-
-    //temp_jsonString = temp_jsonString + "}\n"; //最上層
-    //temp_jsonString_innerText += "}\n"
-
-    // 採点機能追加のため廃止
-    jsonString = temp_jsonString_innerText;
-
-    // replace
-    // HTML用の文字コードをプログラム用に再変換
-    jsonString = jsonString.replace(/'/g, "''").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n");
-
-
-    $("#serialize_output").val(jsonString);
-
-
-}
-
-// 階層を走査してtime_jsonStringに書き込み
-function searchFollowing(num1, num2, tab_count) {
-    var followblock_distance = 0;
-    // 走査
-    if ($(getId(num1, num2)).find("li").length > 0) {
-        outer_loop:
-        for (var i = 0; i < $("tr").length - num1 - 1; i++) {
-            var flg = (isFollowing(+num1 + i, num2) == 1 || i == 0);
-            if (flg == 0) {
-                break;
-            }
-            if ($(getId(+num1 + i, num2)).find("li").length > 0 && flg) {
-                //console.log(getId(num1, num2) +"の下に"+ getId(+num1+i, num2) + "を発見");
-                var tab_num = 0;
-                for (var j = 0; j < tab_count; j++) {
-                    temp_jsonString = temp_jsonString + '\t';
-                    temp_jsonString_innerText = temp_jsonString_innerText + '\t';
-                    tab_num++;
-                }
-
-                var innerContent = $(getId(+num1 + i, num2)).find("p").html();
-                // inputを文字列に置き換える 一時的に！！
-                $(getId(+num1 + i, num2)).find("p").find("input").each(function (index, element) {
-                    var s_start = innerContent.indexOf("<input");
-                    var s_end = innerContent.indexOf(">") + 1;
-                    if (s_start !== -1 && s_end !== -1) {
-                        var s_input = innerContent.slice(s_start, s_end);
-                        innerContent = innerContent.replace(s_input, $(element).val());
-                    }
-                });
-
-                // elseなら前の行の改行を消す
-                if (innerContent.match(/else/)) {
-                    len = temp_jsonString_innerText.length;
-                    len2 = temp_jsonString.length;
-                    if (temp_jsonString_innerText[len - 1] == '\n' && temp_jsonString_innerText[len - 2] == '}') {
-                        temp_jsonString_innerText = temp_jsonString_innerText.slice(0, -1);
-                        temp_jsonString_innerText = temp_jsonString_innerText + " ";
-                    }
-                    if (temp_jsonString[len2 - 1] == '\n' && temp_jsonString[len2 - 2] == '}') {
-                        temp_jsonString = temp_jsonString.slice(0, -1);
-                        temp_jsonString = temp_jsonString + " ";
-                    }
-                    innerContent = innerContent + " ";
-                }
-                
-                //複数行あるコードのタブを揃えるよ
-                var lineincontents = innerContent.split("<br>");
-                for(var l=1; l<lineincontents.length; l++) {
-                    for(var j=0; j<tab_num; j++) {
-                        lineincontents[l] = '\t' + lineincontents[l];
-                    }
-                    // console.log(lineincontents[l])
-                }
-                innerContent = lineincontents.join("\r\n");
-                // console.log(tab_num);
-                // console.log(innerContent);
-                temp_jsonString_innerText = temp_jsonString_innerText + innerContent + "\n";
-                temp_jsonString = temp_jsonString + $(getId(+num1 + i, num2)).find("li").find("div").attr("id") + "\n";
-
-                if ($(getId(+num1 + i, +num2 + 1)).find("li").length > 0) {
-                    //console.log(getId(+num1+i, num2) +"の横に"+ getId(+num1+i, +num2+1) + "は存在");
-                    temp_jsonString = insertStr(temp_jsonString, temp_jsonString.length - 1, "{")
-                    temp_jsonString_innerText = insertStr(temp_jsonString_innerText, temp_jsonString_innerText.length - 1, "{")
-                    searchFollowing(+num1 + i, +num2 + 1, tab_count + 1);
-                    for (var j = 0; j < tab_count; j++) {
-                        temp_jsonString = temp_jsonString + '\t';
-                        temp_jsonString_innerText = temp_jsonString_innerText + '\t';
-                    }
-                    temp_jsonString = temp_jsonString + '}\n';
-                    temp_jsonString_innerText = temp_jsonString_innerText + '}\n'
-                } else {
-
-                }
-                followblock_distance = i;
-            }
-        }
-    }
-}
-function insertStr(str, index, insert) {
-    return str.slice(0, index) + insert + str.slice(index, str.length);
-}
-function getId(num1, num2) {
-    return '#' + num1 + '-' + num2;
-}
-function isFollowing(num1, num2) {
-    var isFollowing_f = 1;
-    for (var i = 1; i <= num2; i++) {
-        if ($(getId(num1, +num2 - i)).find("li").length > 0) {
-            isFollowing_f = 0;
-        }
-    }
-    return isFollowing_f;
-}
-
+/* 画面切り替え時に作図画面で描画されている線を非表示にする */
 function hideLine() {
     $.each(line_array, function (index, element) {
         element.hide("none");
@@ -994,10 +922,17 @@ function showLine() {
     });
 }
 
+/*
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    MAIN
+    いろいろと設定
+■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+*/
+
 var num = 0;
 $(function () {
     var hoverFlag = 0;
-    // 新たなブロックを追加（デバック用）
+    // 新たなブロックを追加（デバック用・アップデートしてない・未使用）
     $('#new-block-btn').on('click', function () {
         var module_style = $('input[name="module-style"]:checked').val();
         var balloon = $('#new-block-balloon').val();
@@ -1015,13 +950,19 @@ $(function () {
         });
         num = num + 1;
     });
+
     // resizeされたら分岐の枠線を合わせて変形
     $(window).on('load resize', function () {
         console.log("ウィンドウサイズ変更");
-        drawBranchline();
+        draw_branch_border();
     });
 
-    // タブボタンによる表示切り替えや時間計測の切り替え
+    /*
+    ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+        タブ視聴時間計測設定
+        タブ切り替え設定
+    ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+    */
     $(".tab_area label").on("click", function () {
         var $th = $(this).index();
         $(".tab_label").removeClass("active");
@@ -1055,7 +996,7 @@ $(function () {
         $(this).addClass("block_selected");
 
         $(".draggable>.block").removeClass("hidden");
-        drawBranchline();
+        draw_branch_border();
         switch(index) {
             case 0:
                 // $(".pad-blockzone-in .draggable>.block-module").addClass("hidden");
@@ -1095,31 +1036,37 @@ $(function () {
         }
     })
 
+
+     /*
+    ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+        画面非表示時の設定
+    ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+    */   
     // 画面を閉じている時間を計測
-    // document.addEventListener('webkitvisibilitychange', function(){
-    //     if ( document.webkitHidden ) {
-    //         tab1_countStop();
-    //         tab2_countStop();
-    //         tab3_countStop();
-    //         hidden_time = $.now();
-    //     } else {
-    //         tab1_countStop();
-    //         tab2_countStop();
-    //         tab3_countStop();
-    //         tab4_time += ($.now() - hidden_time)/10;
-    //         switch($(".tab_label").index($(".active"))) {
-    //             case 0:
-    //                 tab1_countStart();
-    //                 break;
-    //             case 1:
-    //                 tab2_countStart();
-    //                 break;
-    //             case 2:
-    //                 tab3_countStart();
-    //                 break;
-    //         }
-    //     }
-    // }, false);
+    document.addEventListener('webkitvisibilitychange', function(){
+        if ( document.webkitHidden ) {
+            tab1_countStop();
+            tab2_countStop();
+            tab3_countStop();
+            hidden_time = $.now();
+        } else {
+            tab1_countStop();
+            tab2_countStop();
+            tab3_countStop();
+            tab4_time += ($.now() - hidden_time)/10;
+            switch($(".tab_label").index($(".active"))) {
+                case 0:
+                    tab1_countStart();
+                    break;
+                case 1:
+                    tab2_countStart();
+                    break;
+                case 2:
+                    tab3_countStart();
+                    break;
+            }
+        }
+    }, false);
 
     // 非アクティブ時に画面を非表示にする
     // ウィンドウをフォーカスしたら指定した関数を実行
@@ -1151,7 +1098,7 @@ $(function () {
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
-        // $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
+        $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -1159,6 +1106,12 @@ $(function () {
         }
     });
 
+     /*
+    ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+        その他いろいろ
+    ○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○
+    */   
+    
     // コードエリアのコピーアンドペーストの禁止
     prevent = 1;
     $('#serialize_output').on('copy cut paste', function(e){
@@ -1207,7 +1160,8 @@ $(function () {
             element.position();
         });
     });
-    // テキストアリアにフォーカスしているのか！？
+
+    // テキストエリアにフォーカスしているのか！？※もしかしたら使わないかも
     var inputAreaFocusing = 0
     var inputting = 0
     var input_start = 0
@@ -1339,7 +1293,7 @@ $(function () {
                 loadKadai();
                 // stage = acgraph.create('graphics_container');
                 setTimeout(function(){
-                    drawBranchline();
+                    draw_branch_border();
                 }, 40)
                 setTimeout(function () {
                     tab1_countStart();
@@ -1349,7 +1303,6 @@ $(function () {
                     createArray();
                     createTable();
                     myDraggable();
-                    mySortable();
                 }, 500);
                 // ☆5秒？？？？ごとにデータを収集☆
                 dataUpload_interval = setInterval('dataUpload()', 5000);

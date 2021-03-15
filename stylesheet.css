@@ -491,7 +491,8 @@ console 系
   position: fixed;
   width: 100vw;
   height: 110vh;
-  background-color: #00FF00;
+  background-color: #94cabc;
+  z-index: 10000 !important;
 }
 .popup-content h1 {
   position: absolute;
