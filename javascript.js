@@ -5,30 +5,43 @@
 */
 var start_time = 0;
 
+// table名は課題名＋日時＋名前
 var table_name = "default";
+// 最初に入力するやつ
 var user = "default";
+
+// データ送信ごとのタイムスタンプ
 var time_stamp = 0;
+// 生コード
 var culcurated_raw_code = "";
 var culcurating_raw_code_id = "";
 var culcurating_raw_code = "";
+// 解答（多分使わない）
 var s_answer = "";
+// 各タブ視聴時間
 var tab1_time = 0;
 var tab2_time = 0;
 var tab3_time = 0;
-var tab4_time = 0; // as ウィンドウ非アクティブ
+var tab4_time = 0; // 累計ウィンドウ非アクティブ時間
+var inactive_time = 0; // 非アクティブ時間保存用
+// ソースコードコピー回数（未使用）
 var copy_num = 0;
+// コンパイル回数
 var compile_num = 0;
-var kadai = null;
+// 課題のファイル名
+var kadai_filename = null;
+// 各コード断片のドラッグアンドドロップ回数
 var block_touch_num = [];
+// 各コード断片のマウスホバー回数（分析には使わないかも）
 var block_hover_time = [];
+
+// 各インターバル
 var dataUpload_interval;
 var showInfo_interval;
-var stage = null;
-var inactive_time = 0;
 
 // タッチ回数ホバー回数保存用のArrayを定義
 function createArray() {
-    $(".block-module, .block-submodule, .block-branch, .block-loop, .block-ptloop").each(function (index, element) {
+    $(".block-module, .block-submodule, .block-branch, .block-loop, .block-b_loop").each(function (index, element) {
         block_touch_num.push(0);
         block_hover_time.push(0);
         // $(element).parent().attr({
@@ -36,6 +49,29 @@ function createArray() {
         // });
     });
 }
+
+// 操作ごとにデータ送信するようにする。
+/*
+    0．timestamp
+    1．なんの操作をしたか（ドラッグ・ドロップ・空欄補充・タブ変更・コンパイル・入力）
+    2．操作したブロックID
+    2．操作したブロック名前
+    3. 空欄
+    4．変更タブ
+    5．入力
+    6．コンパイル結果
+    7．生コード
+*/
+// var timestamp = 0; // 定義済み
+var db_event = "null"; // drag, drop, fill, change_tab, compile, input
+var db_block_id = "null"; // コードID
+var db_block = "null"; // コード名前
+var db_blank = "null"; // 空欄内容
+var db_tab = "null"; // 1(question), 2(PAD), 3(execute), 4(inactive)
+var db_input = "null"; // 入力内容
+var db_result = "null"; // 実行結果
+var db_raw_code = "null"; // なまこ
+
 
 
 /*
@@ -68,6 +104,12 @@ var draggable_prop = {
         // ログ用変数を更新
         block_touch_num[$(dragging_object).attr("isoid")]++;
         $("#pad-console-right").text(block_touch_num);
+        // sql送信
+        db_event = "drag";
+        db_block_id = $(dragging_object).attr("id");
+        db_block = $(dragging_object).find("p").html();
+        // console.log(db_event + ", " + db_block_id + ", " + db_block); // OK!
+        event_data_upload();
         // ドロップできる位置やブロックIDを再割り当て
         reAllocate_droppable();
     },
@@ -148,6 +190,13 @@ function after_drop_procedures(dragging_object, ui) {
         // コピーボタンを開放
         document.getElementById("copy2clipboard").disabled = "";
     }, 50)
+
+    // sql送信
+    db_event = "drop";
+    db_block_id = $(dragging_object).attr("id");
+    db_block = $(dragging_object).find("p").html();
+    // console.log(db_event + ", " + db_block_id + ", " + db_block); // OK!
+    event_data_upload();
 }
 
 // 一行追加
@@ -554,7 +603,7 @@ function isFollowing(num1, num2) {
 // ajax_test_createTable
 function createTable() {
     var now = new Date();
-    table_name = kadai + (now.getMonth() + 1) + "月" + now.getDate() + "日" + now.getHours() + "時" + now.getMinutes() + "分" + user;
+    table_name = kadai_filename + "：" + user + "：" + (now.getMonth() + 1) + "月" + now.getDate() + "日" + now.getHours() + "時" + now.getMinutes() + "分";
     table_name.toString();
     time_stamp = $.now();
     $.ajax({
@@ -563,7 +612,7 @@ function createTable() {
         datatype: "json",
         data: {
             'user': user,
-            'kadai': kadai,
+            'kadai': kadai_filename,
             'time_stamp': time_stamp,
             'tab1_time': tab1_time,
             'tab2_time': tab2_time,
@@ -590,6 +639,7 @@ function createTable() {
 };
 let tuushin_count = 0;
 function dataUpload() {
+    var now = new Date();
     time_stamp = $.now();
     $.ajax({
         type: "POST",
@@ -597,7 +647,7 @@ function dataUpload() {
         datatype: "json",
         data: {
             'user': user,
-            'kadai': kadai,
+            'kadai': kadai_filename,
             'time_stamp': time_stamp,
             'tab1_time': tab1_time,
             'tab2_time': tab2_time,
@@ -640,10 +690,109 @@ function dataUpload() {
     });
 };
 
+// こちらはn秒ごとではなくイベントごとのデータ
+function create_table_event() {
+    var now = new Date();
+    time_stamp = $.now();
+
+    $.ajax({
+        type: "POST",
+        url: "ajax_test_createTable_event.php",
+        datatype: "json",
+        data: {
+            'user': user,
+            'kadai': kadai_filename,
+            'time_stamp': time_stamp,
+            'db_event': db_event,
+            'db_block_id': db_block_id,
+            'db_block': db_block,
+            'db_blank': db_blank,
+            'db_tab': db_tab,
+            'db_input': db_input,
+            'db_result': db_result,
+            'db_raw_code': db_raw_code,
+            'table_name': table_name + "_event"
+        },
+        //通信が成功した時
+        success: function (data) {
+            $('#pad-console').append("イベント毎通信せいこーっ☆☆☆");
+            $('.pad-editor').before('<div class="tuushin"></div>');
+            console.log(data);
+        },
+        error: function (data) {
+            $('#pad-console').append("イベント毎通信しっぱい…(´・ω・｀)");
+            // console.log(data);
+        }
+    });
+};
+
+// こちらはn秒ごとではなくイベントごとのデータ
+function event_data_upload() {
+    var now = new Date();
+    time_stamp = $.now();
+    db_raw_code = culcurated_raw_code
+
+    $.ajax({
+        type: "POST",
+        url: "ajax_test_add_event.php",
+        datatype: "json",
+        data: {
+            'user': user,
+            'kadai': kadai_filename,
+            'time_stamp': time_stamp,
+            'db_event': db_event,
+            'db_block_id': db_block_id,
+            'db_block': db_block,
+            'db_blank': db_blank,
+            'db_tab': db_tab,
+            'db_input': db_input,
+            'db_result': db_result,
+            'db_raw_code': db_raw_code,
+            'table_name': table_name + "_event"
+        },
+        //通信が成功した時
+        success: function (data) {
+            $('#pad-console').append("イベント毎通信せいこーっ♪");
+
+            // 通信ステータス表示有無！！！！！！！
+            $('.tuushin').css({
+                "display": "none"
+            })
+
+            $('.tuushin').empty();
+
+            $('.tuushin').append(tuushin_count + 1 + "回目" + ($.now() - start_time) / 1000 + "秒経過　◇　通信中");
+            for (var i = 0; i < tuushin_count % 4; i++) {
+                $('.tuushin').append("...");
+            }
+            tuushin_count += 1;
+
+            console.log("イベント毎データ送信成功中…", data);
+        },
+        error: function (data) {
+            $('#pad-console').append("イベント毎通信しっぱい…");
+            // alert(($.now() - start_time) / 1000 + "秒目◇通信失敗しました！！！");
+            $('.pad-editor').css({
+                "background-color": "red"
+            })
+            // console.log(data);
+        }
+    });
+
+    // var timestamp = 0; // 定義済み
+    db_event = "null"; // drag, drop, fill, change_tab, compile, input
+    db_block_id = "null"; // コードID
+    db_block = "null"; // コード名前
+    db_blank = "null"; // 空欄内容
+    // db_tab = null; // 1(question), 2(PAD), 3(execute), 4(inactive)
+    db_input = "null"; // 入力内容
+    db_result = "null"; // 実行結果
+    db_raw_code = "null"; // なまこ
+}
+
 // paiza api を使って生コードと標準入力から出力結果を表示
 function paiza_api_create() {
-    
-    source = jsonString;
+    source = culcurated_raw_code;
     input_value = document.getElementById("std_input").value;
     $.ajax({
         type: "POST",
@@ -682,6 +831,10 @@ function paiza_api_create() {
     }).fail(function(data) {
         console.log("Ajax fail (communication error)")
     });
+    db_input = input_value;
+    db_result = $("#compiler_output").val();
+    event_data_upload();
+
 }
 
 function paiza_get_status(id) {
@@ -741,9 +894,8 @@ function sleep(waitMsec) {
 
 // .questionファイルから問題データを読み込み
 function loadKadai() {
-    name = decodeURIComponent(location.search.split("=")[1]);
-    kadai = num;
-    str = "./saiyou_mondai/" + name + ".question";
+    kadai_filename = decodeURIComponent(location.search.split("=")[1]);
+    str = "./saiyou_mondai/" + kadai_filename + ".question";
     $.get(str, function (text) {
         // 正答読み込み
         var s_start = text.indexOf("<answer>") + 8;
@@ -758,11 +910,12 @@ function loadKadai() {
         s_start = text.indexOf("<block>") + 7;
         s_end = text.indexOf("</block>");
         var block_part = (text.slice(s_start, s_end));
+        console.log(block_part);
         /* 改行コードの処理がややこしい */
         block_part = block_part.replace(/\r/g, '\\r');
         block_part = block_part.replace(/\n/g, '\\n');
         block_part = block_part.replace(/!!/g, '!!\n');
-
+        console.log(block_part);
         /* ここで、コード断片毎に分割 */
         var s_blocks = block_part.split("!!\n");
         var s_block;
@@ -770,7 +923,8 @@ function loadKadai() {
         var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
             /* 再度文字コードの処理 */
-            s_block = s_blocks[i].replace(/^\\n/g, "").replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
+            console.log(s_block);
+            s_block = s_blocks[i].replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>"); // 表示上、実際の改行をbrに
             s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
 
@@ -806,8 +960,8 @@ function loadKadai() {
                 case 'branch':
                     block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
-                case 'ptloop':
-                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-ptloop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                case 'b_loop':
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-b_loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
             }
 
@@ -838,14 +992,15 @@ function loadKadai() {
             if (switch_flag) id++;
         }
     });
-    // ランダムに並び替え
-    // 出来てなくない？
-    var bool = [1, -1];
-    $('#draggable1').html(
-        $(".draggable").sort(function(a, b) {
-            return bool[Math.floor(Math.random() * bool.length)];
-        })
-    )
+}
+
+// シャッフル
+function shuffleContent(container) {
+	var content = container.find("> *");
+	var total = content.size();
+	content.each(function() {
+		content.eq(Math.floor(Math.random()*total)).prependTo(container);
+	});
 }
 
 /* 未使用　機能的にもDebug画面に移行 */
@@ -871,6 +1026,8 @@ var passageTab3;
 var passageTab4;
 function tab1_countStart() {
     if (passageTab1 == null) {
+        db_tab = "question";
+        event_data_upload();
         passageTab1 = setInterval(function () {
             tab1_time += 1;
         }, 10);
@@ -880,6 +1037,8 @@ function tab1_countStart() {
 }
 function tab2_countStart() {
     if (passageTab2 == null) {
+        db_tab = "drawing";
+        event_data_upload();
         passageTab2 = setInterval(function () {
             tab2_time += 1;
         }, 10);
@@ -889,6 +1048,8 @@ function tab2_countStart() {
 }
 function tab3_countStart() {
     if (passageTab3 == null) {
+        db_tab = "execute";
+        event_data_upload();
         passageTab3 = setInterval(function () {
             tab3_time += 1;
         }, 10);
@@ -1095,6 +1256,8 @@ $(function () {
 
     // ウィンドウからフォーカスが外れたら指定した関数を実行
     window.addEventListener('blur', function(){
+        db_tab = "inactive";
+        event_data_upload();
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
@@ -1143,7 +1306,7 @@ $(function () {
     $("#compile_clang").on("click", function(){
         compile_num++;
         paiza_api_create();
-        $('#compiler_output').val("");
+        // $('#compiler_output').val("");
     });
 
     // 提出ボタン
@@ -1167,7 +1330,21 @@ $(function () {
     var input_start = 0
     var new_this = 0
     var input_element = 0
-    $(document).on('focus click', '.input-text', function (e) {
+    $(document).on('focus, click', '.input-text', function (e) {
+        // auto_size
+        if( this.value.length != 0 ){
+            $(this).attr('size', this.value.length * 0.9);
+        } else {
+            $(this).attr('size', 3);
+        }
+        // sql送信
+        db_event = "filling";
+        db_block_id = $(this).closest("li").attr("id");
+        db_block = $(this).closest("p").html().replace(/<input.*>/, this.value);
+        db_blank = this.value;
+        // console.log(db_event + ", " + db_block_id + ", " + db_block + "," + db_blank); // OK!
+        event_data_upload();
+        // 色付
         $(this).css("background-color", "#ffc")
         $(this).closest(".block").hideBalloon();
         inputAreaFocusing = 1;
@@ -1194,6 +1371,20 @@ $(function () {
         hoverFlag = 0;
         clearTimeout(sethover);
     }).on('blur', '.input-text', function (e) {
+        // auto_size
+        if( this.value.length != 0 ){
+            $(this).attr('size', this.value.length * 0.9);
+        } else {
+            $(this).attr('size', 3);
+        }
+        // sql送信
+        db_event = "filled";
+        db_block_id = $(this).closest("li").attr("id");
+        db_block = $(this).closest("p").html().replace(/<input.*>/, this.value);
+        db_blank = this.value;
+        // console.log(db_event + ", " + db_block_id + ", " + db_block + "," + db_blank); // OK!
+        event_data_upload();
+
         new_this = this;
         inputting = 0;
         hoverFlag = 0;
@@ -1203,6 +1394,8 @@ $(function () {
         }
             , 800)
     })
+
+    // 指定秒数以上無操作ならフォーカスを切る。あと、バルーンを表示しない。
     toolongFocus = setInterval(function () {
         var time = $.now() - input_start;
         $("#stage_info").append(time)
@@ -1274,7 +1467,7 @@ $(function () {
     $(document).ready(function () {
         // ログインボタン（仮）による画面切り替えと時間計測開始
         $("#login-btn").on("click", function () {
-            user = $("#name").val();
+            user = $("#name").val().replace(/\s+/g, "");
             if (user == "") {
                 $(".login").children("h3").css({
                     'color': 'red',
@@ -1286,24 +1479,26 @@ $(function () {
                     //'display': 'hidden'
                 });
                 $(".debug-console").css({
-                    // 'display': 'none'
+                    'display': 'none'
                     //          'display': 'none'
                 });
                 // 問題文など各種読み込み
                 loadKadai();
-                // stage = acgraph.create('graphics_container');
                 setTimeout(function(){
+                    $(".input-text").attr("size", "3");
                     draw_branch_border();
                 }, 40)
                 setTimeout(function () {
-                    tab1_countStart();
                     start_time = $.now();
-                    //          var data = group.sortable("serialize").get();
-                    //          jsonString = JSON.stringify(data, null, ' ');
                     createArray();
                     createTable();
+                    create_table_event();
                     myDraggable();
-                }, 500);
+                    setTimeout(function () {
+                        shuffleContent($('#draggable1'));
+                        tab1_countStart();
+                    }, 50);
+                }, 300);
                 // ☆5秒？？？？ごとにデータを収集☆
                 dataUpload_interval = setInterval('dataUpload()', 5000);
                 showInfo_interval = setInterval('showInfo()', 10);

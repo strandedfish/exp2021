@@ -34,7 +34,7 @@ day = (date + day1st - 1) % 7
 <block>
 block$#include <stdio.h>$!!
 submodule$int main(void)$!!
-block$int date;
+block$int date;\
 int day;
 int day1st=4;$!!
 block$printf("2001年2月の曜日を調べます\n");

@@ -14,18 +14,18 @@
 block$#include <stdio.h>$!!
 block$#define PAYMENT_BY_HOUR (1000) $時給を表す定数を定義!!
 submodule$int main(void)$!!
-block$int start;\n
-int end;\n
-int hour;\n
-int minute;\n
+block$int start;
+int end;
+int hour;
+int minute;
 int salary;$start: 勤務開始時間 end: 勤務終了時間 hour: 時間単位での勤務期間長 minute: 分単位での勤務期間長 salary: 給与!!
-block$printf("勤務開始時間 (hhmm): ");\n
+block$printf("勤務開始時間 (hhmm): ");
 scanf("%d", &start);$!!
-block$printf("勤務終了時間 (hhmm): ");\n
+block$printf("勤務終了時間 (hhmm): ");
 scanf("%d", &end);$!!
-block$hour = end / 100 - start / 100;\n
+block$hour = end / 100 - start / 100;
 minute = hour * 60 + (end % 100 - start % 100); $分単位で勤務期間長を計算!!
-block$hour = minute / 60;\n
+block$hour = minute / 60;
 minute = minute % 60; $勤務期間長を時間と分に分けて計算!!
 block$salary = (int)((hour + minute / 60.0) * PAYMENT_BY_HOUR); $!!
 block$printf("%2d時間%2d分勤務 給与:%d\n", hour, minute, salary);$!!

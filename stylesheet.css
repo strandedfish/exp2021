@@ -184,6 +184,10 @@ main {
     border-right: double 4px black;
 }
 
+.block-b_loop {
+  border: solid 1px black;
+  border-right: double 4px black;
+}
 .block-branch {
   /* min-height: 20px; */
   border-style: solid none solid solid;
@@ -310,7 +314,7 @@ ol:not(.sortable) {
 
 .pad input {
   min-width: 30px;
-  width: 15%;
+  /* width: 15%; */
 }
 
 

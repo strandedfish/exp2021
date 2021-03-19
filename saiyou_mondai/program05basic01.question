@@ -21,12 +21,14 @@ submodule$int main(void)$!!
 block$int number, remainder, n;$remainderは余りを表す!!
 block$printf("3以上の整数: ");$!!
 block$scanf("%d", &number);$!!
-b_loop$while(number < 3);$!!
+loop$while(1)$!!
+branch$if(number > 2)$!!
+block$break;$!!
 loop$for(n = 2; n < number; n++)  $!!
 block$remainder = number % n;$!!
 branch$if(remainder == 0)$!!
 block$break;$!!
-branch$if( n == number )         $!!
+branch$if( n == number )$!!
 block$printf("%d は素数です．\n", number);$!!
 branch$else                     $!!
 block$printf("%d は素数でない．\n", number);$!!

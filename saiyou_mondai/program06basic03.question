@@ -40,9 +40,11 @@ double average;
 double difference;$!!
 block$printf("ベクトルの要素数は? (最大%d): ", MAX_SIZE);
 scanf("%d", &size);$!!
+loop$while(1)$!!
 branch$if((size > MAX_SIZE) || (size < 1))$!!
 block$printf("要素数は 1以上 %d 以下にしてください\n", MAX_SIZE);$!!
-b_loop$while((size > MAX_SIZE) || (size < 1));$!!
+branch$else$!!
+block$break;$!!
 block$sum = 0;$!!
 loop$for (i = 0; i < size; i++) $!!
 block$printf("%d番目の要素: ", i);$!!

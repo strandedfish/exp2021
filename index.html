@@ -9,7 +9,7 @@
     <script src="jquery.balloon.js"></script>
     <script src="jquery-sortable.js"></script>
     <script type="text/javascript" src="javascript.js"></script>
-    <script type="text/javascript" src="myindexjs.js"></script>
+    <!-- <script type="text/javascript" src="myindexjs.js"></script> -->
     <title>おさかな工房</title>
   </head>
   <body>
@@ -27,12 +27,83 @@
 			  <div class="page-message">
 			  	<h1>Padエディタ</h1>
 				  <p>2021年03月14日 現在作業中のコミット</p>
+          
+          <h3>マニュアル</h3>
+          
+          <h4>問題ファイルについて</h4>
+          
+          <p>
+            ./saiyou_mondai.questionに課題ファイルがある。<br>
+            形式を守れば、誰でも自由に問題を追加することができる。<br>
+            課題ファイルはquestion節とblock節とanswer節に分かれており、これらの節を各ページで読み込みコードパズルを実現している。<br>
+            また、answer節は分析用途のため準備しなくてもよい。</p>
+          <p>
+            block節は区切り文字として"!!"と"$"を使用している。<br>
+            "!!"は1つのブロック、"$"は順に、ブロック種別・コード内容・コードの説明（省略可）となっており、
+            block, loop, branch, submoduleの4種が使える。<br>これらをもとに、ツール上での見た目の変化や絞り込みを実装している。
+          </p>
+          
+          <h4>データベースについて</h4>
+          <p>
+            本システムはログデータをSQLサーバーに保存している。<br>
+            保存先はajax****.phpのmysqli_connect()第1引数で決定している。
+          </p>
+
+          <h4>コードパズルについて</h4>
+          <p>
+            プログラミング初学者の論理的思考力を評価する。<br>
+            したがって、調べながらの解答を考慮しない。
+          </p>
+
+          <p>
+            論理的思考力の評価にあたっては、解答過程のログデータを収集している。
+            そのため、解答中の休憩や行き当たりばったりの解答は推奨しない。
+          </p>
+  
+          <p>
+            コードパズルの基本的なレイアウトは左側にコード断片、右側に問題文・作図画面である。<br>
+            上部のタブでそれぞれの画面を切り替えることができる。
+          </p>
+          <p>
+            コードパズルの作図方法は、概ねPAD図法に従っている。<br>
+            しかし、<b>分岐については各分岐条件を個別のブロックとして定義している</b>ため注意していただきたい。
+          </p>
+          <p>
+            回答者は、各問題ページに移動して名前を入力する。<br>
+            すると解答が始まるので、終わったら画面下部の提出ボタンを押すことでデータ送信は終了する。
+          </p>
+
+
         </div>
       </div>
 
 		  <div class="lesson-menu">
+            <h3>課題リスト</h3>
               <ul class="kadai_list">
-                  <li><a href="tutorial.html">チュートリアル</a></li>
+                  <!-- <li><a href="tutorial.html">チュートリアル</a></li> -->
+                  <li><a href="kadai.html?name=program02basic01">変数を扱ってみよう</a></li>
+                  <li><a href="kadai.html?name=program02debug01">変数同士の計算をしてみよう</a></li>
+                  <li><a href="kadai.html?name=program03basic01">変数の型のふるまいを知ろう</a></li>
+                  <li><a href="kadai.html?name=program03basic02">変数の定義域について知ろう</a></li>
+                  <li><a href="kadai.html?name=program03advanced01">発展：勤務時間から時給を計算しよう</a></li>
+                  <li><a href="kadai.html?name=program04basic03">条件分岐をしてみよう</a></li>
+                  <li><a href="kadai.html?name=program04basic04">より複雑な条件分岐をしてみよう</a></li>
+                  <li><a href="kadai.html?name=program05basic01">繰り返し命令をしてみよう（素数判定）</a></li>
+                  <li><a href="kadai.html?name=program05basic02">繰り返し命令をしてみよう2（ピラミッドを作る石の数）</a></li>
+                  <li><a href="kadai.html?name=program06basic02">配列を使ってみよう（最大値の計算）</a></li>
+                  <li><a href="kadai.html?name=program06basic03">配列を使ってみよう2（ノルムの計算）</a></li>
+                  <li><a href="kadai.html?name=program07basic01">二次元配列を使ってみよう（行列の積）</a></li>
+                  <li><a href="kadai.html?name=program07basic02">二次元配列を使ってみよう2（試験の順位）</a></li>
+                  <li><a href="kadai.html?name=program08basic02">（動作未確認）関数を使ってみよう（直角三角形の印字）</a></li>
+                  <li><a href="kadai.html?name=program08basic03">（動作未確認）関数を使ってみよう2（金利の計算）</a></li>
+                  <li><a href="kadai.html?name=program09basic02">（動作未確認）関数を使ってみよう3（内積の計算）</a></li>
+                  <li><a href="kadai.html?name=program09basic03">（動作未確認）関数を使ってみよう4（行列の積）</a></li>
+                  <li><a href="kadai.html?name=program10basic01">（動作未確認）文字列の扱い（整数の取得・浮動小数点の取得）</a></li>
+                  <li><a href="kadai.html?name=program10basic02">（動作未確認）文字列の扱い2（文字列の連結）</a></li>
+                  <li><a href="kadai.html?name=program11basic01">（動作未確認）ポインタを使ってみよう（大きい順に入れ替える関数の作成）</a></li>
+                  <li><a href="kadai.html?name=program11basic02">（動作未確認）ポインタを使ってみよう2（ベクトルの和）</a></li>
+                  <li><a href="kadai.html?name=program12basic02">（動作未確認）ポインタによる文字列操作（メモリ領域の確認）</a></li>
+                  <li><a href="kadai.html?name=program12basic04">（動作未確認）ポインタによる文字列操作（辞書順）</a></li>
               </ul>
       </div>
 	  </main>
