@@ -4,7 +4,7 @@
 
 scanf()の代わりに以下を用いる．
 
-標準入力 stdin から数字を文字の並びとして受け取るfgets() と数字の並びを数値に変換する関数を組み合わせるのが，もっと も正しい方法である．
+標準入力 stdin から数字を文字の並びとして受け取るfgets() と数字の並びを数値に変換する関数を組み合わせるのがもっと も正しい方法である．
 数値に変換する関数は
           #include <stdlib.h>
 を記述したうえで利用する．これら関数には，
@@ -75,10 +75,10 @@ double get_float(void)
 
 <block>
 block$#include <stdio.h>
-#include <stdlib.h>
+#include <\空欄>
 #define MAX_BUF (256) $!!
-submodule$int get_int(void);$!!
-submodule$double get_float(void);$!!
+block$int get_int(void); //プロトタイプ宣言$!!
+block$double get_float(void); //プロトタイプ宣言$!!
 submodule$int main(void)$!!
 block$int i_number;
 double f_number;$!!

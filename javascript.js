@@ -933,8 +933,8 @@ function loadKadai() {
         for (var i = 0; i < s_blocks.length - 1; i++) {
             /* 再度文字コードの処理 */
             console.log(s_block);
-            s_block = s_blocks[i].replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
-            s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>"); // 表示上、実際の改行をbrに
+            s_block = s_blocks[i].replace(/^\\n/g, "").replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
+            s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>").replace(/;(\s)*\\n/g, ";<br>"); // 表示上、実際の改行をbrに
             s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
 
             /* 重複の確認 データ分析の関係上、各コード断片は独立でなければならないため、重複がないことを想定して作られている */
