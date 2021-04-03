@@ -15,7 +15,10 @@
 
 プログラム作成上のヒント
 
-ベクトル $\textgt{x}=(x_1, x_2, ..., x_n)$, $\textgt{y}=(y_1, y_2,..., y_n)$ の内積 $\textgt{x}\cdot\textgt{y}$ は $x_1y_1+x_2y_2+...+x_ny_n$ で与えられる．
+ベクトル x=(x_1, x_2, ..., x_n), y=(y_1, y_2,..., y_n)の内積x&sdot;yは、
+x_1y_1 + x_2y_2 + ... + x_ny_nで与えられる．
+
+
 実行例
 
 % ./a.out
@@ -34,23 +37,25 @@
 <block>
 block$#include <stdio.h>
 #define MAXSIZE (512) $ベクトルの最大要素数!!
-submodule$int inner_product(int [MAXSIZE], int [MAXSIZE], int);$!!
+block$int inner_product(int [MAXSIZE], int [MAXSIZE], int); //プロトタイプ宣言$!!
 submodule$int main(void)$!!
 block$int size, i;
 int x[MAXSIZE];
 int y[MAXSIZE];$!!
-block$printf("ベクトルの要素数は？(最大 %d): ", MAXSIZE);
+block$printf("ベクトルの要素数は？(最大 %d): \n", MAXSIZE);
 scanf("%d", &size);$!!
 branch$if (size > MAXSIZE) $!!
 block$printf("要素数は%d以下にしてください\n", MAXSIZE);$!!
 branch$else if (size < 1) $!!
 block$printf("要素数は 1 以上にしてください\n");$!!
-b_loop$while((size < 1) || (size > MAXSIZE));$!!
+loop$while(1)$!!
+branch$else$!!
+block$break;$!!
 loop$for (i = 0; i < size; i++)$!!
-block$printf("ベクトル x の %d 番目の要素: ", i+1);
+block$printf("ベクトル x の %d 番目の要素: \n", i+1);
 scanf("%d", &x[i]);$!!
 loop$for (i = 0; i < size; i++)$!!
-block$printf("ベクトル y の %d 番目の要素: ", i+1);
+block$printf("ベクトル y の %d 番目の要素: \n", i+1);
 scanf("%d", &y[i]);$!!
 block$printf("ベクトルx, yの内積は %d です．\n", inner_product(x, y, size));$!!
 block$return 0;$!!

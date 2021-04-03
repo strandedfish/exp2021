@@ -488,8 +488,8 @@ function get_raw_code() {
 
     // replace
     // HTML用の文字コードをプログラム用に再変換
-    culcurated_raw_code = culcurated_raw_code.replace(/'/g, "''").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n");
-
+    culcurated_raw_code = culcurated_raw_code.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/<br>/g, "\n");
+    // .replace(/'/g, "''")
 
     $("#serialize_output").val(culcurated_raw_code);
 
@@ -522,8 +522,10 @@ function searchFollowing(num1, num2, tab_count) {
                 var innerContent = $(getId(+num1 + i, num2)).find("p").html();
                 // inputを文字列に置き換える 一時的に！！
                 $(getId(+num1 + i, num2)).find("p").find("input").each(function (index, element) {
+                    console.log(innerContent);
+                    console.log($(element).val());
                     var s_start = innerContent.indexOf("<input");
-                    var s_end = innerContent.indexOf(">") + 1;
+                    var s_end = innerContent.indexOf('">') + 2;
                     if (s_start !== -1 && s_end !== -1) {
                         var s_input = innerContent.slice(s_start, s_end);
                         innerContent = innerContent.replace(s_input, $(element).val());
@@ -891,8 +893,8 @@ function sleep(waitMsec) {
     現状ではサーバー上の独自形式ローカルファイルから取得
 ■■■■■■■■■■■■■■■■■■■■
 */
-
 // .questionファイルから問題データを読み込み
+
 function loadKadai() {
     kadai_filename = decodeURIComponent(location.search.split("=")[1]);
     str = "./saiyou_mondai/" + kadai_filename + ".question";
@@ -906,6 +908,13 @@ function loadKadai() {
         var s_end = text.indexOf("</question>");
         var s_question = text.slice(s_start, s_end).replace(/\n/g, "<br>");
         $(".pad-question").html(s_question);
+
+        MathJax.Hub.Config({
+            tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+          });
+                
+        MathJax.Hub.Typeset($(".pad-question")[0]);
+
         // ブロック読み込み
         s_start = text.indexOf("<block>") + 7;
         s_end = text.indexOf("</block>");
@@ -1251,7 +1260,8 @@ $(function () {
                     break;
             }
         }
-        $(".popup-content").css({"display": "none"})
+        // デバッグ用：ウィンドウ非アクティブ時の画面表示オフ
+        // $(".popup-content").css({"display": "none"})
     });
 
     // ウィンドウからフォーカスが外れたら指定した関数を実行
@@ -1261,7 +1271,8 @@ $(function () {
         tab1_countStop();
         tab2_countStop();
         tab3_countStop();
-        $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
+        // デバッグ用：ウィンドウ非アクティブ時の画面表示オフ
+        // $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -1337,6 +1348,8 @@ $(function () {
         } else {
             $(this).attr('size', 3);
         }
+        redrawLine()
+        draw_branch_border
         // sql送信
         db_event = "filling";
         db_block_id = $(this).closest("li").attr("id");
@@ -1377,6 +1390,8 @@ $(function () {
         } else {
             $(this).attr('size', 3);
         }
+        redrawLine()
+        draw_branch_border
         // sql送信
         db_event = "filled";
         db_block_id = $(this).closest("li").attr("id");
@@ -1495,13 +1510,12 @@ $(function () {
                     create_table_event();
                     myDraggable();
                     setTimeout(function () {
-                        shuffleContent($('#draggable1'));
+                        // デバッグ時はオフ
+                        // shuffleContent($('#draggable1'));
                         tab1_countStart();
                     }, 50);
                 }, 300);
-                // ☆5秒？？？？ごとにデータを収集☆
-                dataUpload_interval = setInterval('dataUpload()', 5000);
-                showInfo_interval = setInterval('showInfo()', 10);
+
             }
         });
         $(".tab_panel").eq(1).addClass("active");

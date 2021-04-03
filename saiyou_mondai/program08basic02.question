@@ -37,13 +37,15 @@
 
 <block>
 block$#include<stdio.h>$!!
-submodule$void run(char, int);$!!
+block$void run(char, int); //プロトタイプ宣言$!!
 submodule$int main(void)$!!
 block$int line;
-int input;$!!
-block$printf("正の整数: ");
+int input = 0;$!!
+block$printf("正の整数: \n");
 scanf("%d", &input);$!!
-b_loop$while(input <= 0);$!!
+loop$while(input <= 0)$!!
+branch$if(input > 0)$!!
+block$break;$!!
 loop$for(line = 0; line < input; line++) $!!
 block$printf("%2d: ", line+1);$!!
 block$run(' ', line);$!!

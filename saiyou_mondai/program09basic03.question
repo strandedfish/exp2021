@@ -35,10 +35,10 @@ $2 \times 3$ 行列 $A=\begin{pmatrix}a & b & c \\ d & e & f \end{pmatrix}$ と 
 
 <block>
 block$#include <stdio.h>$!!
-submodule$void product(int [2][3], int [3][2], int [2][2]);$!!
+block$void product(int [2][3], int [3][2], int [2][2]); //プロトタイプ宣言$!!
 submodule$int main(void)$!!
-block$int matrix_a[2][3] =  {{1, 2, 3}, {4, 5, 6}};$!!
-block$int matrix_b[3][2] =  {{2, 3}, {4, 5}, {6, 7}};$!!
+block$int matrix_a[2][3] =  {{1, 2, 3}, {4, 5, 6}};
+int matrix_b[3][2] =  {{2, 3}, {4, 5}, {6, 7}};$!!
 block$int matrix_c[2][2]; $結果を格納する行列!!
 block$int i, j;  $for文用のカウンタ変数!!
 block$product(matrix_a, matrix_b, matrix_c);$!!
@@ -53,7 +53,7 @@ loop$for(a = 0; a < 2; a++) $!!
 loop$for(b = 0; b < 2; b++) $!!
 block$z[a][b] = 0;$!!
 loop$for(c = 0; c < 3; c++) $!!
-block$z[a][b] += x[a][c] * y[c][b];$!!
+block$z[a][b] += \空欄;$!!
 block$return;$!!
 </block>
 
