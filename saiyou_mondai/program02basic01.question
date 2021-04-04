@@ -16,8 +16,8 @@ printf()と%d、さらにint型変数を使って、実行例に示すような9
 <block>
 block$#include <stdio.h>$!!
 submodule$int main(void)$!!
-block$int month = 9;$適切な型でmonth変数を作成し、適切な値で初期化せよ$!!
-block$printf("|  %d月 | September |\n", month);$!!
+block$\空欄$適切な型でmonth変数を作成し、適切な値で初期化せよ$!!
+block$printf("|  \空欄月 | September |\n", month);$!!
 block$month = month + 1;$!!
 block$printf("| %d月 | October   |\n", month);$!!
 block$month = month + 1;$!!

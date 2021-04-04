@@ -17,8 +17,10 @@ submodule$int main(void)$!!
 block$\空欄 i_result; $適切な型で変数を宣言せよ!!
 block$\空欄 f_result; $適切な型で変数を宣言せよ!!
 block$i_result = (683-119) * (8+21) / 41;$!!
+block$i_result = (683.0-119.0) * (8.0+21.0) / 41.0;$!!
 block$printf("整数型計算すると (683-119) * (8+21) / 41 = %d\n", i_result);$!!
 block$f_result = (683.0-119.0) * (8.0+21.0) / 41.0;$!!
+block$f_result = (683-119) * (8+21) / 41;$!!
 block$printf("浮動小数点型で計算すると (683-119) * (8+21) / 41 = %f\n", f_result);$!!
 block$return 0;$!!
 </block>

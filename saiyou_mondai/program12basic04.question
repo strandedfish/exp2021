@@ -54,7 +54,7 @@ int earliest;
 int i;
 char all[MAX_STRING] = ""; $str: 入力を保持する配列, earliest: 辞書順で最早の文字列のインデックス, all: すべての文字列の連結!!
 loop$for(i = 0; i < MAX_LINE; i++) $!!
-block$printf("%d行めの文字列を入力してください(最大 %d文字): ", i+1, MAX_COLUMN - 1);
+block$printf("%d行めの文字列を入力してください(最大 %d文字): \n", i+1, MAX_COLUMN - 1);
 fgets(str[i], MAX_COLUMN - 1, stdin);$!!
 block$*(str[i] + strlen(str[i]) - 1) = '\0'; $!!
 block$earliest = 0;$!!

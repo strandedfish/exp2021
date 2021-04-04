@@ -10,6 +10,34 @@ void arrayPlus(int *a, int *b,int size)
 
 本課題の採点においては，実行例と厳密に同じ形式の出力結果をもって正解とみなすこととする．
 
+% ./a.out
+ベクトルの要素数を入力してください (最大256): 4
+1つめのベクトルの1番目の要素を入力してください: 2
+1つめのベクトルの2番目の要素を入力してください: 4
+1つめのベクトルの3番目の要素を入力してください: 3
+1つめのベクトルの4番目の要素を入力してください: 1
+2つめのベクトルの1番目の要素を入力してください: 3
+2つめのベクトルの2番目の要素を入力してください: 3
+2つめのベクトルの3番目の要素を入力してください: 4
+2つめのベクトルの4番目の要素を入力してください: 5
+２つのベクトル
+(2,4,3,1)
+(3,3,4,5)
+の和は
+(5,7,7,6)
+%
+
+標準入力は以下のように一行ずつ受け付けることに留意せよ
+4
+2
+4
+3
+1
+3
+3
+4
+5
+
 </question>
 
 <block>
@@ -24,17 +52,17 @@ block$int size;
 int a[MAX];
 int b[MAX];
 int x;
-char line[MAX_LINE]; $!!
-block$printf("ベクトルの要素数を入力してください(最大%d)", MAX);
+char line[MAX_LINE];$!!
+block$printf("ベクトルの要素数を入力してください(最大%d)\n", MAX);
 fgets(line, MAX_LINE - 1, stdin);$!!
 block$size = atoi(line);$!!
 loop$for(x = 0; x < size; x++) $!!
-block$printf("１つめのベクトルの %d 番目の要素を入力してください: ", x + 1);
-fgets(line, MAX_LINE - 1, stdin);$!!
+block$printf("1つめのベクトルの %d 番目の要素を入力してください: \n", x + 1);$!!
+block$fgets(line, MAX_LINE - 1, stdin);$!!
 block$*(a + x) = atoi(line);$!!
 loop$for(x = 0; x < size; x++) $!!
-block$printf("１つめのベクトルの %d 番目の要素を入力してください: ", x + 1);
-fgets(line, MAX_LINE - 1, stdin);$!!
+block$printf("2つめのベクトルの %d 番目の要素を入力してください: \n", x + 1);$!!
+block$fgets(line, MAX_LINE - 1, stdin);$!!
 block$*(b + x) = atoi(line);$!!
 block$printf("２つのベクトル\n");
 arrayPrint(a, size);

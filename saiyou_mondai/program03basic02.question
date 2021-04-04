@@ -14,7 +14,7 @@ block$#include <stdio.h>$!!
 submodule$int main(void)$!!
 block$char c; $!!
 block$c = -128;$!!
-block$c = c-1;$!!
+block$c = c - 1;$!!
 block$printf("%d\n",c); $!!
 block$c = 127; $!!
 block$c = c + 1;  $!!

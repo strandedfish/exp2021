@@ -31,22 +31,25 @@ fgets()とatoi()で２つの数字を入力し、 入力した２つの数字を
 block$#include<stdio.h>
 #include<stdlib.h>
 #define MAX_LINE (256)$!!
-block$void sort(int *, int *);$ポインタを使い大きい方がleftになるように交換!!
+block$void sort(int *, int *); //プロトタイプ宣言$ポインタを使い大きい方がleftになるように交換!!
+block$void sort(int, int); //プロトタイプ宣言$ポインタを使い大きい方がleftになるように交換!!
 submodule$int main(void)$!!
 block$int a,b;
-char line[MAX_LINE];
-block$printf("１つ目の整数: ");
+char line[MAX_LINE];$!!
+block$printf("１つ目の整数: \n");
 fgets(line, MAX_LINE - 1, stdin);$!!
 block$a = atoi(line);$!!
-block$printf("２つ目の整数: ");
+block$printf("２つ目の整数: \n");
 fgets(line, MAX_LINE - 1, stdin);$!!
 block$b = atoi(line);$!!
 block$sort(&a, &b);$ポインタを使い大きい方がleftになるように交換!!
+block$sort(a, b);$ポインタを使い大きい方がleftになるように交換!!
 block$printf("大きい数字は %d です．\n", a);$!!
 block$return 0;$!!
-submodule$void sort(int *left, int *right)$!!
-block$int temp;   $!!
-branch$if(*right > *left) $!!
+submodule$void sort(\空欄))$!!
+block$int temp;$!!
+branch$if(*right > *left)$!!
+branch$if(right > left)$!!
 block$temp = *left;$!!
 block$*left = *right;$!!
 block$*right = temp;$!!

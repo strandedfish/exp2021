@@ -935,7 +935,7 @@ function loadKadai() {
             console.log(s_block);
             s_block = s_blocks[i].replace(/^\\n/g, "").replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>").replace(/;(\s)*\\n/g, ";<br>"); // 表示上、実際の改行をbrに
-            s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
+            s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>").replace(/#(.*?)\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
 
             /* 重複の確認 データ分析の関係上、各コード断片は独立でなければならないため、重複がないことを想定して作られている */
             obj = s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">');
@@ -1261,7 +1261,7 @@ $(function () {
             }
         }
         // デバッグ用：ウィンドウ非アクティブ時の画面表示オフ
-        // $(".popup-content").css({"display": "none"})
+        $(".popup-content").css({"display": "none"})
     });
 
     // ウィンドウからフォーカスが外れたら指定した関数を実行
@@ -1272,7 +1272,7 @@ $(function () {
         tab2_countStop();
         tab3_countStop();
         // デバッグ用：ウィンドウ非アクティブ時の画面表示オフ
-        // $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
+        $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -1511,7 +1511,7 @@ $(function () {
                     myDraggable();
                     setTimeout(function () {
                         // デバッグ時はオフ
-                        // shuffleContent($('#draggable1'));
+                        shuffleContent($('#draggable1'));
                         tab1_countStart();
                     }, 50);
                 }, 300);

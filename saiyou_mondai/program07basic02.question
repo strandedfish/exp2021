@@ -74,8 +74,11 @@ int rank;
 score = MAX_SCORE;
 rank = 1;$i,j: for文用のカウンタ変数, MAX_SCORE: スコアの最大値をMAX_SCOREで初期化, rank: 順位の変数!!
 loop$for(i = MAX_SCORE; i >= 0; i--)$!!
-loop$for(j=0; j < NUMBER; j++)$!!
+loop$for(j = 0; j < NUMBER; j++)$!!
+loop$for(i = 0; i >= 0; i--)$!!
+loop$for(j = MAX_SCORE; j < NUMBER; j--)$!!
 branch$if(score_rank[0][j] == i) $!!
+branch$if(score_rank[0][i] == i) $!!
 block$score_rank[1][j] = rank;$!!
 block$rank++;$!!
 block$break;$!!

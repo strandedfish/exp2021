@@ -6,15 +6,15 @@ scanf()の代わりに以下を用いる．
 
 標準入力 stdin から数字を文字の並びとして受け取るfgets() と数字の並びを数値に変換する関数を組み合わせるのがもっと も正しい方法である．
 数値に変換する関数は
-          #include <stdlib.h>
+          #include &gt;stdlib.h&gt;
 を記述したうえで利用する．これら関数には，
 数字の並びを整数に変換するatoi()関数
 数字の並びを浮動小数点数に変換するatof()関数
 の2つがある．
 たとえば，整数を入力するには，
 
-#include <stdio.h>
-#include <stdlib.h>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
 
 #define MAX_BUF (256) /* 文字の並びを格納する配列の最大長 */
 
@@ -33,8 +33,8 @@ int main(void)
 
 浮動小数点数を入力するには，
 
-#include <stdio.h>
-#include <stdlib.h>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
 
 #define MAX_BUF (256) /* 文字の並びを格納する配列の最大長 */
 
@@ -93,15 +93,17 @@ printf("商: %d / %f = %f\n", i_number, f_number, i_number / f_number);$!!
 block$return 0;$!!
 submodule$int get_int(void)$!!
 block$int number;
-char buf[MAX_BUF]; $文字の並びを格納する配列!!
-block$fgets(buf, MAX_BUF-1, stdin);$!!
-block$number = atoi(buf); $!!
+char buf1[MAX_BUF]; $文字の並びを格納する配列!!
+block$fgets(buf1, MAX_BUF-1, stdin);$!!
+block$scanf("%s", buf1);$!!
+block$number = atoi(buf1); $!!
 block$return number;$!!
 submodule$double get_float(void)$!!
 block$double number;
-char buf[MAX_BUF]; $文字の並びを格納する配列!!
-block$fgets(buf, MAX_BUF-1, stdin);  $!!
-block$number = atof(buf); $!!
+char buf2[MAX_BUF]; $文字の並びを格納する配列!!
+block$fgets(buf2, MAX_BUF-1, stdin);$!!
+block$scanf("%s", buf2);$!!
+block$number = atof(buf2); $!!
 block$return number;$!!
 </block>
 

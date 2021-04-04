@@ -30,7 +30,7 @@ branch$if(remainder == 0)$!!
 block$break;$!!
 branch$if( n == number )$!!
 block$printf("%d は素数です．\n", number);$!!
-branch$else                     $!!
+branch$else$!!
 block$printf("%d は素数でない．\n", number);$!!
 block$return 0;$!!
 </block>

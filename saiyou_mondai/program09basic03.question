@@ -41,7 +41,7 @@ block$int matrix_a[2][3] =  {{1, 2, 3}, {4, 5, 6}};
 int matrix_b[3][2] =  {{2, 3}, {4, 5}, {6, 7}};$!!
 block$int matrix_c[2][2]; $結果を格納する行列!!
 block$int i, j;  $for文用のカウンタ変数!!
-block$product(matrix_a, matrix_b, matrix_c);$!!
+block$product(\空欄);$!!
 loop$for (i = 0; i < 2; i++) $!!
 loop$for (j = 0; j < 2; j++)$!!
 block$printf("%4d", matrix_c[i][j]);$!!

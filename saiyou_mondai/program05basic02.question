@@ -33,9 +33,10 @@ block$int block; $段を構成する石の個数!!
 block$int remain; $残りの石の個数!!
 block$printf("王様，石の数は？: ");$!!
 block$scanf("%d", &remain);$!!
+block$scanf("%d", &block);$!!
 block$i = 1; $まずは1段目に初期値を設定!!
 block$block = 1; $1段目を作るには1個の石が必要!!
-loop$while(remain >= block)$次の段を作れるかぎりループ!!
+loop$while(\空欄)$次の段を作れるかぎりループ!!
 block$remain -= block; $今回の段に使った石の数を減算!!
 block$i++; $次の段を表すように i を増やす!!
 block$block = i * i; $次の段を作るのに必要な石の数!!

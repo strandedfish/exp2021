@@ -39,7 +39,7 @@ double pow(double a, double x)
 <block>
 block$#include <stdio.h>
 #include <\空欄>$!!
-block$double interest(double, int);　//プロトタイプ宣言$!!
+block$double interest(\空欄);　//プロトタイプ宣言$!!
 submodule$int main(void)$!!
 block$double rate;
 int y;
@@ -54,7 +54,7 @@ scanf("%d",&num);$!!
 block$money = \空欄; $作成したinterest関数を使うこと!!
 block$printf("返済金額は%d円です\n", money);$!!
 block$return 0;$!!
-submodule$double interest(double r, int n)$!!
+submodule$double interest(\空欄)$!!
 block$double result;$!!
 block$result = \空欄;$C言語ライブラリ関数であるpow関数を使うこと!!
 block$return result;$!!

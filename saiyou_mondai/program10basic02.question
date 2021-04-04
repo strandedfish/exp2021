@@ -45,14 +45,16 @@ submodule$int main(void)$!!
 block$char str[3][256];
 int i,j; $!!
 loop$for (i=0; i < 2; i++) $!!
-block$printf("%dつめの文字列を入力してください(最大%d文字) ", i + 1, BUFFER_SIZE - 1);
-fgets(str[i], BUFFER_SIZE - 1, stdin);$!!
+block$printf("%dつめの文字列を入力してください(最大%d文字) \n", i + 1, BUFFER_SIZE - 1);
+fgets(str[i], \空欄, stdin);$!!
 loop$for(i = 0; str[0][i] != '\n'; i++)$!!
-block$str[2][i] = str[0][i];$!!
+block$str[2][i] = \空欄;$!!
 block$str[0][i] = '\0';$!!
+block$str[0][i] = '\n';$!!
 loop$for(j = 0; str[1][j] != '\n'; j++)$!!
-block$str[2][i+j] = str[1][j];$!!
+block$str[2][i+j] = \空欄;$!!
 block$str[1][j] = '\0';$!!
+block$str[1][i] = '\n';$!!
 block$str[2][i+j]='\0';  $連結した文字列の最後の処理!!
 loop$for (i = 0; i < 2; i++)$!!
 block$printf("%dつめの文字列は%sでした\n", i+1, str[i]);$!!

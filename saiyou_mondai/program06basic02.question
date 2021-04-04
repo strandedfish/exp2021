@@ -32,10 +32,12 @@ int max, index;$array: 配列の宣言・要素数の最大値はMAX_NUM， i: �
 loop$for(i = 0; i < MAX_NUM; i++)$!!
 block$printf("%d番目のデータ:", i);$!!
 block$scanf("%d", &array[i]); $!!
+block$scanf("%d", &array); $!!
 block$max = array[0];$初期の最大値なので、何の値でもいい!!
 block$index = 0;$!!
 loop$for(i = 1; i < MAX_NUM; i++)$!!
 branch$if(array[i] > max) $!!
+branch$if(array[i] < max) $!!
 block$max = array[i];$!!
 block$index = i;$!!
 block$printf("最大の要素は%dで、そのインデックスは%dである。", max, index);$!!

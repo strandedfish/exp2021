@@ -74,7 +74,7 @@ block$printf("行列A*B = \n");$!!
 loop$for(i = 0; i < P; i++) $!!
 loop$for(j = 0; j < R; j++) $!!
 loop$for(k = 0; k < Q; k++)$!!
-block$matrixC[i][j] += matrixA[i][k] * matrixB[k][j];$!!
+block$matrixC[i][j] += \空欄;$!!
 block$printf("%3d", matrixC[i][j]);$!!
 block$printf("\n");$!!
 block$return 0;$!!

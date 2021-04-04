@@ -46,10 +46,10 @@ scanf("%d", &input);$!!
 loop$while(input <= 0)$!!
 branch$if(input > 0)$!!
 block$break;$!!
-loop$for(line = 0; line < input; line++) $!!
+loop$for(line = 0; \空欄; line++) $!!
 block$printf("%2d: ", line+1);$!!
-block$run(' ', line);$!!
-block$run('*', input-line);$!!
+block$run(' ', \空欄);$!!
+block$run('*', \空欄);$!!
 block$printf("\n");$!!
 block$return 0;$!!
 submodule$void run(char c, int length)$!!
