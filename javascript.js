@@ -1203,7 +1203,21 @@ $(function () {
                 $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
                 $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
                 // $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
-        }
+            case 5:
+                // ＊変数宣言系
+                // .pad-blockzone-inの中からp要素の中身を取得 (int|double|float|char) .*;のブロック以外をhidden
+                $(".pad-blockzone-in").each(function(index, element){
+                    console.log(element);                    
+                });
+                break;
+            case 6:
+                // ＊入出力系
+                break;
+            case 7:
+                // ＊プロトタイプ宣言
+                break;
+            
+            }
     })
 
 
