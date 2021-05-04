@@ -1,0 +1,175 @@
+<question>
+
+消費税が10%になり，食品に限って消費税が8%に据え置かれる場合を考えよう．
+また，キャッシュレス化を促進するために，クレジットカードで購入した場合は，消費税抜きの合計金額の2%がポイントとして還元されるとしよう．
+この計算を実施する簡単なPOSシステムを作成する．
+
+あるスーパーでは以下の５種類の商品を扱っているものとする．
+牛肉 1024円 (食品) 
+白菜 197円 (食品)
+りんご 125円 (食品)
+歯ブラシ 187円 (非食品)
+鍋 3050円 (非食品)
+
+<ul>
+<li>
+まず，各商品は食品のとき 1, 非食品のとき 0 で区別するものとする． 
+各商品の価格と，この区別を引数とし，その商品の消費税込みの価格 を浮動小数点で返す関数 amount_of_due()を作成せよ．
+</li>
+
+<li>
+つぎに，支払いがクレジットカードのとき1, 現金のとき0で区別するものとする．
+整数型で表された税抜き合計価格と，この区別を引数とし，その商品の消費税込みの価格を整数で返す関数amount_of_point()を作成せよ．
+</li>
+
+<li>
+これら２つの関数は main()関数の後で定義すること．
+</li>
+
+</ul>
+
+この関数をつかって，各商品をPOSが読み込んだときに消費税込みの価格を印字し，さらに，支払金額を表示する際には，税抜きの合計金額，税込の合計金額，還元されるポイントを印字するPOSのプログラムを作成せよ．
+
+ただし，このプログラムでは，
+• 各商品をPOSが読み込んだときには，確認のために，その税込価格を 小数点以下第２位まで印字する．
+• 各商品の税込価格の小数点以下の数を切り捨てずに，税込合計金額を 計算する．
+• 税込の合計金額と還元されるポイントを印字するときには，消費者が 支払う金額と得るポイントがわかりやすいように，生じた小数点以下
+の数は切り捨てるものとする．
+
+</question>
+
+<block>
+block$#include <stdio.h>
+#define FOOD (1)
+#define NON_FOOD (0)
+#define CREDIT (1)
+#define CASH (0)$!!
+submodule$double amount_of_money(int price, int type); $!!
+submodule$int amount_of_point(int money, int credit);$!!
+submodule$int main(void)$!!
+block$int item, price, type, method;$!!
+block$double amount; $!!
+block$double due = 0.0;$!!
+block$int sum = 0;$!!
+block$int point;$!!
+loop$while(1)$!!
+block$puts("");
+printf("1: 牛肉 1024円\n");
+printf("2: 白菜 197円\n");
+printf("3: りんご 125円\n");
+printf("4: 歯ブラシ 187円\n");
+printf("5: 鍋 3050円\n");$!!
+block$printf("購入品は?(終了は0): ");$!!
+block$scanf("%d", &item);$!!
+branch$if(item == 0)$!!
+block$break;$!!
+branch$switch(item)$!!
+block$case 1: price = 1024; type = FOOD; break;
+case 2: price = 197; type = FOOD; break;
+case 3: price = 125; type = FOOD; break;
+case 4: price = 187; type = NON_FOOD; break;
+case 5: price = 3050; type = NON_FOOD; break;$!!
+block$default: printf("その商品は取り扱っていません\n");$!!
+block$continue;$!!
+block$sum += price;$!!
+block$amount = amount_of_money(price, type);$!!
+block$printf("税込の単価 %.2f\n", amount);$!!
+block$due += amount;$!!
+block$puts("");
+printf("お支払は[現金: 0, クレジット: 1]: ");$!!
+block$scanf("%d", &method);$!!
+block$point = amount_of_point(sum, method);$!!
+block$printf("税抜きの合計 %d円\n", sum);$!!
+block$printf("税込の合計 %.0f円\n", due);  $!!
+block$printf("ポイント %d点\n", point);$!!
+block$return 0;$!!
+submodule$double amount_of_money(int price, int type)$!!
+block$double rate;$!!
+branch$if(type == FOOD)$!!
+block$rate = 1.08;$!!
+branch$else$!!
+block$rate = 1.10;$!!
+block$return price * rate;$!!
+submodule$int amount_of_point(int money, int credit)$!!
+block$int point;$!!
+branch$if(credit == CREDIT)$!!
+block$point = money * 0.02;$!!
+branch$else$!!
+block$point = 0;$!!
+block$return point;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+#define FOOD (1)
+#define NON_FOOD (0)
+#define CREDIT (1)
+#define CASH (0)
+
+double amount_of_money(int price, int type); /* プロトタイプ宣言 */
+int amount_of_point(int money, int credit);
+
+int main(void)
+{
+  int item, price, type, method;
+  double amount; /* 消費税込みの単価 */
+  double due = 0.0; /* 消費税込みの合計金額 */
+  int sum = 0; /* 消費税抜きの合計金額 */
+  int point; /* 還元されるポイント */
+
+  do {
+    puts("");
+    printf("1: 牛肉 1024円\n");
+    printf("2: 白菜 197円\n");
+    printf("3: りんご 125円\n");
+    printf("4: 歯ブラシ 187円\n");
+    printf("5: 鍋 3050円\n");
+    printf("購入品は?(終了は0): ");
+    scanf("%d", &item);
+
+    if(item == 0) break; /* ループを抜ける */
+    switch(item) {
+    case 1: price = 1024; type = FOOD; break;
+    case 2: price = 197; type = FOOD; break;
+    case 3: price = 125; type = FOOD; break;
+    case 4: price = 187; type = NON_FOOD; break;
+    case 5: price = 3050; type = NON_FOOD; break;
+    default: printf("その商品は取り扱っていません\n"); continue; break;
+    }
+    sum += price;
+    amount = amount_of_money(price, type);
+    printf("税込の単価 %.2f\n", amount);
+    due += amount;
+  } while(1);
+
+  puts("");
+  printf("お支払は[現金: 0, クレジット: 1]: ");
+  scanf("%d", &method);
+  point = amount_of_point(sum, method);
+
+  printf("税抜きの合計 %d円\n", sum);
+  printf("税込の合計 %.0f円\n", due);  /* 小数点以下切り捨て */
+  printf("ポイント %d点\n", point);
+
+  return 0;
+}
+
+double amount_of_money(int price, int type)
+{
+  double rate;
+  
+  if(type == FOOD) rate = 1.08;
+  else rate = 1.10;
+  return price * rate;
+}
+  
+int amount_of_point(int money, int credit)
+{
+  int point;
+  
+  if(credit == CREDIT) point = money * 0.02;  /* 小数点以下切り捨て */
+  else point = 0;
+
+  return point;
+}
+</answer>

@@ -1,0 +1,88 @@
+<question>
+
+3行3列の行列を右へ45度回転した行列を表示するプログラムを作成せよ． 1 2 3 4 5 6 7 8 9
+という行列を右へ45度回転させると
+     1
+   4   2
+ 7   5   3
+   8   6
+     9
+となる。
+
+<p>プログラムに必要な要素</p>
+• 回転前の行列を matrixとし，二次元配列で表現せよ．上の数値を代入して初期化せよ．
+• 回転後の行列を rotate とせよ．rotate は二次元配列で表現せよ．rotateは0で初期化せよ．
+• 回転前の行列 matrix を印字せよ．行列の各要素を揃えるため，各要素 は空白を含め2桁で印字せよ．
+• 二重ループを回して matrix の要素を rotate のしかるべき位置に代入せよ．
+• 回転後の行列 rotate を印字せよ．行列の各要素を揃えるため，各要素は空白を含め2桁で印字せよ．rotateの要素が0の部分は印字しない．
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int matrix[3][3] = {
+  {1, 2, 3},
+  {4, 5, 6},
+  {7, 8, 9}
+};$!!
+block$int rotate\空欄 = 0; $!!
+block$int i,j; $!!
+loop$for(i=0; i<3; i++)$!!
+loop$for(j=0; j<3; j++)$!!
+block$rotate\空欄 = matrix[i][j];$!!
+loop$for(i=0; i<\空欄; i++) $!!
+loop$for(j=0; j<\空欄; j++) $!!
+branch$if(rotate[i][j] != 0)$!!
+block$printf("%4d", rotate[i][j]);$!!
+branch$else$!!
+block$printf("    ");$!!
+block$printf("\n");$!!
+block$return 0;$!!
+</block>
+
+<answer>
+/*
+本問題は
+http://tnoda-clojure.tumblr.com/post/39856946125/2-45
+を参考にし作成しました．
+
+*/
+
+
+#include <stdio.h>
+
+#define NUMBER 3 /* 回転する行列の列と行の要素数 */
+
+int main(void)
+{
+
+  int matrix[NUMBER][NUMBER]={ /* 回転する行列の宣言と初期化 */
+    {1,2,3},{4,5,6},{7,8,9}
+  };
+
+  int rotate[NUMBER+2][NUMBER+2] = {0}; /* 回転した行列を代入する配列．0で初期化 */
+
+  int i,j; /* for文用のカウンタ変数 */
+
+
+  /* 行列matrixを右に45度回転させた行列rotateを作る */
+  for(i=0; i<NUMBER; i++) {
+      for(j=0; j<NUMBER; j++){
+          rotate[i+j][(2*NUMBER-1)/2 - i + j] = matrix[i][j];
+      }
+    }
+
+  /* 行列rotateを印字する */
+  for(i=0; i<NUMBER+2;i++) {
+      for(j=0; j<NUMBER+2; j++) {
+          if(rotate[i][j] != 0)
+              printf("%4d", rotate[i][j]);
+          else
+              printf("    ");
+      }
+      printf("\n");
+    }
+  return 0;
+}
+</answer>

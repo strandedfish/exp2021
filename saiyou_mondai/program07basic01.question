@@ -58,8 +58,8 @@ block$int matrixB[Q][R] = {
 {5, 6, 2, 8},
 {1, 2, 3, 6}
 };$!!
-block$int matrixC[P][R] = {};
-int i, j, k;$matrixC: 行列Cのすべての要素を0にする(初期化)!!
+block$int matrixC[P][R] = {};$!!
+block$int i, j, k;$!!
 block$printf("行列A = \n");$!!
 loop$for(i = 0; i < P; i++)$!!
 loop$for(j = 0; j < Q; j++)$!!
