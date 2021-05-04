@@ -1,0 +1,147 @@
+<question>
+自分の誕生月を X とし，2001 年の X 月を調べる．
+この月の指定された日の曜日を調べるプログラムを switch 文を用いて，
+以下の手順で作成せよ．
+• 「2001 年 X(自分の誕生月) 月の曜日を調べます．」と出力せよ．
+• 「調べたい日付は?:」と出力せよ．
+• 任意の日を入力されたときに，その日の曜日を表示せよ．
+• ただし，その月にない日を指定されたときは，エラーを表示せよ．
+• 日曜を０，月曜を１，火曜を２，水曜を３，木曜を４，金曜を５，土
+曜を６とし，曜日を数字で表現して，switch 文を使用せよ．
+ヒント: 2001 年 X 月 1 日の曜日 day1st を上記の数字で表現し，曜日を調
+べたい日付を date とすると，date の曜日 day は
+day = (date + day1st - 1) % 7
+で計算できる（これは、なぜか？説明してみよ）．
+
+
+Table 4.2: 2001 年各月の 1 日の曜日
+月 (X) 1 2 3 4 5 6 7 8 9 10 11 12
+曜日 月 木 木 日 火 金 日 水 土 月 木 土
+
+
+% ./dayOfWeek
+2001 年 2 月の曜日を調べます
+調べたい日付は?: 24
+2001 年 2 月 24 日は土曜日です
+% ./dayOfWeek
+74
+2001 年 2 月の曜日を調べます．
+調べたい日付は?: 33
+2001 年 2 月には 28 日までしかありません
+% ./dayOfWeek
+2001 年 2 月の曜日を調べます．
+調べたい日付は?: -4
+2001 年 2 月は 1 日から始まります
+%
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int i;$!!
+block$int week; $!!
+block$int day; $!!
+block$int date; $!!
+block$int first;$1日の曜日を示す変数!!
+block$int month_length; $!!
+block$int max_week; $!!
+block$printf("1日の曜日は?: 日(1) 月(2) 火(3) 水(4) 木(5) 金(6) 土(7): ");$!!
+block$scanf("%d", &first);$!!
+loop$while(1)$!!
+branch$if((first < 1) || (first > 7))$!!
+block$break;$!!
+block$printf("月末の日付は?: 28日以上，31日以下: ");$!!
+block$scanf("%d", &month_length);$!!
+loop$while(1)$!!
+loop$while(1)$!!
+branch$if((month_length < 28) || (month_length > 31))$!!
+block$max_week = (first + month_length) / 7;$!!
+branch$if((first + month_length) % 7 > 0) max_week++;$!!
+block$printf("\n");$!!
+block$printf(" SUN MON TUE WED THU FRI SAT\n");$!!
+loop$for(i = 1; i < first; i++)  $!!
+block$printf("    "); $!!
+block$date = 1; $!!
+loop$for(day = first; day <= 7; day++) $!!
+block$printf("%4d", date); $!!
+block$date++;$!!
+block$printf("\n");$!!
+loop$for(week = 2; week <= max_week; week++) $!!
+loop$for(day = 1; day <= 7; day++) $!!
+branch$if(date <= month_length) $!!
+block$printf("%4d", date);$!!
+branch$else$!!
+block$break;$!!
+block$date++;$!!
+block$printf("\n");$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+  int i;
+  int week; /* 週 */
+  int day; /* 曜日 */
+  int date; /* 日付 */
+  int first; /* 1日の曜日を示す変数
+		日(0) 月(1) 火(2) 水(3) 木(4) 金(5) 土(6) */
+  int month_length; /* 月末の日を示す変数 */
+  int max_week; /* 第何週まであるかを示す変数 */
+
+  /* 1日の曜日を入力 */
+  while(1) {
+    printf("1日の曜日は?: 日(1) 月(2) 火(3) 水(4) 木(5) 金(6) 土(7): ");
+    scanf("%d", &first);
+    if(first < 1) || (first > 7) {
+        break;
+    }
+  }
+  
+  /* 何日まであるかを入力 */
+  while(1) {
+    printf("月末の日付は?: 28日以上，31日以下: ");
+    scanf("%d", &month_length);
+    if(month_length < 28) || (month_length > 31) {
+        break;
+    }
+  }
+
+  /* 第何週まであるか */
+  max_week = (first + month_length) / 7;
+  if((first + month_length) % 7 > 0) max_week++;
+
+  /* 曜日を1列に印字 */
+  printf("\n");
+  printf(" SUN MON TUE WED THU FRI SAT\n");
+
+  /* 第１週 */
+  for(i = 1; i < first; i++) { /* 最初の空白 */
+    printf("    "); /* 空白４文字 */
+  }
+
+  date = 1; /* 1日に初期化 */
+  for(day = first; day <= 7; day++) {
+    printf("%4d", date); /* 日を4桁で印字 */
+    date++;
+  }
+  printf("\n");
+
+  /* 第２週以降 */
+  for(week = 2; week <= max_week; week++) {
+    for(day = 1; day <= 7; day++) {
+      if(date <= month_length) /* 月末日以下なら */
+        printf("%4d", date);   /* 日を4桁で印字 */
+      else
+        break;                 /* 月末日を超えればループ終了 */
+      /* 日付けを更新 */
+      date++;
+    }
+    printf("\n");
+  }
+  return 0;
+}
+
+</answer>
