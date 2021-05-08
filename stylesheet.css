@@ -193,6 +193,7 @@ main {
   border-style: solid none solid solid;
   border-width: 1px 1px 1px 1px;
   position: relative;
+  width: 180px !important;
 }
 
 
@@ -225,7 +226,7 @@ main {
   display: block;
   margin:auto;
   text-align: center;
-  padding-right: 20px;
+  /* padding-right: 20px; 無意味 */
 }
 
 .nameWithCanvas {

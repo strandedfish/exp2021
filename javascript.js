@@ -371,7 +371,7 @@ function draw_branch_border() {
             "bottom": "0px",
             "width": "0px",
             "border-style": "solid",
-            "border-color": "#99bbfd",
+            "border-color": "#FFE1A3",
             "border-width": (height/2-1) + "px 15px "+(height/2-1)+"px 0",
             "border-right-color": "transparent",
         });
@@ -907,6 +907,7 @@ function loadKadai() {
         var s_start = text.indexOf("<question>") + 10;
         var s_end = text.indexOf("</question>");
         var s_question = text.slice(s_start, s_end).replace(/\n/g, "<br>");
+        console.log(s_question)
         $(".pad-question").html(s_question);
 
         MathJax.Hub.Config({
@@ -919,7 +920,7 @@ function loadKadai() {
         s_start = text.indexOf("<block>") + 7;
         s_end = text.indexOf("</block>");
         var block_part = (text.slice(s_start, s_end));
-        console.log(block_part);
+        // console.log(block_part);
         /* 改行コードの処理がややこしい */
         block_part = block_part.replace(/\r/g, '\\r');
         block_part = block_part.replace(/\n/g, '\\n');
@@ -932,7 +933,7 @@ function loadKadai() {
         var id = 0;
         for (var i = 0; i < s_blocks.length - 1; i++) {
             /* 再度文字コードの処理 */
-            console.log(s_block);
+            // console.log(s_block);
             s_block = s_blocks[i].replace(/^\\n/g, "").replace(/^\\r\\n/g, "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").split("$");
             s_block[1] = s_block[1].replace(/;(\s)*\\r\\n/g, ";<br>").replace(/;(\s)*\\n/g, ";<br>"); // 表示上、実際の改行をbrに
             s_block[1] = s_block[1].replace(/#(.*?)\\r\\n/g, "#$1<br>").replace(/#(.*?)\\n/g, "#$1<br>"); // 表示上、実際の改行をbrに
@@ -944,7 +945,7 @@ function loadKadai() {
             $(".draggable").each(function(index, element){
                 if(obj == element.innerText) {
                     console.log(obj + "は重複しています");
-                    console.log(element);
+                    // console.log(element);
                     temp_i = $(element).attr("id");
                     // console.log(temp_i);
                     switch_flag = 0;
@@ -958,19 +959,19 @@ function loadKadai() {
             /* コード断片の種類によってHTMLを挿入 */
             switch (s_block[0]) {
                 case 'block':
-                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' style='background-color:#B0DCFF' class='block-module block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'submodule':
-                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-submodule block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' style='background-color:#AAFAC0' class='block-submodule block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'loop':
-                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' style='background-color:#D7A3FF' class='block-loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'branch':
-                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' style='background-color:#FFE1A3' class='block-branch block' branch=" + s_block[3] + "><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
                 case 'b_loop':
-                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' class='block-b_loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
+                    block_html = "<li class='draggable' id=" + i + " isoid=" + temp_i + "><div id='block-" + i + "' style='background-color:yellow' class='block-b_loop block'><p class='module-name'>" + s_block[1].replace(/\\空欄/g, '<input type="text" class="input-text">'); +"</p></div></li>";
                     break;
             }
 
@@ -981,6 +982,9 @@ function loadKadai() {
                     get_raw_code();
                 }
             }, ".input-text");
+
+            // 色を設定 => HTMLの挿入部分で実装。
+            // block_html = setBlockColor(block_html)
 
             // ここで実際に左の枠に追加
             $(".pad-blockzone-in").children(".sortable").append(block_html);
@@ -1203,18 +1207,42 @@ $(function () {
                 $(".pad-blockzone-in .draggable>.block-loop").addClass("hidden");
                 $(".pad-blockzone-in .draggable>.block-bloop").addClass("hidden");
                 // $(".pad-blockzone-in .draggable>.block-submodule").addClass("hidden");
+                break;
             case 5:
                 // ＊変数宣言系
                 // .pad-blockzone-inの中からp要素の中身を取得 (int|double|float|char) .*;のブロック以外をhidden
-                $(".pad-blockzone-in").each(function(index, element){
-                    console.log(element);                    
+                $(".pad-blockzone-in p").each(function(index, element){
+                    // console.log($(element).text());
+                    if($(element).text().search(/(int|long|double|float|char)\s.*;/) !== -1) {
+                        // console.log("このコードは変数宣言です");
+                    } else {
+                        $(element).parent().addClass("hidden");
+                    }
                 });
                 break;
             case 6:
                 // ＊入出力系
+                $(".pad-blockzone-in p").each(function(index, element){
+                    // console.log($(element).text());
+                    if($(element).text().search(/プロトタイプ宣言/) !== -1) {
+                        // console.log("このコードはプロトタイプ宣言です")
+                    } else if($(element).text().search(/(printf|scanf)/) !== -1) {
+                        // console.log("このコードは入出力系です");
+                    } else {
+                        $(element).parent().addClass("hidden");
+                    }
+                });
                 break;
             case 7:
                 // ＊プロトタイプ宣言
+                $(".pad-blockzone-in p").each(function(index, element){
+                    // console.log($(element).text());
+                    if($(element).text().search(/プロトタイプ宣言/) !== -1) {
+                        // console.log("このコードはプロトタイプ宣言です");
+                    } else {
+                        $(element).parent().addClass("hidden");
+                    }
+                });
                 break;
             
             }
@@ -1363,7 +1391,7 @@ $(function () {
             $(this).attr('size', 3);
         }
         redrawLine()
-        draw_branch_border
+        draw_branch_border()
         // sql送信
         db_event = "filling";
         db_block_id = $(this).closest("li").attr("id");
@@ -1405,7 +1433,7 @@ $(function () {
             $(this).attr('size', 3);
         }
         redrawLine()
-        draw_branch_border
+        draw_branch_border()
         // sql送信
         db_event = "filled";
         db_block_id = $(this).closest("li").attr("id");
@@ -1420,8 +1448,7 @@ $(function () {
         setTimeout(function () {
             $(new_this).css("background-color", "white")
             inputAreaFocusing = 0;
-        }
-            , 800)
+        }, 800)
     })
 
     // 指定秒数以上無操作ならフォーカスを切る。あと、バルーンを表示しない。
