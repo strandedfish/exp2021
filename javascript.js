@@ -99,6 +99,7 @@ var draggable_prop = {
 
     // ドラッグ開始時の処理
     start: function (event, ui) {
+        $(".pad-line").css("position", "relative");
         $(this).hide();
         dragging_object = $(this);
         // ログ用変数を更新
@@ -132,12 +133,61 @@ var droppable_prop = {
     // ドロップされた時の処理
     drop: function (event, ui) {
         // ドロップされた位置にドラッグ中のオブジェクトを挿入
-        $("#" + event.target.id).append(dragging_object);
+        // ただし、作図画面で既にそこに何かが入っていた場合、置換する。
+        // console.log(event.target.id);
+        var drop_parent_id;
+        var drop_id;
+        var repalce_flag = 0;
+        if($("#" + event.target.id).find(".block").length > 0 && event.target.id != "draggable1") {
+            // console.log("既にブロックを発見");
+            repalce_flag = 1;
+            var drag_id = dragging_object;
+            var drag_parent_id = $(drag_id).parent().attr("id");
+            drop_id = $("#" + event.target.id).children();
+            drop_parent_id = $(drop_id).parent().attr("id");
+            // 置換先のブロックのタッチ回数も増加させる
+            block_touch_num[$(drop_id).attr("isoid")]++;
+            // console.log("ドラッグ元の要素" + $(drag_id).parent().attr("id"));
+            // console.log("ドラッグ先の要素" + $(drop_id).parent().attr("id"));
+            
+            // 入れ替え
+            $("#0-0").append($(drop_id));
+            $("#" + drop_parent_id).append($(drag_id));
+            $("#" + drag_parent_id).append($("#0-0").children());
+        } else {
+            // console.log("そこにブロックはありません");
+            $("#" + event.target.id).append(dragging_object);
+        }
+        
         dragging_object.css({
             'top': '0px',
             'left': '0px'
         });
+
+        // sql送信
+        db_event = "drop";
+        db_block_id = $(dragging_object).attr("id");
+        db_block = $(dragging_object).find("p").html();
+        // console.log(db_event + ", " + db_block_id + ", " + db_block); // OK!
+        event_data_upload();
+        if(repalce_flag == 1) {
+            // sql送信
+            db_event = "drag";
+            db_block_id = $(drop_id).attr("id");
+            db_block = $(drop_id).find("p").html();
+            event_data_upload();
+            
+            // sql送信
+            db_event = "drop";
+            db_block_id = $(drop_id).attr("id");
+            db_block = $(drop_id).find("p").html();
+            event_data_upload();
+
+            repalce_flag = 0;
+        }
+
         // 配置可能位置の再計算や線の描画や生コードの取得など
+        $(".pad-line").css("position", "relative");
         after_drop_procedures(dragging_object, ui);
     }
 };
@@ -181,22 +231,18 @@ function after_drop_procedures(dragging_object, ui) {
     }, 5);
     /* 描画系 */
     setTimeout(function () {
+        // pad作図画面をテーブルの幅によって伸ばす
+        $(".pad-line").css("width", $("#draggable2").width() + 300 + "px");
+        $(".pad-line").css("height", $("#draggable2").height() + 150 + "px");
         draw_branch_border(); // 分岐の複雑な枠を描画してる
         redrawLine(); // 枠と枠の間の線を描画してる
-    }, 10);
+    }, 20);
     /* 移動後の生コードを取得 */
     setTimeout(function () {
         get_raw_code();
         // コピーボタンを開放
-        document.getElementById("copy2clipboard").disabled = "";
+        // document.getElementById("copy2clipboard").disabled = "";
     }, 50)
-
-    // sql送信
-    db_event = "drop";
-    db_block_id = $(dragging_object).attr("id");
-    db_block = $(dragging_object).find("p").html();
-    // console.log(db_event + ", " + db_block_id + ", " + db_block); // OK!
-    event_data_upload();
 }
 
 // 一行追加
@@ -240,19 +286,22 @@ function create_blankline(ui) {
 
 // ドロッパブル位置を計算・余分なセルを削除・番号振り分け
 function reAllocate_droppable() {
-    // ２列以上の空列は存在しないはず
-    var row_size = $("tr").length;
-    for (var i = row_size; i > 0; i--) {
-        tr_element = $("tr")[i];
-        if ($(tr_element).children().children("li").length == 0 && $(tr_element).next().children().children("li").length == 0) {
-            $(tr_element).next().detach();
-        }
-    }
     // 一列目は空列
     if ($("tr:first").find("li").length > 0) {
         $("tr:first").before("<tr></tr>");
         $("tr:first").append('<td id=0-0 class="droppable ui-droppable"></td>');
     }
+
+    // ２列以上の空列は存在しないはず
+    var row_size = $("tr").length;
+    for (var i = row_size; i >= 0; i--) {
+        tr_element = $("tr")[i];
+        
+        if ($(tr_element).children().children("li").length == 0 && $(tr_element).next().children().children("li").length == 0) {
+            $(tr_element).next().detach();
+        }
+    }
+
     // 番号振り分け
     $("tr").each(function (row, tr_element) {
         $(tr_element).children("td").each(function (column, td_element) {
@@ -320,8 +369,8 @@ function reAllocate_droppable() {
                     $(element).css({ "background-color": "rgba(135, 206, 250, 0.2)" });
                 });
             }
-            $(element).droppable({ disabled: true }); //　ただしブロックは重ならないように
-            $(element).css({ "background-color": "rgba(25, 24, 23, 0.1)" });
+            $(element).droppable({ disabled: false }); //　ただしブロックは重ならないように
+            $(element).css({ "background-color": "rgba(135, 206, 250, 0.2)" });
         }
     });
     // 列の一番後ろだけが空白になるように
@@ -1328,7 +1377,7 @@ $(function () {
         tab2_countStop();
         tab3_countStop();
         // デバッグ用：ウィンドウ非アクティブ時の画面表示オフ
-        // $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない ここをコメントアウトすれば画面を隠さない
+        $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない ここをコメントアウトすれば画面を隠さない
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -1384,6 +1433,7 @@ $(function () {
         clearInterval(passageTab2);
         clearInterval(passageTab3);
         clearInterval(passageTab4);
+        $("#submit-btn").before("<h1>提出完了しました。</h1>").fadeOut(0);
     });
     $("#panel2").scroll(function () {
         $.each(line_array, function (index, element) {
