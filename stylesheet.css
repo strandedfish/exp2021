@@ -36,6 +36,11 @@ main {
   background-color: #FAFAFA;
 }
 
+.exec_title {
+  padding: 1rem 2rem;
+  border-top: 6px double #000;
+  background: #f4f4f4;
+}
 
 /****pad****/
 .pad {
@@ -64,21 +69,60 @@ main {
   float: left;
   width: calc(20% - 1px);
   min-width: 240px;
+  height: calc(100% - 50px);
   /* resize: both;
   overflow: hidden; */
-  display:block;
+  display: flex;
+  flex-flow: column;
   border-right: solid 1px black;
 }
 .pad-blockzone-in {
   overflow-y: scroll;
   overflow-x: none;
-  height: 90vh;
+  flex: 1;
 }
+
+/* block-area */
+.block_tab_area {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top:10px;
+}
+
+.block_tab_area:after {
+  content: '';
+  width: 100%;
+  height: 5px;
+  background: #8695CC;
+  display: block;
+  order: -1;
+}
+
+.block_tab_label {
+  font-size: 13px;
+  color: White;
+  background: Gray;
+  font-weight: bold;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+  white-space: nowrap;
+  text-align: center;
+  padding: 3px .5em;
+  order: -1;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+  flex: 1;
+  margin: 0 5px 0 5px;
+}
+/* .block_tab_label:not(:last-of-type) { */
+  /* margin-right: 0px; */
+/* } */
 
 .tab_wrap {
 	/* width: 75%; */
   /* .padに依存 */
-  min-height: 1500px;
+  /* min-height: 1500px; */
   display:block;
 /*  border-right: solid 1px black; */
   margin: 0 0 0 3px;
@@ -99,11 +143,11 @@ main {
   display:block;
   overflow-x: scroll;
   padding-right: -100px;
-  margin-bottom: 20%;
+  margin-bottom: 20px;
 }
 .pad-textzone {
-	width: 90%;
-  height: 100px;
+	/* width: 90%; */
+  /* height: 100px; */
 }
 
 /* 処理開始と処理終了 */
@@ -330,13 +374,15 @@ console 系
 }
 #serialize_output {
   display: block;
-  min-height: 35vh;
+  min-height: 30vh;
   width: 90%;
-  margin: 10px;
+  margin: 0 10px 10px 10px;
 }
 
 #std_input {
   display: block;
+  width: 90%;
+  height: 5vh;
   margin: 0 10px 10px 10px;
 }
 
@@ -344,7 +390,7 @@ console 系
   display: block;
   min-height: 25vh;
   width: 90%;
-  margin: 10px;
+  margin: 0 10px 10px 10px;
 }
 
 /*#copy2clipboard {*/
@@ -430,6 +476,11 @@ console 系
   -webkit-transform: translateY(4px);
   transform: translateY(4px);/*下に動く*/
   border-bottom: none;/*線を消す*/
+}
+
+#compile_clang, #copy2clipboard {
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 /* タブ */
@@ -594,42 +645,7 @@ td {
   z-index: 1;
 }
 
-/* block-area */
-.block_tab_area {
-  display: flex;
-  flex-wrap: wrap;
-  margin:10px 0;
-}
 
-.block_tab_area:after {
-  content: '';
-  width: 100%;
-  height: 5px;
-  background: #8695CC;
-  display: block;
-  order: -1;
-}
-
-.block_tab_label {
-  font-size: 13px;
-  color: White;
-  background: Gray;
-  font-weight: bold;
-  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
-  white-space: nowrap;
-  text-align: center;
-  padding: 3px .5em;
-  order: -1;
-  position: relative;
-  z-index: 1;
-  cursor: pointer;
-  border-radius: 5px 5px 0 0;
-  flex: 1;
-  margin: 0 5px 0 5px;
-}
-/* .block_tab_label:not(:last-of-type) { */
-  /* margin-right: 0px; */
-/* } */
 
 /* アクティブなタブ */
 .block_selected {

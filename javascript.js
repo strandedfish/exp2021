@@ -794,6 +794,7 @@ function event_data_upload() {
 
 // paiza api を使って生コードと標準入力から出力結果を表示
 function paiza_api_create() {
+    $("#compile_clang_status").text("実行中");
     source = culcurated_raw_code;
     input_value = document.getElementById("std_input").value;
     $.ajax({
@@ -810,10 +811,11 @@ function paiza_api_create() {
         // console.log(data.id);
         sleep(100);
         while(true) {
-            sleep(100);
+            sleep(200);
             stat = paiza_get_status(data.id);
             console.log(stat);
             if(stat.status == "completed"){
+                $("#compile_clang_status").text("実行完了").fadeOut(500);
                 break;
             }
         }
@@ -823,6 +825,14 @@ function paiza_api_create() {
                 "color": "red"
             });
             $("#compiler_output").val(details.build_stderr);
+        } else if(details.stdout.length > 1000) {
+            // console.log("無限ループを検知");
+            var stdout = details.stdout;
+            var warning = "※※※※※※※※※※※※※※※※※※※※\n※出力が長すぎるため、省略表示します。※\n※※※※※※※※※※※※※※※※※※※※\n\n";
+            $("#compiler_output").val(warning + stdout.slice(0, 1000) + "\n\t:\n\t:\n\t:\n" + stdout.slice(-100, -1));
+            $("#compiler_output").css({
+                "color": "black"
+            });
         } else if(details.stdout.length  > 0) {
             $("#compiler_output").val(details.stdout);
             $("#compiler_output").css({
@@ -907,7 +917,7 @@ function loadKadai() {
         var s_start = text.indexOf("<question>") + 10;
         var s_end = text.indexOf("</question>");
         var s_question = text.slice(s_start, s_end).replace(/\n/g, "<br>");
-        console.log(s_question)
+        // console.log(s_question)
         $(".pad-question").html(s_question);
 
         MathJax.Hub.Config({
@@ -925,7 +935,7 @@ function loadKadai() {
         block_part = block_part.replace(/\r/g, '\\r');
         block_part = block_part.replace(/\n/g, '\\n');
         block_part = block_part.replace(/!!/g, '!!\n');
-        console.log(block_part);
+        // console.log(block_part);
         /* ここで、コード断片毎に分割 */
         var s_blocks = block_part.split("!!\n");
         var s_block;
@@ -983,11 +993,15 @@ function loadKadai() {
                 }
             }, ".input-text");
 
-            // 色を設定 => HTMLの挿入部分で実装。
-            // block_html = setBlockColor(block_html)
-
             // ここで実際に左の枠に追加
             $(".pad-blockzone-in").children(".sortable").append(block_html);
+
+            // 色を設定 => HTMLの挿入部分で実装。
+            // console.log(s_block[1]);
+            if(s_block[1].search(/^#.*/) !== -1) {
+                // #includeとか#defineとか色付け
+                $("#block-" + temp_i).css("background-color", "#AAFAC0");
+            }
 
             // 既存のブロックにポップアップを設定（もしあるなら）
             $("#block-" + temp_i).balloon({
@@ -1314,7 +1328,7 @@ $(function () {
         tab2_countStop();
         tab3_countStop();
         // デバッグ用：ウィンドウ非アクティブ時の画面表示オフ
-        $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない
+        // $(".popup-content").css({"display": "table"}); // 非アクティブ時画面表示しない ここをコメントアウトすれば画面を隠さない
         if ($(".login-wrapper").hasClass("inactive")) {
             inactive_time = $.now();
         } else {
@@ -1496,9 +1510,9 @@ $(function () {
                 //$('#pad-console-left').animate({scrollTop: $('#pad-console-left')[0].scrollHeight}, 0);
                 if (hover_time >= 1000 && inputAreaFocusing == 0) {
                     block_hover_time[$(this).closest("li").attr("id")] += hover_time;
-                    $('#pad-console-left').append('<p>' + $(this).find("p").text() + 'の説明を見た秒数' + block_hover_time[$(this).closest("li").attr("id")] + 'ms</p>');
+                    // $('#pad-console-left').append('<p>' + $(this).find("p").text() + 'の説明を見た秒数' + block_hover_time[$(this).closest("li").attr("id")] + 'ms</p>');
                     // console.log(hover_time)
-                    $('#pad-console-left').animate({ scrollTop: $('#pad-console-left')[0].scrollHeight }, 0);
+                    // $('#pad-console-left').animate({ scrollTop: $('#pad-console-left')[0].scrollHeight }, 0);
                 }
                 hoverFlag = 0;
                 hover_time = 0;
@@ -1511,8 +1525,8 @@ $(function () {
         $(this).hideBalloon();
         if (hoverFlag == 1) {
             hover_time = $.now() - hover_time;
-            $('#pad-console-left').append('<p>' + $(this).closest("li").attr("id") + ': Mouse Hovered ' + hover_time + 'ms</p>');
-            $('#pad-console-left').animate({ scrollTop: $('#pad-console-left')[0].scrollHeight }, 0);
+            // $('#pad-console-left').append('<p>' + $(this).closest("li").attr("id") + ': Mouse Hovered ' + hover_time + 'ms</p>');
+            // $('#pad-console-left').animate({ scrollTop: $('#pad-console-left')[0].scrollHeight }, 0);
             hoverFlag = 0;
             hover_time = 0;
         }
@@ -1543,6 +1557,8 @@ $(function () {
                 setTimeout(function(){
                     $(".input-text").attr("size", "3");
                     draw_branch_border();
+                    // デバッグ時はオフ
+                    shuffleContent($('#draggable1'));
                 }, 40)
                 setTimeout(function () {
                     start_time = $.now();
@@ -1551,8 +1567,6 @@ $(function () {
                     create_table_event();
                     myDraggable();
                     setTimeout(function () {
-                        // デバッグ時はオフ
-                        shuffleContent($('#draggable1'));
                         tab1_countStart();
                     }, 50);
                 }, 300);

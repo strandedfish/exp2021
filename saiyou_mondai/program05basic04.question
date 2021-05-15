@@ -41,7 +41,7 @@ block$int max_week; $!!
 block$printf("1日の曜日は?: 日(1) 月(2) 火(3) 水(4) 木(5) 金(6) 土(7): ");$!!
 block$scanf("%d\n", &first);$!!
 loop$while(1)$!!
-branch$if((1 <= first < 1) && (first <= 7))$!!
+branch$if((1 <= first) && (first <= 7))$!!
 block$break;$!!
 block$printf("月末の日付は?: 28日以上，31日以下: ");$!!
 block$scanf("%d\n", &month_length);$!!

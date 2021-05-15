@@ -101,13 +101,16 @@
                     </div>
                 </div>
                 <div id="panel3" class="pad pad-textzone tab_panel">
-                    <p>テキストゾーン</p>
-                    <button id="copy2clipboard">コードをクリップボードにコピー</button>
+                    <h4 class="exec_title">ソースコードの確認</h3>
+                    <!-- <button id="copy2clipboard">コードをクリップボードにコピー</button> -->
                     <p id="copyalert" class="copy_alert">コピーしました</p>
                     <textarea id="serialize_output"></textarea>
-                    <p>標準入力</p>
-                    <textarea id="std_input"></textarea>
-                    <button id="compile_clang">コンパイルっ！</button>
+                    <h4 class="exec_title">実行結果確認</h3>
+                    <label>標準入力：</label><br>
+                    <textarea id="std_input" placeholder="対話的に実行できないため、入力は一行ずつ入力すること"></textarea>
+                    <button id="compile_clang">コンパイル／実行</button>
+                    <p id="compile_clang_status"></p>
+                    <label>実行結果：</label><br>
                     <textarea id="compiler_output"></textarea>
                 </div>
                 <div id="panel4" class="pad pad-debugzone tab_panel">
@@ -121,7 +124,7 @@
         <div class="submit-btn-wrapper">
             <button class="button" id="submit-btn">提出</button>
         </div>
-        <div class="debug-console">
+        <!-- <div class="debug-console">
             <h4>以下デバッグ用</h4>
             <div class="btn-wrapper">
                 <p class="radio-area">
@@ -135,22 +138,13 @@
                        value="深さ優先探索（ふかさゆうせんたんさく、英: depth-first search, DFS、バックトラック法ともいう）は、木やグラフを探索するためのアルゴリズムである。 アルゴリズムは根から(グラフの場合はどのノードを根にするか決定する)始まり、バックトラックするまで可能な限り探索を行う。">
                 <button id="new-block-btn">要素を追加する！</button>
             </div>
-<!--            <div class="pad pad-textzone">-->
-<!--                <p>テキストゾーン</p>-->
-<!--                <button id="copy2clipboard">コードをクリップボードにコピー</button>-->
-<!--                <p id="copyalert" class="copy_alert">コピーしました</p>-->
-<!--                <textarea id="serialize_output"></textarea>-->
-<!--                <button id="compile_clang">コンパイルっ！</button>-->
-<!--                <textarea id="compiler_output"></textarea>-->
-
-<!--            </div>-->
 
             <div id="console-bottom">
                 <div class="console" id="pad-console"></div>
                 <div class="console" id="pad-console-left"></div>
                 <div class="console" id="pad-console-right"></div>
             </div>
-        </div>
+        </div> -->
 
     </div>
 </main>
