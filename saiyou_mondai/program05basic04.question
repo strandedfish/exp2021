@@ -47,11 +47,13 @@ block$scanf("%d\n", &first);$!!
 loop$while(1)$!!
 branch$if((1 <= first) && (first <= 7))$!!
 block$break;$!!
+block$continue;$!!
 block$printf("月末の日付は?: 28日以上，31日以下: ");$!!
 block$scanf("%d\n", &month_length);$!!
 loop$while(1)$!!
-loop$while(1)$!!
 branch$if((28 <= month_length) && (month_length <= 31))$!!
+block$break;$!!
+block$continue;$!!
 block$max_week = (first + month_length) / 7;$!!
 branch$if((first + month_length) % 7 > 0)$!!
 block$max_week++;$!!

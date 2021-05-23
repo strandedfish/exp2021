@@ -94,8 +94,8 @@ case 2: price = 197; type = FOOD; break;
 case 3: price = 125; type = FOOD; break;
 case 4: price = 187; type = NON_FOOD; break;
 case 5: price = 3050; type = NON_FOOD; break;$!!
-block$default: printf("その商品は取り扱っていません\n");$!!
-block$continue;$!!
+block$default: printf("その商品は取り扱っていません\n"); continue;$!!
+block$default: printf("その商品は取り扱っていません\n"); break;$!!
 block$sum += price;$!!
 block$amount = amount_of_money(price, type);$!!
 block$printf("税込の単価 %.2f\n", amount);$!!
