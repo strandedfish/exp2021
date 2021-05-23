@@ -1,0 +1,134 @@
+<question>
+
+コードパズルの世界へようこそ！
+
+まずは、コードパズルの操作方法に慣れましょう。
+
+<h5>問題文画面について</h5>
+今見ている画面は、問題文画面です。
+この画面は特に操作する要素はありません。
+
+<h5>作図画面について</h5>
+上側のPADタブをクリックすると作図画面に移動します。
+左側に常に表示されているのがコードブロックの一覧です。上部のタブを選択すると該当のブロックを絞り込むことができます。
+このコードブロックを右側の画面にドラッグアンドドロップして、課題を達成するプログラムを作成しましょう。
+右側の画面で、青色に光っている範囲がブロックを配置できる場所です。
+ドラッグしている時、この青い色の範囲が赤く反応したときにドロップするとコードブロックがその場所に配置されます。
+<img src="tutorial_drag.png" alt="解答例のコードパズル" title="解答例">
+可能な操作は青色の箇所への挿入と、既にその場にあるブロックとの入れ替えです。
+モジュールの最初に挿入することができなくなっているので、注意しましょう。（一度下に配置し、置換することで実現できます）
+
+<h5>実行画面について</h5>
+次に実行タブをクリックすると実行画面に移動します。
+ソースコードの確認の項では、ドラッグアンドドロップで作成したコードパズルのソースコードが表示されます。
+もし意図しないソースコードになっていた場合は、コードパズルの構築が間違っている可能性があります。再確認しましょう！
+意図した通りのソースコードになっていれば、標準入力に値を設定して、「コンパイル＆実行」ボタンを押してみましょう。
+もし、エラーや予期しない動作であれば、再度問題文や作図をやりなおして、実行し直してみましょう。
+実行結果が課題を満たすものであれば、課題クリアです。ページ下部の提出ボタンを押して終了しましょう。
+
+<h5>本チュートリアルにおける課題</h5>
+このチュートリアルでは、入出力／ループ／分岐を含んだ簡単なプログラムを作成してみましょう。
+本問題に限り、最後には解答例も記載します。
+まず、入力を行うための変数input0~2を用意しましょう。
+第一の入力では、入力された回数分ループし、ループ番号を出力してみましょう。
+第二の入力では、入力された数が正の数か負の数か0か判定し出力してみましょう。
+第三の入力では、入力された数が1、2、3であれば”Third input is ○.”と出力し、それ以外であれば”Third input must be 1 to 3.”と出力しましょう。
+
+<b style="border-bottom:double;border-color:#FF0000;border-width:3px;">Input Sample</b>
+10
+2
+3
+
+<b style="border-bottom:double;border-color:#FF0000;border-width:3px;">Output Sample</b>
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+Second input is a positive number.
+Third input is 3.
+
+<b style="border-bottom:double;border-color:#FF0000;border-width:3px;">解答例</b>
+<img src="tutorial_answer.png" alt="解答例のコードパズル" title="解答例">
+
+
+</question>
+
+<block>
+block$#include <stdio.h>$!!
+submodule$int main(void)$!!
+block$int i;$!!
+block$int input0, input1, input2;$!!
+block$scanf("%d", &input0);$!!
+loop$for(i = 0; i<input0; i++)$!!
+block$printf("\空欄\n", i);$!!
+block$scanf("%d", &input1);$!!
+branch$if(input1 > 0)$!!
+block$printf("Second input is a positive number.\n");$!!
+branch$else if(input1 < 0)$!!
+block$printf("Second input is a negative number.\n");$!!
+branch$else$!!
+block$printf("Second input is a zero.\n");$!!
+block$scanf("%d", &input2);$!!
+branch$switch(input2)$!!
+block$case 1: 
+    printf("Third input is 1.\n");
+    break;$!!
+block$case 2:
+    printf("Third input is 2.\n");
+    break;$!!
+block$case 3:
+    printf("Third input is 3.\n");
+    break;$!!
+block$default:
+    printf("Third input must be 1 to 3.\n");
+    break;$!!
+block$return 0;$!!
+</block>
+
+<answer>
+#include <stdio.h>
+
+int main(void)
+{
+    int i;
+    int input0, input1, input2;
+
+    scanf("%d", &input0);
+    for(i = 0; i<input0; i++) {
+        printf("\空欄\n", i);
+    }
+
+    scanf("%d", &input1);
+    if(input1 > 0) {
+        printf("Input is a positive number.");
+    } elseif(input1 < 0) {
+        printf("Input is a negative number.");
+    } else {
+        printf("Input is a zero");
+    }
+
+    scanf("%d", &input2);
+    switch(input2){
+        case 1:
+            printf("The number is 1.);
+            break;
+        case 2:
+            printf("The number is 2.);
+            break;
+        case 3:
+            printf("The number is 3.);
+            break;
+        default:
+            printf("The number must be 1 to 3.");
+            break;
+    }
+
+    return 0;
+}
+</answer>
