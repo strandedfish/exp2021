@@ -42,6 +42,12 @@ main {
   background: #f4f4f4;
 }
 
+.waku {
+  border:5px solid #ddd; /* 外側のボーダー */
+  padding:5px; /* 内側のボーダの太さ */
+  background:#fff; /* 内側のボーダー色 */
+}
+
 /****pad****/
 .pad {
 	/* display: inline-flex; */

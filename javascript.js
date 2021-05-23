@@ -571,8 +571,8 @@ function searchFollowing(num1, num2, tab_count) {
                 var innerContent = $(getId(+num1 + i, num2)).find("p").html();
                 // inputを文字列に置き換える 一時的に！！
                 $(getId(+num1 + i, num2)).find("p").find("input").each(function (index, element) {
-                    console.log(innerContent);
-                    console.log($(element).val());
+                    // console.log(innerContent);
+                    // console.log($(element).val());
                     var s_start = innerContent.indexOf("<input");
                     var s_end = innerContent.indexOf('">') + 2;
                     if (s_start !== -1 && s_end !== -1) {
@@ -652,7 +652,7 @@ function isFollowing(num1, num2) {
 */
 
 // ajax_test_createTable
-function createTable() {
+function create_table() {
     var now = new Date();
     table_name = kadai_filename + "：" + user + "：" + (now.getMonth() + 1) + "月" + now.getDate() + "日" + now.getHours() + "時" + now.getMinutes() + "分";
     table_name.toString();
@@ -678,11 +678,15 @@ function createTable() {
         },
         //通信が成功した時
         success: function (data) {
+            console.log("テーブル作成成功");
             $('#pad-console').append("通信せいこーっ☆☆☆");
             $('.pad-editor').before('<div class="tuushin"></div>');
             console.log(data);
         },
         error: function (data) {
+            console.log("テーブル作成失敗");
+            console.log(data);
+            alert("テーブルの作成に失敗しました。ページを更新してやり直してください。1分以内に入力した名前と重複していませんか？");
             $('#pad-console').append("通信しっぱい…(´・ω・｀)");
             // console.log(data);
         }
@@ -731,8 +735,9 @@ function dataUpload() {
             console.log("データ送信成功中…", data);
         },
         error: function (data) {
+            console.log("データ送信失敗中！！！")
             $('#pad-console').append("通信しっぱい…");
-            // alert(($.now() - start_time) / 1000 + "秒目◇通信失敗しました！！！");
+            alert(($.now() - start_time) / 1000 + "秒目◇通信失敗しました！！！");
             $('.pad-editor').css({
                 "background-color": "red"
             })
@@ -766,11 +771,15 @@ function create_table_event() {
         },
         //通信が成功した時
         success: function (data) {
+            console.log("イベントテーブル作成成功");
             $('#pad-console').append("イベント毎通信せいこーっ☆☆☆");
             $('.pad-editor').before('<div class="tuushin"></div>');
             console.log(data);
         },
         error: function (data) {
+            console.log("イベントテーブル作成失敗");
+            console.log(data);
+            alert("イベントテーブルの作成に失敗しました。ページを更新してやり直してください。1分以内に入力した名前と重複していませんか？");
             $('#pad-console').append("イベント毎通信しっぱい…(´・ω・｀)");
             // console.log(data);
         }
@@ -822,7 +831,7 @@ function event_data_upload() {
         },
         error: function (data) {
             $('#pad-console').append("イベント毎通信しっぱい…");
-            // alert(($.now() - start_time) / 1000 + "秒目◇通信失敗しました！！！");
+            alert(($.now() - start_time) / 1000 + "秒目◇イベント通信失敗しました！！！");
             $('.pad-editor').css({
                 "background-color": "red"
             })
@@ -1615,13 +1624,15 @@ $(function () {
                 setTimeout(function () {
                     start_time = $.now();
                     createArray();
-                    createTable();
+                    create_table();
                     create_table_event();
                     myDraggable();
                     setTimeout(function () {
                         tab1_countStart();
                     }, 50);
                 }, 300);
+
+                dataUpload_interval = setInterval("dataUpload()", 5000);
 
             }
         });
